@@ -5,7 +5,7 @@ import scala.scalajs.js.ThisFunction0
 
 object React {
   def createClass[PROPS, STATE](render: ThisFunction0[ReactClassThis[PROPS, STATE], ReactElement] = ((ignored: ReactClassThis[PROPS, STATE]) => NativeReact.createElement("div", null))): ReactClass[PROPS, STATE] =
-    NativeReact.createClass(ReactClassSpec[PROPS, STATE](
+    NativeReact.createClass(new ReactClassSpec[PROPS, STATE](
       render = render
     ))
 
