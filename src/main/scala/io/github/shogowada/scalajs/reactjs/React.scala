@@ -1,13 +1,12 @@
 package io.github.shogowada.scalajs.reactjs
 
 import scala.scalajs.js
+import scala.scalajs.js.ThisFunction0
+import scala.scalajs.js.annotation.JSName
 
-@js.native
 object React {
-  def createClass[PROPS](render: ((ReactClassThis[PROPS]) => String) = (_ => "")) =
-    createClass(ReactClassImpl(
+  def createClass[PROPS, STATE](render: ThisFunction0[ReactClassThis[PROPS, STATE], ReactElement] = ((_: ReactClassThis[PROPS, STATE]) => NativeReact.createElement("div", null))): ReactClass[PROPS, STATE] =
+    NativeReact.createClass(new ReactClassSpec[PROPS, STATE](
       render = render
     ))
-
-  def createClass[PROPS](classImpl: ReactClassImpl[PROPS]): ReactClass[PROPS] = js.native
 }
