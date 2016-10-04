@@ -1,7 +1,9 @@
 package io.github.shogowada.scalajs.reactjs
 
-import scala.scalajs.js.ThisFunction0
-import scala.scalajs.js.annotation.JSExportAll
+import org.scalajs.dom.raw.HTMLElement
 
-@JSExportAll
-class ReactClassSpec[PROPS, STATE](val render: ThisFunction0[ReactClassThis[PROPS, STATE], ReactElement])
+trait ReactClassSpec {
+  type This <: AbstractThis
+
+  def render(self: This): HTMLElement
+}
