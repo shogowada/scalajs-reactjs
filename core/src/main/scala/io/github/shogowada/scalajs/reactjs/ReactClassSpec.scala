@@ -20,4 +20,10 @@ trait ReactClassSpec {
   type State
 
   def render(self: This): ReactElement
+
+  def export(): js.Object = {
+    js.Dynamic.literal(
+      "render" -> ((self: This) => render(self)).asInstanceOf[js.ThisFunction0[This, ReactElement]]
+    )
+  }
 }
