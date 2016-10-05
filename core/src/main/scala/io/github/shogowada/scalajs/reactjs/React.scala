@@ -2,10 +2,11 @@ package io.github.shogowada.scalajs.reactjs
 
 import scala.scalajs.js
 
+@js.native
 object React {
-  def createClass(spec: ReactClassSpec) =
-    NativeReact.createClass(spec)
+  def createClass(spec: ReactClassSpec): ReactClass = js.native
 
-  def createElement(tagName: String, attribute: Object, content: js.Any*) =
-    NativeReact.createElement(tagName, attribute, content)
+  def createElement(tagName: String, attributes: Object, content: js.Any*): ReactElement = js.native
+
+  def createElement(reactClass: ReactClass, attributes: Object): ReactElement = js.native
 }

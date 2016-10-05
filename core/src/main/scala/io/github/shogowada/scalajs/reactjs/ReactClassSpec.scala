@@ -2,8 +2,22 @@ package io.github.shogowada.scalajs.reactjs
 
 import org.scalajs.dom.raw.HTMLElement
 
-trait ReactClassSpec {
-  type This <: AbstractThis
+import scala.scalajs.js
 
-  def render(self: This): HTMLElement
+trait ReactClassSpec {
+
+  class This(self: js.Dynamic) extends AbstractThis[Props, State] {
+    override def props: Props = self.props.asInstanceOf[Props]
+
+    override def state: State = self.state.asInstanceOf[State]
+
+    override def setState(state: State): Unit = self.setState(state.asInstanceOf[js.Object])
+
+    override def refs(key: String): HTMLElement = ???
+  }
+
+  type Props
+  type State
+
+  def render(self: This): ReactElement
 }

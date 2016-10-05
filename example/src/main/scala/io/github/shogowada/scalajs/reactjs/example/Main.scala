@@ -1,6 +1,6 @@
 package io.github.shogowada.scalajs.reactjs.example
 
-import io.github.shogowada.scalajs.reactjs.{NativeReact, React, AbstractThis, ReactDOM}
+import io.github.shogowada.scalajs.reactjs.{React, ReactClassSpec, ReactDOM}
 import org.scalajs.dom
 
 import scala.scalajs.js.annotation.JSExport
@@ -9,11 +9,17 @@ import scala.scalajs.js.annotation.JSExport
 object Main {
   @JSExport
   def main() = {
-    val mainClass = React.createClass[String, Unit](
-      render = (($: AbstractThis[String, Unit]) => React.createElement("div", null,
-        React.createElement("div", null, s"Hello, ${$.props}!")
-      ))
-    )
-    ReactDOM.render(NativeReact.createElement(mainClass, "World"), dom.document.body)
+    class HelloWorldClass() extends ReactClassSpec {
+
+      case class Props(name: String)
+
+      case class State()
+
+      override def render(self: This) = React.createElement("div", null, s"Hello, ${self.props.name}")
+    }
+
+    val helloWorldClass = React.createClass(new HelloWorldClass())
+
+    ReactDOM.render(helloWorldClass, dom.document.body)
   }
 }
