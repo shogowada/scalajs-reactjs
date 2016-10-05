@@ -6,7 +6,7 @@ import scala.scalajs.js.annotation.JSName
 object React {
 
   def createClass(spec: ReactClassSpec): ReactClass =
-    NativeReact.createClass(spec.export())
+    NativeReact.createClass(spec.toNative)
 
   def createElement(tagName: String, attributes: Object, content: js.Any*): ReactElement =
     NativeReact.createElement(tagName, attributes, content)

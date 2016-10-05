@@ -21,9 +21,11 @@ trait ReactClassSpec {
 
   def render(self: This): ReactElement
 
-  def export(): js.Object = {
+  def toNative: js.Object = {
+    val nativeRender: js.ThisFunction0[This, ReactElement] = (self: This) => render(self)
     js.Dynamic.literal(
-      "render" -> ((self: This) => render(self)).asInstanceOf[js.ThisFunction0[This, ReactElement]]
+      "displayName" -> getClass.getName,
+      "render" -> nativeRender
     )
   }
 }
