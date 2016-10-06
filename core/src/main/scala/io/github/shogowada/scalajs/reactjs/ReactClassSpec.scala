@@ -6,14 +6,14 @@ import scala.scalajs.js
 
 trait ReactClassSpec {
 
-  class This(self: js.Dynamic) extends AbstractThis[Props, State] {
-    override def props: Props = self.props.asInstanceOf[Props]
+  class This(self: js.Dynamic) {
+    def props: Props = self.props.asInstanceOf[Props]
 
-    override def state: State = self.state.asInstanceOf[State]
+    def state: State = self.state.asInstanceOf[State]
 
-    override def setState(state: State): Unit = self.setState(state.asInstanceOf[js.Object])
+    def setState(state: State): Unit = self.setState(state.asInstanceOf[js.Object])
 
-    override def refs(key: String): HTMLElement = ???
+    def refs(key: String): HTMLElement = ???
   }
 
   type Props
@@ -21,7 +21,7 @@ trait ReactClassSpec {
 
   def render(self: This): ReactElement
 
-  def toNative: js.Object = {
+  def asNative: js.Object = {
     val nativeRender: js.ThisFunction0[js.Dynamic, ReactElement] = (self: js.Dynamic) => render(new This(self))
     js.Dynamic.literal(
       "displayName" -> getClass.getName,
