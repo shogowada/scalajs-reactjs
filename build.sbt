@@ -15,6 +15,7 @@ val commonSettings = Seq(
 lazy val core = project.in(file("core"))
     .settings(commonSettings: _*)
     .settings(
+      name += "-core",
       libraryDependencies ++= Seq(
         "org.scala-js" %%% "scalajs-dom" % "0.9.0"
       )
