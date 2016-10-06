@@ -5,7 +5,10 @@ import scala.scalajs.js
 trait ReactClassSpec {
 
   class This(self: js.Dynamic) {
+    def props: Props = Pickler.toScala[Props](self.props)
   }
+
+  type Props
 
   def render(self: This): ReactElement
 

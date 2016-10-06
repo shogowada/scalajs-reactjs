@@ -13,6 +13,9 @@ object React {
 
   def createElement(reactClass: ReactClass): ReactElement =
     NativeReact.createElement(reactClass)
+
+  def createElement[PROPS](reactClass: ReactClass, props: PROPS): ReactElement =
+    NativeReact.createElement(reactClass, Pickler.toJs(props))
 }
 
 @js.native
