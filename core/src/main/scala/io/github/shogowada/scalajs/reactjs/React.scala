@@ -13,9 +13,6 @@ object React {
 
   def createElement(reactClass: ReactClass): ReactElement =
     NativeReact.createElement(reactClass)
-
-  def createElement(reactClass: ReactClass, attributes: js.Any): ReactElement =
-    NativeReact.createElement(reactClass, attributes)
 }
 
 @js.native
