@@ -24,7 +24,6 @@ trait ReactClassSpec {
   def asNative: js.Object = {
     val nativeRender: js.ThisFunction0[js.Dynamic, ReactElement] = (self: js.Dynamic) => render(new This(self))
     js.Dynamic.literal(
-      "displayName" -> getClass.getName,
       "render" -> nativeRender
     )
   }

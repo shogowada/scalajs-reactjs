@@ -9,7 +9,10 @@ object React {
     NativeReact.createClass(spec.asNative)
 
   def createElement(tagName: String, attributes: js.Any, content: js.Any*): ReactElement =
-    NativeReact.createElement(tagName, attributes, content)
+    NativeReact.createElement(tagName, attributes, content: _*)
+
+  def createElement(reactClass: ReactClass): ReactElement =
+    NativeReact.createElement(reactClass)
 
   def createElement(reactClass: ReactClass, attributes: js.Any): ReactElement =
     NativeReact.createElement(reactClass, attributes)
@@ -21,6 +24,8 @@ object NativeReact extends js.Object {
   def createClass(spec: js.Object): ReactClass = js.native
 
   def createElement(tagName: String, attributes: js.Any, content: js.Any*): ReactElement = js.native
+
+  def createElement(reactClass: ReactClass): ReactElement = js.native
 
   def createElement(reactClass: ReactClass, attributes: js.Any): ReactElement = js.native
 }

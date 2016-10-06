@@ -11,15 +11,15 @@ object Main {
   def main(element: HTMLElement) = {
     object HelloWorld extends ReactClassSpec {
 
-      case class Props()
-
-      case class State()
-
-      override def render(self: This) = React.createElement("div", null, "Hello, World!")
+      override def render(self: This) = React.createElement(
+        "div",
+        null,
+        "Hello, World!"
+      )
     }
 
     val helloWorldClass = React.createClass(HelloWorld)
 
-    ReactDOM.render(React.createElement(helloWorldClass, null), element)
+    ReactDOM.render(React.createElement(helloWorldClass), element)
   }
 }
