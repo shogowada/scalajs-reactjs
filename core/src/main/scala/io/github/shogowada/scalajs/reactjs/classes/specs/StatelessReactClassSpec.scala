@@ -2,7 +2,7 @@ package io.github.shogowada.scalajs.reactjs.classes.specs
 
 import scala.scalajs.js
 
-trait ReactClassStatelessSpec extends ReactClassSpec {
+trait StatelessReactClassSpec extends ReactClassSpec {
 
   type State = js.Object
 

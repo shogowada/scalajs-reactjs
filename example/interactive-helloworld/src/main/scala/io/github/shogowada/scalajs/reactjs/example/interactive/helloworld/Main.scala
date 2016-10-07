@@ -2,7 +2,7 @@ package io.github.shogowada.scalajs.reactjs.example.interactive.helloworld
 
 import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
 import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactInputElement}
-import io.github.shogowada.scalajs.reactjs.infra.Pickler
+import io.github.shogowada.scalajs.reactjs.converters.Converter
 import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom.raw.HTMLElement
 
@@ -27,11 +27,11 @@ object Main {
       override def render(): ReactElement = {
         React.createElement("div", null,
           React.createElement("input", js.Dictionary(
-            "ref" -> Pickler.toJs((element: ReactInputElement) => {
+            "ref" -> Converter.toJs((element: ReactInputElement) => {
               nameElement = element
             }),
             "value" -> self.state.name,
-            "onChange" -> Pickler.toJs(() => onChange())
+            "onChange" -> Converter.toJs(() => onChange())
           )),
           React.createElement("div", null, s"Hello, ${self.state.name}!")
         )

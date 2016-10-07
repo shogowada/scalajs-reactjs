@@ -1,8 +1,8 @@
-package io.github.shogowada.scalajs.reactjs.infra
+package io.github.shogowada.scalajs.reactjs.converters
 
 import scala.scalajs.js
 
-object Pickler {
+object Converter {
 
   def toJs[T](value: T): js.Any = js.Dynamic.literal("value" -> value.asInstanceOf[js.Any])
 
