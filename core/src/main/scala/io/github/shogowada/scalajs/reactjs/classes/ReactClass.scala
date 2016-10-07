@@ -1,4 +1,4 @@
-package io.github.shogowada.scalajs.reactjs
+package io.github.shogowada.scalajs.reactjs.classes
 
 import scala.scalajs.js
 

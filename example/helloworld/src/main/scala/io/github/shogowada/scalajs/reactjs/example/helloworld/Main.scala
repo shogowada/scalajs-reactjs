@@ -1,6 +1,7 @@
 package io.github.shogowada.scalajs.reactjs.example.helloworld
 
-import io.github.shogowada.scalajs.reactjs.{React, ReactClassSpec, ReactDOM}
+import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassStatelessSpec
+import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom.raw.HTMLElement
 
 import scala.scalajs.js.annotation.JSExport
@@ -9,13 +10,9 @@ import scala.scalajs.js.annotation.JSExport
 object Main {
   @JSExport
   def main(element: HTMLElement) = {
-    object HelloWorld extends ReactClassSpec {
-
-      case class State()
+    object HelloWorld extends ReactClassStatelessSpec {
 
       case class Props(name: String)
-
-      override def getInitialState(): State = State()
 
       override def render() = React.createElement(
         "div",

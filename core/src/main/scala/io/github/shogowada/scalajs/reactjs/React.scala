@@ -1,5 +1,8 @@
 package io.github.shogowada.scalajs.reactjs
 
+import io.github.shogowada.scalajs.reactjs.classes.ReactClass
+import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
+import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.infra.Pickler
 
 import scala.scalajs.js
