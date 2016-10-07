@@ -16,8 +16,6 @@ object Main {
   def main(element: HTMLElement): Unit = {
     object InteractiveHelloWorld extends ReactClassSpec {
 
-      val NAME_REF = "name"
-
       case class State(name: String)
 
       override def getInitialState(): State = State("whoever you are")
