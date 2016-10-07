@@ -1,8 +1,8 @@
 package io.github.shogowada.scalajs.reactjs.example.interactive.helloworld
 
 import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
-import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactInputElement}
 import io.github.shogowada.scalajs.reactjs.converters.Converter
+import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactInputElement}
 import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom.raw.HTMLElement
 
@@ -42,8 +42,6 @@ object Main {
       }
     }
 
-    val interactiveHelloWorldClass = React.createClass(InteractiveHelloWorld)
-
-    ReactDOM.render(React.createElement(interactiveHelloWorldClass), element)
+    ReactDOM.render(InteractiveHelloWorld, element)
   }
 }

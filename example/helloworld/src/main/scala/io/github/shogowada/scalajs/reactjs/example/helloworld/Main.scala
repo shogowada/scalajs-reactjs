@@ -21,8 +21,6 @@ object Main {
       )
     }
 
-    val helloWorldClass = React.createClass(HelloWorld)
-
-    ReactDOM.render(React.createElement(helloWorldClass, HelloWorld.Props("World")), element)
+    ReactDOM.render(HelloWorld, HelloWorld.Props("World"), element)
   }
 }

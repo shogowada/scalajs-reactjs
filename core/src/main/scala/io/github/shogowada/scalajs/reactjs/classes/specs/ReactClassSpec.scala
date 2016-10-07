@@ -1,7 +1,8 @@
 package io.github.shogowada.scalajs.reactjs.classes.specs
 
-import io.github.shogowada.scalajs.reactjs.elements.ReactElement
+import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.converters.Converter
+import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import org.scalajs.dom.raw.HTMLElement
 
 import scala.scalajs.js
