@@ -1,4 +1,4 @@
-package io.github.shogowada.scalajs.reactjs.example
+package io.github.shogowada.scalajs.reactjs.example.helloworld
 
 import io.github.shogowada.scalajs.reactjs.{React, ReactClassSpec, ReactDOM}
 import org.scalajs.dom.raw.HTMLElement
@@ -11,9 +11,13 @@ object Main {
   def main(element: HTMLElement) = {
     object HelloWorld extends ReactClassSpec {
 
+      case class State()
+
       case class Props(name: String)
 
-      override def render(self: This) = React.createElement(
+      override def getInitialState(): State = State()
+
+      override def render() = React.createElement(
         "div",
         null,
         s"Hello, ${self.props.name}!"
