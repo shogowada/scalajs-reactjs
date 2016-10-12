@@ -15,15 +15,15 @@ trait ReactClassSpec {
 
   def props: Props = nativeThis.props.asScala[Props]
 
-  def refs(key: String): HTMLElement = nativeThis.refs.selectDynamic(key).asInstanceOf[HTMLElement]
-
   def getInitialState(): State = ???
 
   def setState(state: State): Unit = nativeThis.setState(state.asJs)
 
   def render(): ReactElement
 
-  var nativeThis: js.Dynamic = _
+  def refs(key: String): HTMLElement = nativeThis.refs.selectDynamic(key).asInstanceOf[HTMLElement]
+
+  private var nativeThis: js.Dynamic = _
 
   def asNative: js.Object = {
     val nativeGetInitialState = js.ThisFunction.fromFunction1((newNativeThis: js.Dynamic) => {
