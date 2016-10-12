@@ -1,9 +1,9 @@
 package io.github.shogowada.scalajs.reactjs
 
+import io.github.shogowada.scalajs.reactjs.Converters._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
-import io.github.shogowada.scalajs.reactjs.converters.Converter
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSName
@@ -20,7 +20,7 @@ object React {
     NativeReact.createElement(reactClass)
 
   def createElement[PROPS](reactClass: ReactClass, props: PROPS): ReactElement =
-    NativeReact.createElement(reactClass, Converter.toJs(props))
+    NativeReact.createElement(reactClass, props.asJs)
 }
 
 @js.native

@@ -17,7 +17,7 @@ object Main {
       override def render() = React.createElement(
         "div",
         null,
-        s"Hello, ${self.props.name}!"
+        s"Hello, ${props.name}!"
       )
     }
 

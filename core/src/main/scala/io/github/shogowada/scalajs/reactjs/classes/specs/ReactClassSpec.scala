@@ -1,7 +1,6 @@
 package io.github.shogowada.scalajs.reactjs.classes.specs
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.converters.Converter
+import io.github.shogowada.scalajs.reactjs.Converters._
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import org.scalajs.dom.raw.HTMLElement
 
@@ -9,32 +8,30 @@ import scala.scalajs.js
 
 trait ReactClassSpec {
 
-  class This(self: js.Dynamic) {
-    def state: State = Converter.toScala[State](self.state)
-
-    def props: Props = Converter.toScala[Props](self.props)
-
-    def refs(key: String): HTMLElement = self.refs.selectDynamic(key).asInstanceOf[HTMLElement]
-
-    def setState(state: State): Unit = self.setState(Converter.toJs(state))
-  }
-
   type Props
   type State
 
+  def state: State = nativeThis.state.asScala[State]
+
+  def props: Props = nativeThis.props.asScala[Props]
+
+  def refs(key: String): HTMLElement = nativeThis.refs.selectDynamic(key).asInstanceOf[HTMLElement]
+
   def getInitialState(): State = ???
+
+  def setState(state: State): Unit = nativeThis.setState(state.asJs)
 
   def render(): ReactElement
 
-  var self: This = _
+  var nativeThis: js.Dynamic = _
 
   def asNative: js.Object = {
-    val nativeGetInitialState = js.ThisFunction.fromFunction1((newSelf: js.Dynamic) => {
-      self = new This(newSelf)
-      Converter.toJs(getInitialState())
+    val nativeGetInitialState = js.ThisFunction.fromFunction1((newNativeThis: js.Dynamic) => {
+      nativeThis = newNativeThis
+      getInitialState().asJs
     })
-    val nativeRender = js.ThisFunction.fromFunction1((newSelf: js.Dynamic) => {
-      self = new This(newSelf)
+    val nativeRender = js.ThisFunction.fromFunction1((newNativeThis: js.Dynamic) => {
+      nativeThis = newNativeThis
       render()
     })
     js.Dynamic.literal(
