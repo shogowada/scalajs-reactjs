@@ -30,10 +30,7 @@ val exampleCommonSettings = commonSettings ++ Seq(
         commonJSName "React",
     "org.webjars.bower" % "react" % REACT_VERSION / "react-dom.js"
         dependsOn "react-with-addons.js"
-        commonJSName "ReactDOM",
-    "org.webjars.bower" % "react" % REACT_VERSION / "react-dom-server.js"
-        dependsOn "react-dom.js"
-        commonJSName "ReactDOMServer"
+        commonJSName "ReactDOM"
   )
 )
 
