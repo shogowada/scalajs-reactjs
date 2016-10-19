@@ -3,27 +3,28 @@ val SCALA_VERSION = "2.11.8"
 val REACT_VERSION = "15.3.2"
 
 val commonSettings = Seq(
-  name := "scalajs-reactjs",
-  organization := "io.github.shogowada",
+  organization := "io.github.shogowada.scalajs.reactjs",
   version := "0.1.0-SNAPSHOT",
   scalaVersion := SCALA_VERSION,
   ivyScala := ivyScala.value.map {
     _.copy(overrideScalaVersion = true)
-  }
+  },
+  resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 )
 
 lazy val core = project.in(file("core"))
     .settings(commonSettings: _*)
     .settings(
-      name += "-core",
+      name += "core",
       libraryDependencies ++= Seq(
-        "org.scala-js" %%% "scalajs-dom" % "0.9.0"
+        "org.scala-js" %%% "scalajs-dom" % "0.9.0",
+        "io.github.shogowada.statictags" %%% "core" % "0.1.0-SNAPSHOT"
       )
     )
     .enablePlugins(ScalaJSPlugin)
 
 val exampleCommonSettings = commonSettings ++ Seq(
-  name += "-example",
+  name += "example",
   (unmanagedResourceDirectories in Compile) += baseDirectory.value / "src" / "main" / "webapp",
   jsDependencies ++= Seq(
     "org.webjars.bower" % "react" % REACT_VERSION / "react-with-addons.js"
