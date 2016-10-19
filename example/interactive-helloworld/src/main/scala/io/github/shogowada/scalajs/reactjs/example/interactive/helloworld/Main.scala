@@ -1,13 +1,11 @@
 package io.github.shogowada.scalajs.reactjs.example.interactive.helloworld
 
-import io.github.shogowada.scalajs.reactjs.Converters._
+import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
 import io.github.shogowada.scalajs.reactjs.components.ReactInputComponent
-import io.github.shogowada.scalajs.reactjs.elements.ReactElement
-import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
+import io.github.shogowada.scalajs.reactjs.elements.VirtualDOM._
 import org.scalajs.dom.raw.HTMLElement
 
-import scala.scalajs.js
 import scala.scalajs.js.annotation.JSExport
 
 @JSExport
@@ -23,22 +21,21 @@ object Main {
 
       var nameComponent: ReactInputComponent = _
 
-      override def render(): ReactElement = {
-        React.createElement("div", null,
-          React.createElement("input", js.Dictionary(
-            "ref" -> ((element: ReactInputComponent) => {
+      override def render() = {
+        <.div()(
+          <.input(
+            ^.ref := ((element: ReactInputComponent) => {
               nameComponent = element
-            }).asJs,
-            "value" -> this.state.name,
-            "onChange" -> (() => onChange()).asJs
-          )),
-
-          React.createElement("div", null, s"Hello, ${this.state.name}!")
+            }),
+            ^.value := state.name,
+            ^.onChange := (() => onChange())
+          )(),
+          <.div()(s"Hello, ${state.name}")
         )
       }
 
       def onChange(): Unit = {
-        this.setState(State(name = nameComponent.value))
+        setState(State(name = nameComponent.value))
       }
     }
 

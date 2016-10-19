@@ -4,6 +4,7 @@ val REACT_VERSION = "15.3.2"
 
 val commonSettings = Seq(
   organization := "io.github.shogowada.scalajs.reactjs",
+  name := "",
   version := "0.1.0-SNAPSHOT",
   scalaVersion := SCALA_VERSION,
   ivyScala := ivyScala.value.map {
@@ -37,16 +38,16 @@ val exampleCommonSettings = commonSettings ++ Seq(
 
 lazy val exampleHelloWorld = project.in(file("example") / "helloworld")
     .settings(exampleCommonSettings: _*)
-    .settings(Seq(
+    .settings(
       name += "-helloworld"
-    ))
+    )
     .enablePlugins(ScalaJSPlugin)
     .dependsOn(core)
 
 lazy val exampleInteractiveHelloWorld = project.in(file("example") / "interactive-helloworld")
     .settings(exampleCommonSettings: _*)
-    .settings(Seq(
+    .settings(
       name += "-interactive-helloworld"
-    ))
+    )
     .enablePlugins(ScalaJSPlugin)
     .dependsOn(core)
