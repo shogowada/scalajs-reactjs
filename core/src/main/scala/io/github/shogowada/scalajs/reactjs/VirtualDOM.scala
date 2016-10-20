@@ -1,7 +1,6 @@
-package io.github.shogowada.scalajs.reactjs.elements
+package io.github.shogowada.scalajs.reactjs
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.components.ReactInputComponent
+import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLElement}
 import io.github.shogowada.statictags.StaticTags.{Attributes, Elements}
 import io.github.shogowada.statictags.{Attribute, AttributeSpec, Element}
 
@@ -12,20 +11,20 @@ import scala.scalajs.js.JSConverters._
 object VirtualDOM {
 
   case class OnChangeAttributeSpec(name: String) extends AttributeSpec {
-    def :=(callback: js.Function0[Unit]): Attribute[js.Function0[Unit]] = {
+    def :=(callback: js.Function0[Unit]) = {
       Attribute[js.Function0[Unit]](name = name, value = callback)
     }
   }
 
   case class RefAttributeSpec(name: String) extends AttributeSpec {
-    def :=(callback: js.Function1[ReactInputComponent, Unit]): Attribute[js.Function1[ReactInputComponent, Unit]] = {
-      Attribute[js.Function1[ReactInputComponent, Unit]](name = name, value = callback)
+    def :=[T <: ReactHTMLElement](callback: js.Function1[T, Unit]) = {
+      Attribute[js.Function1[T, Unit]](name = name, value = callback)
     }
   }
 
   class VirtualDOMAttributes extends Attributes {
-    lazy val onChange = new OnChangeAttributeSpec("onChange")
-    lazy val ref = new RefAttributeSpec("ref")
+    lazy val onChange = OnChangeAttributeSpec("onChange")
+    lazy val ref = RefAttributeSpec("ref")
   }
 
   val < = new Elements()

@@ -1,8 +1,8 @@
 package io.github.shogowada.scalajs.reactjs.example.helloworld
 
 import io.github.shogowada.scalajs.reactjs.ReactDOM
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.specs.StatelessReactClassSpec
-import io.github.shogowada.scalajs.reactjs.elements.VirtualDOM._
 import org.scalajs.dom.raw.HTMLElement
 
 import scala.scalajs.js.annotation.JSExport
@@ -15,7 +15,7 @@ object Main {
 
       case class Props(name: String)
 
-      override def render() = <.div()(s"Hello, ${props.name}")
+      override def render() = <.div()(s"Hello, ${props.name}!")
     }
 
     ReactDOM.render(HelloWorld, HelloWorld.Props("World"), element)

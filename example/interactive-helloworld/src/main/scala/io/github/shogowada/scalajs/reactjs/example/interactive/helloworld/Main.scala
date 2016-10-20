@@ -1,9 +1,9 @@
 package io.github.shogowada.scalajs.reactjs.example.interactive.helloworld
 
 import io.github.shogowada.scalajs.reactjs.ReactDOM
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
-import io.github.shogowada.scalajs.reactjs.components.ReactInputComponent
-import io.github.shogowada.scalajs.reactjs.elements.VirtualDOM._
+import io.github.shogowada.scalajs.reactjs.elements.ReactHTMLInputElement
 import org.scalajs.dom.raw.HTMLElement
 
 import scala.scalajs.js.annotation.JSExport
@@ -19,23 +19,23 @@ object Main {
 
       override def getInitialState(): State = State(name = "whoever you are")
 
-      var nameComponent: ReactInputComponent = _
+      var nameElement: ReactHTMLInputElement = _
 
       override def render() = {
         <.div()(
           <.input(
-            ^.ref := ((element: ReactInputComponent) => {
-              nameComponent = element
+            ^.ref := ((element: ReactHTMLInputElement) => {
+              nameElement = element
             }),
             ^.value := state.name,
-            ^.onChange := (() => onChange())
+            ^.onChange := onChange
           )(),
-          <.div()(s"Hello, ${state.name}")
+          <.div()(s"Hello, ${state.name}!")
         )
       }
 
-      def onChange(): Unit = {
-        setState(State(name = nameComponent.value))
+      val onChange = () => {
+        setState(State(name = nameElement.value))
       }
     }
 
