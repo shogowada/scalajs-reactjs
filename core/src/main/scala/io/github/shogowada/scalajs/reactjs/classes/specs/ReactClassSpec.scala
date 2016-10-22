@@ -15,7 +15,7 @@ trait ReactClassSpec {
 
   def props: Props = nativeThis.props.asScala[Props]
 
-  def getInitialState(): State = ???
+  def getInitialState(): State
 
   def setState(state: State): Unit = nativeThis.setState(state.asJs)
 

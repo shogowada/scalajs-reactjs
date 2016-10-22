@@ -9,19 +9,20 @@ import scala.scalajs.js.JSConverters._
 
 object VirtualDOM extends StaticTags {
 
-  case class OnChangeAttributeSpec(name: String) extends AttributeSpec {
-    def :=(callback: js.Function0[Unit]) = {
-      Attribute[js.Function0[Unit]](name = name, value = callback)
-    }
-  }
-
-  case class RefAttributeSpec(name: String) extends AttributeSpec {
-    def :=[T <: ReactHTMLElement](callback: js.Function1[T, Unit]) = {
-      Attribute[js.Function1[T, Unit]](name = name, value = callback)
-    }
-  }
-
   class VirtualDOMAttributes extends Attributes {
+
+    case class OnChangeAttributeSpec(name: String) extends AttributeSpec {
+      def :=(callback: js.Function0[Unit]) = {
+        Attribute[js.Function0[Unit]](name = name, value = callback)
+      }
+    }
+
+    case class RefAttributeSpec(name: String) extends AttributeSpec {
+      def :=[T <: ReactHTMLElement](callback: js.Function1[T, Unit]) = {
+        Attribute[js.Function1[T, Unit]](name = name, value = callback)
+      }
+    }
+
     lazy val onChange = OnChangeAttributeSpec("onChange")
     lazy val ref = RefAttributeSpec("ref")
   }
