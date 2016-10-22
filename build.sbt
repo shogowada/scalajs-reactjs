@@ -9,8 +9,7 @@ val commonSettings = Seq(
   scalaVersion := SCALA_VERSION,
   ivyScala := ivyScala.value.map {
     _.copy(overrideScalaVersion = true)
-  },
-  resolvers += "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+  }
 )
 
 lazy val core = project.in(file("core"))
@@ -18,7 +17,7 @@ lazy val core = project.in(file("core"))
     .settings(
       libraryDependencies ++= Seq(
         "org.scala-js" %%% "scalajs-dom" % "0.9.0",
-        "io.github.shogowada" %%% "statictags" % "0.1.1-SNAPSHOT"
+        "io.github.shogowada" %%% "statictags" % "1.+"
       )
     )
     .enablePlugins(ScalaJSPlugin)
