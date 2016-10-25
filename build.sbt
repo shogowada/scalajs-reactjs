@@ -29,6 +29,7 @@ val commonSettings = Seq(
       case false => Some("releases" at nexus + "service/local/staging/deploy/maven2")
     }
   },
+  publishArtifact := false,
   pomExtra := <scm>
     <url>git@github.com:shogowada/scalajs-reactjs.git</url>
     <connection>scm:git:git@github.com:shogowada/scalajs-reactjs.git</connection>
@@ -48,7 +49,8 @@ lazy val core = project.in(file("core"))
       libraryDependencies ++= Seq(
         "org.scala-js" %%% "scalajs-dom" % "0.9.0",
         "io.github.shogowada" %%% "statictags" % "1.+"
-      )
+      ),
+      publishArtifact := true
     )
     .enablePlugins(ScalaJSPlugin)
 
@@ -61,8 +63,7 @@ val exampleCommonSettings = commonSettings ++ Seq(
     "org.webjars.bower" % "react" % REACT_VERSION / "react-dom.js"
         dependsOn "react-with-addons.js"
         commonJSName "ReactDOM"
-  ),
-  publishArtifact := false
+  )
 )
 
 lazy val exampleHelloWorld = project.in(file("example") / "helloworld")
@@ -80,3 +81,19 @@ lazy val exampleInteractiveHelloWorld = project.in(file("example") / "interactiv
     )
     .enablePlugins(ScalaJSPlugin)
     .dependsOn(core)
+
+lazy val exampleTest = project.in(file("example") / "test")
+    .settings(commonSettings: _*)
+    .settings(
+      name += "-example-test",
+      libraryDependencies ++= Seq(
+        "org.eclipse.jetty" % "jetty-server" % "9.3.+",
+        "org.seleniumhq.selenium" % "selenium-java" % "2.35.0",
+
+        "org.scalatest" %% "scalatest" % "3.0.0"
+      )
+    )
+    .dependsOn(
+      exampleHelloWorld,
+      exampleInteractiveHelloWorld
+    )

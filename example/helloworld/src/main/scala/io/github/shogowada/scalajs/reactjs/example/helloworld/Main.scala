@@ -15,7 +15,7 @@ object Main {
 
       case class Props(name: String)
 
-      override def render() = <.div()(s"Hello, ${props.name}!")
+      override def render() = <.div(^.id := "hello-world")(s"Hello, ${props.name}!")
     }
 
     ReactDOM.render(HelloWorld, HelloWorld.Props("World"), element)
