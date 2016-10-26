@@ -88,7 +88,7 @@ lazy val exampleTest = project.in(file("example") / "test")
       name += "-example-test",
       libraryDependencies ++= Seq(
         "org.eclipse.jetty" % "jetty-server" % "9.3.+",
-        "org.seleniumhq.selenium" % "selenium-java" % "2.35.0",
+        "org.seleniumhq.selenium" % "selenium-java" % "2.+",
 
         "org.scalatest" %% "scalatest" % "3.0.0"
       ),
