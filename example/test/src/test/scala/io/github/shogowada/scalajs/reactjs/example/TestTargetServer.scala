@@ -7,9 +7,14 @@ class TestTargetServer(project: String) {
   private var server: Server = _
 
   def start(): Unit = {
+    val maybeTarget = sys.props.get(s"target.path.$project")
+    assert(maybeTarget.isDefined)
+    val target = maybeTarget.get
+    println(s"Target for $project: $target")
+
     server = new Server(8080)
     val handler = new ResourceHandler()
-    handler.setResourceBase(s"./example/$project/target/scala-2.11")
+    handler.setResourceBase(s"$target")
     server.setHandler(handler)
     server.start()
   }
@@ -19,4 +24,14 @@ class TestTargetServer(project: String) {
   def stop(): Unit = {
     server.stop()
   }
+}
+
+object TestTargetServers {
+  val helloWorld = new TestTargetServer("helloworld")
+
+  helloWorld.start()
+
+  sys.addShutdownHook(() => {
+    helloWorld.stop()
+  })
 }

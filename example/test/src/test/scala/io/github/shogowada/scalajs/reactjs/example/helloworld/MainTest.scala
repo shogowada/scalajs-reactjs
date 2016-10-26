@@ -1,16 +1,15 @@
 package io.github.shogowada.scalajs.reactjs.example.helloworld
 
-import io.github.shogowada.scalajs.reactjs.example.TestTargetServer
+import io.github.shogowada.scalajs.reactjs.example.TestTargetServers
 import org.scalatest.concurrent.Eventually
 import org.scalatest.path
-import org.scalatest.selenium.Chrome
+import org.scalatest.selenium.Firefox
 
 class MainTest extends path.FunSpec
     with Eventually
-    with Chrome {
+    with Firefox {
 
-  val server = new TestTargetServer("helloworld")
-  server.start()
+  val server = TestTargetServers.helloWorld
 
   describe("given I am in the homepage") {
     go to server.host
@@ -23,6 +22,4 @@ class MainTest extends path.FunSpec
   }
 
   close()
-
-  server.stop()
 }

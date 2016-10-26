@@ -91,7 +91,11 @@ lazy val exampleTest = project.in(file("example") / "test")
         "org.seleniumhq.selenium" % "selenium-java" % "2.35.0",
 
         "org.scalatest" %% "scalatest" % "3.0.0"
-      )
+      ),
+      javaOptions ++= Seq(
+        s"-Dtarget.path.helloworld=${(crossTarget in exampleHelloWorld).value}"
+      ),
+      fork := true
     )
     .dependsOn(
       exampleHelloWorld,
