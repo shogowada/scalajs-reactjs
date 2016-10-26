@@ -28,6 +28,18 @@ class MainTest extends path.FunSpec
         find("greed").get.text should be(s"Hello, $defaultName!")
       }
     }
+
+    describe("when I changed the name") {
+      val newName = "React JS"
+
+      textField("name").value = newName
+
+      it("then it should greed the new name") {
+        eventually {
+          find("greed").get.text should be(s"Hello, $newName!")
+        }
+      }
+    }
   }
 
   close()
