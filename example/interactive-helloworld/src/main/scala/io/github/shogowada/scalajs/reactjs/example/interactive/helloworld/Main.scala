@@ -24,13 +24,14 @@ object Main {
       override def render() = {
         <.div()(
           <.input(
+            ^.id := "name",
             ^.ref := ((element: ReactHTMLInputElement) => {
               nameElement = element
             }),
             ^.value := state.name,
             ^.onChange := onChange
           )(),
-          <.div()(s"Hello, ${state.name}!")
+          <.div(^.id := "greed")(s"Hello, ${state.name}!")
         )
       }
 

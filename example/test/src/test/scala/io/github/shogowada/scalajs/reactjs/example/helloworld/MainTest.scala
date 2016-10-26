@@ -2,10 +2,11 @@ package io.github.shogowada.scalajs.reactjs.example.helloworld
 
 import io.github.shogowada.scalajs.reactjs.example.TestTargetServers
 import org.scalatest.concurrent.Eventually
-import org.scalatest.path
 import org.scalatest.selenium.Firefox
+import org.scalatest.{Matchers, path}
 
 class MainTest extends path.FunSpec
+    with Matchers
     with Eventually
     with Firefox {
 
@@ -16,7 +17,7 @@ class MainTest extends path.FunSpec
 
     it("then it should display Hello World") {
       eventually {
-        assert(find("hello-world").map(_.text).contains("Hello, World!"))
+        find("hello-world").get.text should be("Hello, World!")
       }
     }
   }

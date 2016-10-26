@@ -48,10 +48,13 @@ class TestTargetServer(project: String) {
 
 object TestTargetServers {
   val helloWorld = new TestTargetServer("helloworld")
+  val interactiveHelloWorld = new TestTargetServer("interactive-helloworld")
 
   helloWorld.start()
+  interactiveHelloWorld.start()
 
   sys.addShutdownHook(() => {
     helloWorld.stop()
+    interactiveHelloWorld.stop()
   })
 }

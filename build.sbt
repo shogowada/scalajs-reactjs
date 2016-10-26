@@ -93,11 +93,13 @@ lazy val exampleTest = project.in(file("example") / "test")
         "org.scalatest" %% "scalatest" % "3.0.0"
       ),
       javaOptions ++= Seq(
-        s"-Dtarget.path.helloworld=${(crossTarget in exampleHelloWorld).value}"
+        s"-Dtarget.path.helloworld=${(crossTarget in exampleHelloWorld).value}",
+        s"-Dtarget.path.interactive-helloworld=${(crossTarget in exampleInteractiveHelloWorld).value}"
       ),
-      fork := true
-    )
-    .dependsOn(
-      exampleHelloWorld,
-      exampleInteractiveHelloWorld
+      fork := true,
+      (test in Test) <<= (test in Test)
+          .dependsOn(
+            fastOptJS in Compile in exampleHelloWorld,
+            fastOptJS in Compile in exampleInteractiveHelloWorld
+          )
     )
