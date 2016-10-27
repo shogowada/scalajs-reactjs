@@ -5,7 +5,7 @@ import org.scalatest.concurrent.Eventually
 import org.scalatest.selenium.Firefox
 import org.scalatest.{Matchers, path}
 
-class MainTest extends path.FunSpec
+class HelloWorldTest extends path.FunSpec
     with Matchers
     with Eventually
     with Firefox {

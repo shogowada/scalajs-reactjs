@@ -5,7 +5,7 @@ import org.scalatest.concurrent.Eventually
 import org.scalatest.selenium.Firefox
 import org.scalatest.{Matchers, path}
 
-class MainTest extends path.FunSpec
+class InteractiveHelloWorldTest extends path.FunSpec
     with Matchers
     with Eventually
     with Firefox {
@@ -23,9 +23,9 @@ class MainTest extends path.FunSpec
       }
     }
 
-    it("then it should greed the default name") {
+    it("then it should greet the default name") {
       eventually {
-        find("greed").get.text should be(s"Hello, $defaultName!")
+        find("greet").get.text should be(s"Hello, $defaultName!")
       }
     }
 
@@ -34,9 +34,9 @@ class MainTest extends path.FunSpec
 
       textField("name").value = newName
 
-      it("then it should greed the new name") {
+      it("then it should greet the new name") {
         eventually {
-          find("greed").get.text should be(s"Hello, $newName!")
+          find("greet").get.text should be(s"Hello, $newName!")
         }
       }
     }

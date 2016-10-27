@@ -31,7 +31,7 @@ object Main {
             ^.value := state.name,
             ^.onChange := onChange
           )(),
-          <.div(^.id := "greed")(s"Hello, ${state.name}!")
+          <.div(^.id := "greet")(s"Hello, ${state.name}!")
         )
       }
 
