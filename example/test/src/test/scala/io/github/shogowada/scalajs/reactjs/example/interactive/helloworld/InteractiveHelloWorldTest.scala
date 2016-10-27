@@ -39,6 +39,26 @@ class InteractiveHelloWorldTest extends path.FunSpec
           find("greet").get.text should be(s"Hello, $newName!")
         }
       }
+
+      describe("when I checked the lower case radio box") {
+        radioButtonGroup("letter-case").value = "Lower Case"
+
+        it("then it should display the name in lower case") {
+          eventually {
+            find("greet").get.text should be(s"Hello, ${newName.toLowerCase}!")
+          }
+        }
+      }
+
+      describe("when I checked the upper case radio box") {
+        radioButtonGroup("letter-case").value = "Upper Case"
+
+        it("then it should display the name in upper case") {
+          eventually {
+            find("greet").get.text should be(s"Hello, ${newName.toUpperCase}!")
+          }
+        }
+      }
     }
   }
 
