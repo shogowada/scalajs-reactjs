@@ -15,27 +15,27 @@ object Main {
   def main(element: HTMLElement): Unit = {
     object InteractiveHelloWorld extends ReactClassSpec {
 
-      sealed trait LetterCase
+      sealed class LetterCase(val name: String)
 
-      case class Default() extends LetterCase
+      case object Default extends LetterCase("Default")
 
-      case class LowerCase() extends LetterCase
+      case object LowerCase extends LetterCase("Lower Case")
 
-      case class UpperCase() extends LetterCase
+      case object UpperCase extends LetterCase("Upper Case")
 
       case class State(name: String, letterCase: LetterCase)
 
       override def getInitialState(): State = State(
         name = "whoever you are",
-        letterCase = Default()
+        letterCase = Default
       )
 
       var nameElement: ReactHTMLInputElement = _
-      var lowerCaseElement: ReactHTMLRadioElement = _
-      var upperCaseElement: ReactHTMLRadioElement = _
+      var letterCaseElements: Map[LetterCase, ReactHTMLRadioElement] = Map()
 
       override def render() = {
         <.div()(
+          <.label(^.`for` := "name")("Name:"),
           <.input(
             ^.id := "name",
             ^.ref := ((element: ReactHTMLInputElement) => {
@@ -44,57 +44,44 @@ object Main {
             ^.value := state.name,
             ^.onChange := onChange
           )(),
+          createLetterCaseRadioBox(Default),
+          createLetterCaseRadioBox(LowerCase),
+          createLetterCaseRadioBox(UpperCase),
+          <.br.empty,
+          <.div(^.id := "greet")(s"Hello, ${name(state)}!")
+        )
+      }
+
+      def createLetterCaseRadioBox(letterCase: LetterCase): Seq[_] = {
+        Seq(
           <.input(
             ^.`type` := "radio",
             ^.name := "letter-case",
-            ^.value := "Default",
-            ^.checked := state.letterCase == Default(),
-            ^.onChange := onChange
-          )(),
-          "Default",
-          <.input(
-            ^.`type` := "radio",
-            ^.name := "letter-case",
-            ^.value := "Lower Case",
+            ^.value := letterCase.name,
             ^.ref := ((element: ReactHTMLRadioElement) => {
-              lowerCaseElement = element
+              letterCaseElements = letterCaseElements + (letterCase -> element)
             }),
-            ^.checked := state.letterCase == LowerCase(),
+            ^.checked := state.letterCase == letterCase,
             ^.onChange := onChange
           )(),
-          "Lower Case",
-          <.input(
-            ^.`type` := "radio",
-            ^.name := "letter-case",
-            ^.value := "Upper Case",
-            ^.ref := ((element: ReactHTMLRadioElement) => {
-              upperCaseElement = element
-            }),
-            ^.checked := state.letterCase == UpperCase(),
-            ^.onChange := onChange
-          )(),
-          "Upper Case",
-          <.div(^.id := "greet")(s"Hello, $name!")
+          letterCase.name
         )
       }
 
       val onChange = () => {
         setState(State(
           name = nameElement.value,
-          letterCase = if (lowerCaseElement.checked) {
-            LowerCase()
-          } else if (upperCaseElement.checked) {
-            UpperCase()
-          } else {
-            Default()
-          }
+          letterCase = letterCaseElements
+              .find { case (_, value) => value.checked }
+              .map { case (key, _) => key }
+              .getOrElse(Default)
         ))
       }
 
-      def name: String = {
+      def name(state: State): String = {
         state.letterCase match {
-          case LowerCase() => state.name.toLowerCase
-          case UpperCase() => state.name.toUpperCase
+          case LowerCase => state.name.toLowerCase
+          case UpperCase => state.name.toUpperCase
           case _ => state.name
         }
       }

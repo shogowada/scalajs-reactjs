@@ -1,7 +1,7 @@
 package io.github.shogowada.scalajs.reactjs
 
 import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLElement}
-import io.github.shogowada.statictags.{Attribute, AttributeSpec, Element, StaticTags}
+import io.github.shogowada.statictags._
 
 import scala.language.implicitConversions
 import scala.scalajs.js
@@ -23,6 +23,8 @@ object VirtualDOM extends StaticTags {
       }
     }
 
+    lazy val htmlFor = ForAttributeSpec("htmlFor")
+    override lazy val `for` = htmlFor
     lazy val onChange = OnChangeAttributeSpec("onChange")
     lazy val ref = RefAttributeSpec("ref")
   }
@@ -34,7 +36,7 @@ object VirtualDOM extends StaticTags {
     React.createElement(
       element.name,
       toReactAttributes(element.attributes),
-      toReactContents(element.contents): _*
+      toReactContents(element.flattenedContents): _*
     )
   }
 

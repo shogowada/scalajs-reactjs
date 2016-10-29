@@ -48,7 +48,7 @@ lazy val core = project.in(file("core"))
     .settings(
       libraryDependencies ++= Seq(
         "org.scala-js" %%% "scalajs-dom" % "0.9.0",
-        "io.github.shogowada" %%% "statictags" % "1.+"
+        "io.github.shogowada" %%% "statictags" % "1.1.0"
       ),
       publishArtifact := true
     )
@@ -58,10 +58,10 @@ val exampleCommonSettings = commonSettings ++ Seq(
   name += "-example",
   (unmanagedResourceDirectories in Compile) += baseDirectory.value / "src" / "main" / "webapp",
   jsDependencies ++= Seq(
-    "org.webjars.bower" % "react" % REACT_VERSION / "react-with-addons.js"
+    "org.webjars.bower" % "react" % REACT_VERSION / "react.js"
         commonJSName "React",
     "org.webjars.bower" % "react" % REACT_VERSION / "react-dom.js"
-        dependsOn "react-with-addons.js"
+        dependsOn "react.js"
         commonJSName "ReactDOM"
   )
 )
