@@ -23,6 +23,8 @@ object Main {
 
       case object UpperCase extends LetterCase("Upper Case")
 
+      val letterCases = Seq(Default, LowerCase, UpperCase)
+
       case class State(name: String, letterCase: LetterCase)
 
       override def getInitialState(): State = State(
@@ -30,26 +32,36 @@ object Main {
         letterCase = Default
       )
 
+      val nameId = "name"
       var nameElement: ReactHTMLInputElement = _
       var letterCaseElements: Map[LetterCase, ReactHTMLRadioElement] = Map()
 
       override def render() = {
         <.div()(
-          <.label(^.`for` := "name")("Name:"),
+          createNameInput(),
+          <.br.empty,
+          createLetterCaseRadioBoxes(),
+          <.br.empty,
+          <.div(^.id := "greet")(s"Hello, ${name(state)}!")
+        )
+      }
+
+      def createNameInput(): Seq[_] = {
+        Seq(
+          <.label(^.`for` := nameId)("Name:"),
           <.input(
-            ^.id := "name",
+            ^.id := nameId,
             ^.ref := ((element: ReactHTMLInputElement) => {
               nameElement = element
             }),
             ^.value := state.name,
             ^.onChange := onChange
-          )(),
-          createLetterCaseRadioBox(Default),
-          createLetterCaseRadioBox(LowerCase),
-          createLetterCaseRadioBox(UpperCase),
-          <.br.empty,
-          <.div(^.id := "greet")(s"Hello, ${name(state)}!")
+          )()
         )
+      }
+
+      def createLetterCaseRadioBoxes(): Seq[_] = {
+        letterCases.flatMap(createLetterCaseRadioBox)
       }
 
       def createLetterCaseRadioBox(letterCase: LetterCase): Seq[_] = {
