@@ -22,9 +22,9 @@ object LetterCase {
   val ALL = Seq(DEFAULT, LOWER_CASE, UPPER_CASE)
 }
 
-class LetterCaseRadioBox extends StatelessReactClassSpec {
+class LetterCaseRadioBoxSpec extends StatelessReactClassSpec {
 
-  case class Props(letterCase: LetterCase, checked: Boolean, onChange: (Boolean) => Unit)
+  case class Props(letterCase: LetterCase, checked: Boolean, onChecked: () => Unit)
 
   var letterCaseElement: ReactHTMLRadioElement = _
 
@@ -45,11 +45,13 @@ class LetterCaseRadioBox extends StatelessReactClassSpec {
   }
 
   val onChange = () => {
-    props.onChange(letterCaseElement.checked)
+    if (letterCaseElement.checked) {
+      props.onChecked()
+    }
   }
 }
 
-object InteractiveHelloWorld extends ReactClassSpec {
+class InteractiveHelloWorldSpec extends ReactClassSpec {
 
   case class State(name: String, letterCase: LetterCase)
 
@@ -85,16 +87,14 @@ object InteractiveHelloWorld extends ReactClassSpec {
   }
 
   def createLetterCaseRadioBox(thisLetterCase: LetterCase): ReactElement = {
-    val spec = new LetterCaseRadioBox()
+    val spec = new LetterCaseRadioBoxSpec()
     <.reactElement(
       spec,
       spec.Props(
         letterCase = thisLetterCase,
         checked = thisLetterCase == state.letterCase,
-        onChange = (newChecked) => {
-          if (newChecked) {
-            setState(state.copy(letterCase = thisLetterCase))
-          }
+        onChecked = () => {
+          setState(state.copy(letterCase = thisLetterCase))
         }
       )
     )
@@ -115,10 +115,8 @@ object InteractiveHelloWorld extends ReactClassSpec {
 
 @JSExport
 object Main {
-
   @JSExport
   def main(element: HTMLElement): Unit = {
-
-    ReactDOM.render(InteractiveHelloWorld, element)
+    ReactDOM.render(new InteractiveHelloWorldSpec(), element)
   }
 }

@@ -9,13 +9,11 @@ import scala.scalajs.js.annotation.JSName
 
 object ReactDOM {
   def render(reactClassSpec: ReactClassSpec, node: dom.Node): Unit = {
-    val reactClass = React.createClass(reactClassSpec)
-    render(React.createElement(reactClass), node)
+    render(React.createElement(reactClassSpec), node)
   }
 
   def render(reactClassSpec: ReactClassSpec, props: ReactClassSpec#Props, node: dom.Node): Unit = {
-    val reactClass = React.createClass(reactClassSpec)
-    render(React.createElement(reactClass, props), node)
+    render(React.createElement(reactClassSpec, props), node)
   }
 
   def render(element: ReactElement, node: dom.Node): Unit = {

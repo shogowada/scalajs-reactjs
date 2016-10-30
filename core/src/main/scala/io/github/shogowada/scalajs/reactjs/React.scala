@@ -16,15 +16,14 @@ object React {
   def createElement(tagName: String, attributes: js.Any, content: js.Any*): ReactElement =
     NativeReact.createElement(tagName, attributes, content: _*)
 
-  def createElement(reactClass: ReactClass): ReactElement =
-    NativeReact.createElement(reactClass)
-
-  def createElement[PROPS](reactClass: ReactClass, props: PROPS): ReactElement =
-    NativeReact.createElement(reactClass, props.asJs)
-
-  def createElement[PROPS](spec: ReactClassSpec, props: PROPS): ReactElement = {
+  def createElement(spec: ReactClassSpec): ReactElement = {
     val reactClass = createClass(spec)
-    createElement(reactClass, props)
+    NativeReact.createElement(reactClass)
+  }
+
+  def createElement(spec: ReactClassSpec, props: ReactClassSpec#Props): ReactElement = {
+    val reactClass = createClass(spec)
+    NativeReact.createElement(reactClass, props.asJs)
   }
 }
 
