@@ -21,6 +21,11 @@ object React {
 
   def createElement[PROPS](reactClass: ReactClass, props: PROPS): ReactElement =
     NativeReact.createElement(reactClass, props.asJs)
+
+  def createElement[PROPS](spec: ReactClassSpec, props: PROPS): ReactElement = {
+    val reactClass = createClass(spec)
+    createElement(reactClass, props)
+  }
 }
 
 @js.native

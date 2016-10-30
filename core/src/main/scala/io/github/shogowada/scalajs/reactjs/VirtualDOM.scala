@@ -1,5 +1,6 @@
 package io.github.shogowada.scalajs.reactjs
 
+import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
 import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLElement}
 import io.github.shogowada.statictags._
 
@@ -8,6 +9,17 @@ import scala.scalajs.js
 import scala.scalajs.js.JSConverters._
 
 object VirtualDOM extends StaticTags {
+
+  class VirtualDOMElements extends Elements {
+
+    case class ReactElementSpec() {
+      def apply[PROPS](spec: ReactClassSpec, props: PROPS): ReactElement = {
+        React.createElement(spec, props)
+      }
+    }
+
+    lazy val reactElement = ReactElementSpec()
+  }
 
   class VirtualDOMAttributes extends Attributes {
 
@@ -29,7 +41,7 @@ object VirtualDOM extends StaticTags {
     lazy val ref = RefAttributeSpec("ref")
   }
 
-  override val < = new Elements()
+  override val < = new VirtualDOMElements()
   override val ^ = new VirtualDOMAttributes()
 
   implicit def asReactElement(element: Element): ReactElement = {
@@ -53,7 +65,7 @@ object VirtualDOM extends StaticTags {
   private def toReactContent(content: Any): js.Any = {
     content match {
       case element@Element(_, _, _, _) => asReactElement(element)
-      case _ => content.toString
+      case _ => content.asInstanceOf[js.Any]
     }
   }
 }
