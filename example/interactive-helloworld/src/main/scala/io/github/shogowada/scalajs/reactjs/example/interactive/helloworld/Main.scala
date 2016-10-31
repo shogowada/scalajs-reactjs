@@ -22,9 +22,11 @@ object LetterCase {
   val ALL = Seq(DEFAULT, LOWER_CASE, UPPER_CASE)
 }
 
+case class LetterCaseRadioBoxSpecProps(letterCase: LetterCase, checked: Boolean, onChecked: () => Unit)
+
 class LetterCaseRadioBoxSpec extends StatelessReactClassSpec {
 
-  case class Props(letterCase: LetterCase, checked: Boolean, onChecked: () => Unit)
+  override type Props = LetterCaseRadioBoxSpecProps
 
   var letterCaseElement: ReactHTMLRadioElement = _
 
@@ -87,10 +89,9 @@ class InteractiveHelloWorldSpec extends ReactClassSpec {
   }
 
   def createLetterCaseRadioBox(thisLetterCase: LetterCase): ReactElement = {
-    val spec = new LetterCaseRadioBoxSpec()
     <.reactElement(
-      spec,
-      spec.Props(
+      new LetterCaseRadioBoxSpec(),
+      LetterCaseRadioBoxSpecProps(
         letterCase = thisLetterCase,
         checked = thisLetterCase == state.letterCase,
         onChecked = () => {

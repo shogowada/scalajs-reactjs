@@ -13,7 +13,7 @@ object VirtualDOM extends StaticTags {
   class VirtualDOMElements extends Elements {
 
     case class ReactElementSpec() {
-      def apply(spec: ReactClassSpec, props: ReactClassSpec#Props): ReactElement = {
+      def apply(spec: ReactClassSpec, props: Any): ReactElement = {
         React.createElement(spec, props)
       }
     }

@@ -12,7 +12,7 @@ object ReactDOM {
     render(React.createElement(reactClassSpec), node)
   }
 
-  def render(reactClassSpec: ReactClassSpec, props: ReactClassSpec#Props, node: dom.Node): Unit = {
+  def render(reactClassSpec: ReactClassSpec, props: Any, node: dom.Node): Unit = {
     render(React.createElement(reactClassSpec, props), node)
   }
 
