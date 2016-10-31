@@ -8,7 +8,7 @@ import scala.language.implicitConversions
 import scala.scalajs.js
 import scala.scalajs.js.JSConverters._
 
-object VirtualDOM extends StaticTags {
+trait VirtualDOM extends StaticTags {
 
   class VirtualDOMElements extends Elements {
 
@@ -44,28 +44,30 @@ object VirtualDOM extends StaticTags {
   override val < = new VirtualDOMElements()
   override val ^ = new VirtualDOMAttributes()
 
-  implicit def asReactElement(element: Element): ReactElement = {
+  implicit def staticTagsToVirtualDoms(element: Element): ReactElement = {
     React.createElement(
       element.name,
-      toReactAttributes(element.attributes),
-      toReactContents(element.flattenedContents): _*
+      staticTagsAttributesToReactAttributes(element.attributes),
+      staticTagsElementsToReactElements(element.flattenedContents): _*
     )
   }
 
-  private def toReactAttributes(attributes: Iterable[Attribute[_]]): js.Dictionary[Any] = {
+  private def staticTagsAttributesToReactAttributes(attributes: Iterable[Attribute[_]]): js.Dictionary[Any] = {
     attributes.map(attribute => (attribute.name, attribute.value))
         .toMap
         .toJSDictionary
   }
 
-  private def toReactContents(contents: Seq[Any]): Seq[js.Any] = {
-    contents.map(toReactContent)
+  private def staticTagsElementsToReactElements(contents: Seq[Any]): Seq[js.Any] = {
+    contents.map(staticTagsElementToReactElement)
   }
 
-  private def toReactContent(content: Any): js.Any = {
+  private def staticTagsElementToReactElement(content: Any): js.Any = {
     content match {
-      case element@Element(_, _, _, _) => asReactElement(element)
+      case element@Element(_, _, _, _) => staticTagsToVirtualDoms(element)
       case _ => content.asInstanceOf[js.Any]
     }
   }
 }
+
+object VirtualDOM extends VirtualDOM
