@@ -23,9 +23,7 @@ class Main {
 
       val todoList = new TodoList()
 
-      override def getInitialState(): State = {
-        State(items = Seq(), text = "")
-      }
+      override def getInitialState() = State(items = Seq(), text = "")
 
       override def render() = {
         <.div()(
@@ -56,9 +54,7 @@ class Main {
 
       case class Props(items: Seq[Item])
 
-      override def render() = {
-        <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
-      }
+      override def render() = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
     }
 
     ReactDOM.render(new TodoApp(), element)
