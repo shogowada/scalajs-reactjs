@@ -197,6 +197,22 @@ class TodoApp extends ReactClassSpec {
       )
     )
   }
+}
+
+class TodoList extends StatelessReactClassSpec {
+  override def render() = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
+}
+```
+
+Note that you can render other React components by using ```<.reactElement(ReactClassSpec, ReactClassSpec#Props)``` tag.
+
+## Update state
+
+If your component is stateful, you will often update your state. You can do so by using ```setState``` method.
+
+```scala
+class TodoApp extends ReactClassSpec {
+  case class State(items: Seq[Item], text: String)
 
   val handleChange = (event: InputElementSyntheticEvent) => {
     setState(state.copy(text = event.target.value))
@@ -211,13 +227,24 @@ class TodoApp extends ReactClassSpec {
     ))
   }
 }
-
-class TodoList extends StatelessReactClassSpec {
-  override def render() = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
-}
 ```
 
-Note that you can render other React components by using ```<.reactElement(ReactClassSpec, ReactClassSpec#Props)``` tag.
+There are 2 versions of the ```setState``` method depending on your need.
+
+If the new state doesn't depend on the current state, you can just pass a new state to the ```setState``` method.
+
+```scala
+setState(state.copy(text = event.target.value))
+```
+
+If the new state depends on the current state, you can update the state in the callback function passed to the ```setState``` method. This is to prevent race condition because changing React state is an async process.
+
+```scala
+setState((previousState: State) => State(
+  items = previousState.items :+ newItem,
+  text = ""
+))
+```
 
 ## Mount it to DOM
 
