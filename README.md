@@ -4,6 +4,10 @@
 
 Develop React JS applications with Scala.
 
+- [Quick Look](#quick-look)
+- [Getting Started](#getting-started)
+- [Tutorial](#tutorial)
+
 ## Quick Look
 
 ```scala
@@ -12,14 +16,13 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 case class HelloWorldProps(name: String)
 
 class HelloWorldSpec extends StatelessReactClassSpec {
-
   override type Props = HelloWorldProps
 
   override def render() = <.div()(s"Hello, ${props.name}!")
 }
 
-val element = dom.document.getElementById("main")
-ReactDOM.render(new HelloWorldSpec(), HelloWorldProps("World"), element)
+val mountNode = dom.document.getElementById("main")
+ReactDOM.render(new HelloWorldSpec(), HelloWorldProps("World"), mountNode)
 ```
 
 ## Getting Started
@@ -65,6 +68,10 @@ ReactDOM.render(new HelloWorldSpec(), HelloWorldProps("World"), element)
 5. Render the class with the props.
 
     ```scala
-    val element = dom.document.getElementById("main")
-    ReactDOM.render(new HelloWorldSpec(), HelloWorldProps("World"), element)
+    val mountNode = dom.document.getElementById("main")
+    ReactDOM.render(new HelloWorldSpec(), HelloWorldProps("World"), mountNode)
     ```
+
+## Tutorial
+
+- [TODO App](example/todo-app)
