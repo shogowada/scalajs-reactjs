@@ -12,7 +12,7 @@ import scala.scalajs.js.annotation.JSExport
 @JSExport
 class Main {
   @JSExport
-  def main(element: HTMLElement): Unit = {
+  def main(mountNode: HTMLElement): Unit = {
     case class Item(id: String, text: String)
 
     class TodoApp extends ReactClassSpec {
@@ -57,6 +57,6 @@ class Main {
       override def render() = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
     }
 
-    ReactDOM.render(new TodoApp(), element)
+    ReactDOM.render(new TodoApp(), mountNode)
   }
 }
