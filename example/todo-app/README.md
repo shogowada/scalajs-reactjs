@@ -66,9 +66,7 @@ And here is the Scala version:
 case class Item(id: String, text: String)
 
 class TodoApp extends ReactClassSpec {
-
   case class Props()
-
   case class State(items: Seq[Item], text: String)
 
   val todoList = new TodoList()
@@ -101,13 +99,12 @@ class TodoApp extends ReactClassSpec {
 }
 
 class TodoList extends StatelessReactClassSpec {
-
   case class Props(items: Seq[Item])
 
   override def render() = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
 }
 
-ReactDOM.render(new TodoApp(), element)
+ReactDOM.render(new TodoApp(), mountNode)
 ```
 
 Let's get into the details.
@@ -127,7 +124,7 @@ Here, we are using 2 different specs. One is ```ReactClassSpec``` and the other 
 
 ## Define props and state
 
-You need to define types of props and state for ```ReactClassSpec```.
+You need to define types of props and state for ```ReactClassSpec```, and you need to define type of props for ```StatelessReactClassSpec```.
 
 You can do that by defining ```Props``` and ```State``` class inside your class spec.
 
@@ -142,20 +139,79 @@ class TodoList extends StatelessReactClassSpec {
 }
 ```
 
-If you want to define your Props and State outside the class, you can do that too.
+If you want to declare your ```Props``` and ```State``` outside the class, you can do that too.
 
 ```scala
 case class TodoAppProps()
 case class TodoAppState(items: Seq[Item], text: String)
+case class TodoListProps(items: Seq[Item])
 
 class TodoApp extends ReactClassSpec {
   type Props = TodoAppProps
   type State = TodoAppState
 }
 
-case class TodoListProps(items: Seq[Item])
-
 class TodoList extends StatelessReactClassSpec {
   type Props = TodoListProps
 }
+```
+
+## Give initial state
+
+If your class spec is stateful, you need to give it an initial state too. You don't need to do this for ```StatelessReactClassSpec```.
+
+```scala
+class TodoApp extends ReactClassSpec {
+  case class State(items: Seq[Item], text: String)
+
+  override def getInitialState() = State(items = Seq(), text = "")
+}
+```
+
+## Define render method
+
+You can render your virual DOMs using ```VirtualDOM``` class. To use it, ```import io.github.shogowada.scalajs.reactjs.VirtualDOM._``` first, then start writing tags with ```<``` and attributes with ```^```.
+
+```scala
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+
+class TodoApp extends ReactClassSpec {
+  override def render() = {
+    <.div()(
+      <.h3()("TODO"),
+      <.reactElement(todoList, todoList.Props(items = state.items)),
+      <.form(^.onSubmit := handleSubmit)(
+        <.input(^.onChange := handleChange, ^.value := state.text)(),
+        <.button()(s"Add #${state.items.size + 1}")
+      )
+    )
+  }
+
+  val handleChange = (event: InputElementSyntheticEvent) => {
+    setState(state.copy(text = event.target.value))
+  }
+
+  val handleSubmit = (event: SyntheticEvent) => {
+    event.preventDefault()
+    val newItem = Item(text = state.text, id = js.Date.now().toString)
+    setState((previousState: State) => State(
+      items = previousState.items :+ newItem,
+      text = ""
+    ))
+  }
+}
+
+class TodoList extends StatelessReactClassSpec {
+  override def render() = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
+}
+```
+
+Note that you can render other React components by using ```<.reactElement(ReactClassSpec, ReactClassSpec#Props)``` tag.
+
+## Mount it to DOM
+
+Finally, you can mount your React component to DOM.
+
+```scala
+ReactDOM.render(new TodoApp(), mountNode)
 ```
