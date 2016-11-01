@@ -19,6 +19,13 @@ trait ReactClassSpec {
 
   def setState(state: State): Unit = nativeThis.setState(state.asJs)
 
+  def setState(stateMapper: js.Function1[State, State]): Unit = {
+    nativeThis.setState((state: js.Any) => {
+      val newState = stateMapper(state.asScala[State])
+      newState.asJs
+    })
+  }
+
   def render(): ReactElement
 
   def refs(key: String): HTMLElement = nativeThis.refs.selectDynamic(key).asInstanceOf[HTMLElement]

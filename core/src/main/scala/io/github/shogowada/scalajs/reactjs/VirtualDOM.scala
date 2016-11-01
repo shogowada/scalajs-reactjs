@@ -2,6 +2,7 @@ package io.github.shogowada.scalajs.reactjs
 
 import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
 import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLElement}
+import io.github.shogowada.scalajs.reactjs.events.SyntheticEvent
 import io.github.shogowada.statictags._
 
 import scala.language.implicitConversions
@@ -23,9 +24,13 @@ trait VirtualDOM extends StaticTags {
 
   class VirtualDOMAttributes extends Attributes {
 
-    case class OnChangeAttributeSpec(name: String) extends AttributeSpec {
-      def :=(callback: js.Function0[Unit]) = {
-        Attribute[js.Function0[Unit]](name = name, value = callback)
+    case class OnEventAttribute(name: String) extends AttributeSpec {
+      def :=(callback: js.Function0[_]) = {
+        Attribute[js.Function0[_]](name = name, value = callback)
+      }
+
+      def :=[EVENT <: SyntheticEvent](callback: js.Function1[EVENT, _]) = {
+        Attribute[js.Function1[EVENT, _]](name = name, value = callback)
       }
     }
 
@@ -35,9 +40,11 @@ trait VirtualDOM extends StaticTags {
       }
     }
 
-    lazy val htmlFor = ForAttributeSpec("htmlFor")
     override lazy val `for` = htmlFor
-    lazy val onChange = OnChangeAttributeSpec("onChange")
+    lazy val htmlFor = ForAttributeSpec("htmlFor")
+    lazy val key = StringAttributeSpec("key")
+    lazy val onChange = OnEventAttribute("onChange")
+    lazy val onSubmit = OnEventAttribute("onSubmit")
     lazy val ref = RefAttributeSpec("ref")
   }
 

@@ -82,6 +82,14 @@ lazy val exampleInteractiveHelloWorld = project.in(file("example") / "interactiv
     .enablePlugins(ScalaJSPlugin)
     .dependsOn(core)
 
+lazy val exampleTodoApp = project.in(file("example") / "todo-app")
+    .settings(exampleCommonSettings: _*)
+    .settings(
+      name += "-todo-app"
+    )
+    .enablePlugins(ScalaJSPlugin)
+    .dependsOn(core)
+
 lazy val exampleTest = project.in(file("example") / "test")
     .settings(commonSettings: _*)
     .settings(
@@ -94,12 +102,14 @@ lazy val exampleTest = project.in(file("example") / "test")
       ),
       javaOptions ++= Seq(
         s"-Dtarget.path.helloworld=${(crossTarget in exampleHelloWorld).value}",
-        s"-Dtarget.path.interactive-helloworld=${(crossTarget in exampleInteractiveHelloWorld).value}"
+        s"-Dtarget.path.interactive-helloworld=${(crossTarget in exampleInteractiveHelloWorld).value}",
+        s"-Dtarget.path.todo-app=${(crossTarget in exampleTodoApp).value}"
       ),
       fork := true,
       (test in Test) <<= (test in Test)
           .dependsOn(
             fastOptJS in Compile in exampleHelloWorld,
-            fastOptJS in Compile in exampleInteractiveHelloWorld
+            fastOptJS in Compile in exampleInteractiveHelloWorld,
+            fastOptJS in Compile in exampleTodoApp
           )
     )
