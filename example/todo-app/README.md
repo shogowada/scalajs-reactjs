@@ -9,6 +9,7 @@ In this tutorial, we will replicate [the TODO App application from the official 
 - [Define props and state](#define-props-and-state)
 - [Define an initial state](#define-an-initial-state)
 - [Define render method](#define-render-method)
+- [Update state](#update-state)
 - [Mount it to DOM](#mount-it-to-dom)
 
 ## JSX vs. Scala
