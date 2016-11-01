@@ -68,8 +68,8 @@ ReactDOM.render(new HelloWorldSpec(), HelloWorldProps("World"), mountNode)
 5. Render the class with the props.
 
     ```scala
-    val element = dom.document.getElementById("main")
-    ReactDOM.render(new HelloWorldSpec(), HelloWorldProps("World"), element)
+    val mountNode = dom.document.getElementById("main")
+    ReactDOM.render(new HelloWorldSpec(), HelloWorldProps("World"), mountNode)
     ```
 
 ## Tutorial
