@@ -26,6 +26,54 @@ class TodoAppTest extends path.FunSpec
         find(tagName("li")) should equal(None)
       }
     }
+
+    it("then it should display #1 on the button") {
+      eventually {
+        find(tagName("button")).get.text should equal("Add #1")
+      }
+    }
+
+    describe("when I add a TODO item") {
+      val newTodoItem = "new TODO item"
+      addTodoItem(newTodoItem)
+
+      it("then it should add the item to the list") {
+        eventually {
+          find(tagName("li")).get.text should equal(newTodoItem)
+        }
+      }
+
+      it("then it should display #2 on the button") {
+        eventually {
+          find(tagName("button")).get.text should equal("Add #2")
+        }
+      }
+
+      it("then it should clear the text") {
+        eventually {
+          textField(tagName("input")).value should equal("")
+        }
+      }
+
+      describe("when I add another TODO item") {
+        val anotherTodoItem = "another TODO item"
+        addTodoItem(anotherTodoItem)
+
+        it("then it should add the item to the list") {
+          eventually {
+            findAll(tagName("li")).map(_.text).toSeq should equal(Seq(
+              newTodoItem,
+              anotherTodoItem
+            ))
+          }
+        }
+      }
+    }
+  }
+
+  def addTodoItem(todoItem: String): Unit = {
+    textField(tagName("input")).value = todoItem
+    submit()
   }
 
   close()
