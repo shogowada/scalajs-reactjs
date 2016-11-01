@@ -1,9 +1,10 @@
 package io.github.shogowada.scalajs.reactjs.example.interactive.helloworld
 
+import io.github.shogowada.scalajs.reactjs.ReactDOM
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.specs.{ReactClassSpec, StatelessReactClassSpec}
 import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLInputElement, ReactHTMLRadioElement}
 import io.github.shogowada.scalajs.reactjs.example.interactive.helloworld.LetterCase.{DEFAULT, LOWER_CASE, LetterCase, UPPER_CASE}
-import io.github.shogowada.scalajs.reactjs.{ReactDOM, VirtualDOM}
 import org.scalajs.dom.raw.HTMLElement
 
 import scala.scalajs.js.annotation.JSExport
@@ -23,7 +24,7 @@ object LetterCase {
 
 case class LetterCaseRadioBoxSpecProps(letterCase: LetterCase, checked: Boolean, onChecked: () => Unit)
 
-class LetterCaseRadioBoxSpec extends StatelessReactClassSpec with VirtualDOM {
+class LetterCaseRadioBoxSpec extends StatelessReactClassSpec {
 
   override type Props = LetterCaseRadioBoxSpecProps
 
@@ -52,7 +53,7 @@ class LetterCaseRadioBoxSpec extends StatelessReactClassSpec with VirtualDOM {
   }
 }
 
-class InteractiveHelloWorldSpec extends ReactClassSpec with VirtualDOM {
+class InteractiveHelloWorldSpec extends ReactClassSpec {
 
   case class State(name: String, letterCase: LetterCase)
 

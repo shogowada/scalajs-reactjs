@@ -1,7 +1,8 @@
 package io.github.shogowada.scalajs.reactjs.example.helloworld
 
+import io.github.shogowada.scalajs.reactjs.ReactDOM
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.specs.StatelessReactClassSpec
-import io.github.shogowada.scalajs.reactjs.{ReactDOM, VirtualDOM}
 import org.scalajs.dom.raw.HTMLElement
 
 import scala.scalajs.js.annotation.JSExport
@@ -12,8 +13,7 @@ object Main {
   def main(element: HTMLElement) = {
     case class HelloWorldProps(name: String)
 
-    class HelloWorldSpec extends StatelessReactClassSpec
-        with VirtualDOM {
+    class HelloWorldSpec extends StatelessReactClassSpec {
 
       override type Props = HelloWorldProps
 
