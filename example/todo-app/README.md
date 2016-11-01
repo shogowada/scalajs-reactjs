@@ -2,9 +2,20 @@
 
 In this tutorial, we will replicate [the TODO App application from the official React website](https://facebook.github.io/react/).
 
-Before going into the details, let's see how each of them look like.
+- [JSX vs. Scala](#jsx-vs-scala)
+    - [JSX](#jsx)
+    - [Scala](#scala)
+- [Define a new React Component](#define-a-new-react-component)
+- [Define props and state](#define-props-and-state)
+- [Define an initial state](#define-an-initial-state)
+- [Define render method](#define-render-method)
+- [Mount it to DOM](#mount-it-to-dom)
 
-Here is the JSX version of the code:
+## JSX vs. Scala
+
+Before going into the details, let's see how each of them (JSX and Scala) look like.
+
+### JSX
 
 ```jsx
 class TodoApp extends React.Component {
@@ -60,7 +71,7 @@ class TodoList extends React.Component {
 ReactDOM.render(<TodoApp />, mountNode);
 ```
 
-And here is the Scala version:
+### Scala
 
 ```scala
 case class Item(id: String, text: String)
@@ -106,8 +117,6 @@ class TodoList extends StatelessReactClassSpec {
 
 ReactDOM.render(new TodoApp(), mountNode)
 ```
-
-Let's get into the details.
 
 ## Define a new React Component
 
@@ -156,7 +165,7 @@ class TodoList extends StatelessReactClassSpec {
 }
 ```
 
-## Give initial state
+## Define an initial state
 
 If your class spec is stateful, you need to give it an initial state too. You don't need to do this for ```StatelessReactClassSpec```.
 
@@ -176,6 +185,8 @@ You can render your virual DOMs using ```VirtualDOM``` class. To use it, ```impo
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 
 class TodoApp extends ReactClassSpec {
+  val todoList = new TodoList()
+
   override def render() = {
     <.div()(
       <.h3()("TODO"),
