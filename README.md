@@ -7,10 +7,11 @@ Develop React JS applications with Scala.
 ## Quick Look
 
 ```scala
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+
 case class HelloWorldProps(name: String)
 
-class HelloWorldSpec extends StatelessReactClassSpec
-    with VirtualDOM {
+class HelloWorldSpec extends StatelessReactClassSpec {
 
   override type Props = HelloWorldProps
 
@@ -51,8 +52,9 @@ ReactDOM.render(new HelloWorldSpec(), HelloWorldProps("World"), element)
     - [```VirtualDOM```](core/src/main/scala/io/github/shogowada/scalajs/reactjs/VirtualDOM.scala) enables you to create React elements using special version of [StaticTags](https://github.com/shogowada/statictags).
 
     ```scala
-    class HelloWorldSpec extends StatelessReactClassSpec
-        with VirtualDOM {
+    import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+
+    class HelloWorldSpec extends StatelessReactClassSpec {
 
       override type Props = HelloWorldProps
 
