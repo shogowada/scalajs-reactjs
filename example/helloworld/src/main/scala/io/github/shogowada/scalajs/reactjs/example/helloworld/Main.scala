@@ -11,14 +11,15 @@ import scala.scalajs.js.annotation.JSExport
 object Main {
   @JSExport
   def main(element: HTMLElement) = {
+    case class HelloWorldProps(name: String)
+
     class HelloWorldSpec extends StatelessReactClassSpec {
 
-      case class Props(name: String)
+      override type Props = HelloWorldProps
 
       override def render() = <.div(^.id := "hello-world")(s"Hello, ${props.name}!")
     }
 
-    val spec = new HelloWorldSpec()
-    ReactDOM.render(spec, spec.Props("World"), element)
+    ReactDOM.render(new HelloWorldSpec(), HelloWorldProps("World"), element)
   }
 }
