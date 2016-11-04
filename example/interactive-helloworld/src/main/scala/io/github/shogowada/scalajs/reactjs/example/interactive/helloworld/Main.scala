@@ -95,14 +95,14 @@ class InteractiveHelloWorldSpec extends ReactClassSpec {
         letterCase = thisLetterCase,
         checked = thisLetterCase == state.letterCase,
         onChecked = () => {
-          setState(state.copy(letterCase = thisLetterCase))
+          setState(_.copy(letterCase = thisLetterCase))
         }
       )
     )
   }
 
   val onChange = () => {
-    setState(state.copy(name = nameElement.value))
+    setState(_.copy(name = nameElement.value))
   }
 
   def name(state: State): String = {

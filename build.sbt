@@ -1,5 +1,3 @@
-val SCALA_VERSION = "2.11.8"
-
 val REACT_VERSION = "15.3.2"
 
 publishTo := {
@@ -11,13 +9,15 @@ publishTo := {
 }
 publishArtifact := false
 
+crossScalaVersions := Seq("2.11.8", "2.12.0")
+
 val commonSettings = Seq(
   organization := "io.github.shogowada",
   name := "scalajs-reactjs",
   version := "0.2.1-SNAPSHOT",
   licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT")),
   homepage := Some(url("https://github.com/shogowada/scalajs-reactjs")),
-  scalaVersion := SCALA_VERSION,
+  scalaVersion := "2.11.8",
   ivyScala := ivyScala.value.map {
     _.copy(overrideScalaVersion = true)
   },
@@ -47,8 +47,8 @@ lazy val core = project.in(file("core"))
     .settings(commonSettings: _*)
     .settings(
       libraryDependencies ++= Seq(
-        "org.scala-js" %%% "scalajs-dom" % "0.9.0",
-        "io.github.shogowada" %%% "statictags" % "1.1.0"
+        "org.scala-js" %%% "scalajs-dom" % "0.9.+",
+        "io.github.shogowada" %%% "statictags" % "1.+"
       ),
       publishArtifact := true
     )
@@ -95,10 +95,10 @@ lazy val exampleTest = project.in(file("example") / "test")
     .settings(
       name += "-example-test",
       libraryDependencies ++= Seq(
-        "org.eclipse.jetty" % "jetty-server" % "9.3.+",
+        "org.eclipse.jetty" % "jetty-server" % "9.3+",
         "org.seleniumhq.selenium" % "selenium-java" % "2.+",
 
-        "org.scalatest" %% "scalatest" % "3.0.0"
+        "org.scalatest" %% "scalatest" % "3.+"
       ),
       javaOptions ++= Seq(
         s"-Dtarget.path.helloworld=${(crossTarget in exampleHelloWorld).value}",
@@ -106,10 +106,10 @@ lazy val exampleTest = project.in(file("example") / "test")
         s"-Dtarget.path.todo-app=${(crossTarget in exampleTodoApp).value}"
       ),
       fork := true,
-      (test in Test) <<= (test in Test)
-          .dependsOn(
-            fastOptJS in Compile in exampleHelloWorld,
-            fastOptJS in Compile in exampleInteractiveHelloWorld,
-            fastOptJS in Compile in exampleTodoApp
-          )
+      (test in Test) := {
+        val a = (fastOptJS in Compile in exampleHelloWorld).value
+        val b = (fastOptJS in Compile in exampleInteractiveHelloWorld).value
+        val c = (fastOptJS in Compile in exampleTodoApp).value
+        (test in Test).value
+      }
     )

@@ -37,7 +37,8 @@ class Main {
       }
 
       val handleChange = (event: InputElementSyntheticEvent) => {
-        setState(state.copy(text = event.target.value))
+        val newText = event.target.value
+        setState(_.copy(text = newText))
       }
 
       val handleSubmit = (event: SyntheticEvent) => {

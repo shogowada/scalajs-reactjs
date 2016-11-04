@@ -19,11 +19,10 @@ trait ReactClassSpec {
 
   def setState(state: State): Unit = nativeThis.setState(state.asJs)
 
-  def setState(stateMapper: js.Function1[State, State]): Unit = {
-    nativeThis.setState((state: js.Any) => {
-      val newState = stateMapper(state.asScala[State])
-      newState.asJs
-    })
+  def setState(stateMapper: State => State): Unit = {
+    val nativeStateMapper: js.Function1[js.Any, js.Any] =
+      (state: js.Any) => stateMapper(state.asScala[State]).asJs
+    nativeThis.setState(nativeStateMapper)
   }
 
   def render(): ReactElement
