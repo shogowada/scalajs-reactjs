@@ -30,7 +30,7 @@ object React {
 @js.native
 @JSName("React")
 object NativeReact extends js.Object {
-  def createClass(spec: js.Object): ReactClass = js.native
+  def createClass(spec: js.Any): ReactClass = js.native
 
   def createElement(tagName: String, attributes: js.Any, content: js.Any*): ReactElement = js.native
 

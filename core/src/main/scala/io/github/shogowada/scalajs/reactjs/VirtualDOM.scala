@@ -17,6 +17,10 @@ trait VirtualDOM extends StaticTags {
       def apply(spec: ReactClassSpec, props: Any): ReactElement = {
         React.createElement(spec, props)
       }
+
+      def apply(spec: ReactClassSpec): ReactElement = {
+        React.createElement(spec)
+      }
     }
 
     lazy val reactElement = ReactElementSpec()

@@ -37,7 +37,8 @@ class Main {
       }
 
       val handleChange = (event: InputElementSyntheticEvent) => {
-        setState(state.copy(text = event.target.value))
+        val newText = event.target.value
+        setState(_.copy(text = newText))
       }
 
       val handleSubmit = (event: SyntheticEvent) => {
@@ -57,6 +58,6 @@ class Main {
       override def render() = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
     }
 
-    ReactDOM.render(new TodoApp(), mountNode)
+    ReactDOM.render(<.reactElement(new TodoApp()), mountNode)
   }
 }

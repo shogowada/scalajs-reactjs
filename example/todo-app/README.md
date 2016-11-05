@@ -97,7 +97,8 @@ class TodoApp extends ReactClassSpec {
   }
 
   val handleChange = (event: InputElementSyntheticEvent) => {
-    setState(state.copy(text = event.target.value))
+    val newText = event.target.value
+    setState(_.copy(text = newText))
   }
 
   val handleSubmit = (event: SyntheticEvent) => {
@@ -216,7 +217,8 @@ class TodoApp extends ReactClassSpec {
   case class State(items: Seq[Item], text: String)
 
   val handleChange = (event: InputElementSyntheticEvent) => {
-    setState(state.copy(text = event.target.value))
+    val newText = event.target.value
+    setState(_.copy(text = newText))
   }
 
   val handleSubmit = (event: SyntheticEvent) => {
@@ -230,15 +232,29 @@ class TodoApp extends ReactClassSpec {
 }
 ```
 
-There are 2 versions of the ```setState``` method depending on your need.
+When updating state, unlike you are overriding the whole state, you need to copy the previous state to generate a new state. This is because state update is async process, and you cannot partially update the state unlike JavaScript.
 
-If the new state doesn't depend on the current state, you can just pass a new state to the ```setState``` method.
+For example, the following might cause race condition and override ```items``` value with old one unexpectedly.
 
 ```scala
 setState(state.copy(text = event.target.value))
 ```
 
-If the new state depends on the current state, you can update the state in the callback function passed to the ```setState``` method. This is to prevent race condition because changing React state is an async process.
+So it needs to be the following instead:
+
+```scala
+val newText = event.target.value
+setState((previousState: State) => previousState.copy(text = newText))
+```
+
+Or, to make it less verbose:
+
+```scala
+val newText = event.target.value
+setState(_.copy(text = newText))
+```
+
+If the new state depends on the current state, you can use the previous state to generate the new state.
 
 ```scala
 setState((previousState: State) => State(
