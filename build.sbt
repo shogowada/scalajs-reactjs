@@ -9,8 +9,6 @@ publishTo := {
 }
 publishArtifact := false
 
-crossScalaVersions := Seq("2.11.8", "2.12.0")
-
 val commonSettings = Seq(
   organization := "io.github.shogowada",
   name := "scalajs-reactjs",
@@ -107,9 +105,11 @@ lazy val exampleTest = project.in(file("example") / "test")
       ),
       fork := true,
       (test in Test) := {
-        val a = (fastOptJS in Compile in exampleHelloWorld).value
-        val b = (fastOptJS in Compile in exampleInteractiveHelloWorld).value
-        val c = (fastOptJS in Compile in exampleTodoApp).value
+        val dummy = Seq(
+          (fastOptJS in Compile in exampleHelloWorld).value,
+          (fastOptJS in Compile in exampleInteractiveHelloWorld).value,
+          (fastOptJS in Compile in exampleTodoApp).value
+        )
         (test in Test).value
       }
     )

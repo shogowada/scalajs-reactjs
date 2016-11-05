@@ -58,6 +58,6 @@ class Main {
       override def render() = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
     }
 
-    ReactDOM.render(new TodoApp(), mountNode)
+    ReactDOM.render(<.reactElement(new TodoApp()), mountNode)
   }
 }
