@@ -13,13 +13,19 @@ object Main {
   def main(element: HTMLElement) = {
     case class HelloWorldProps(name: String)
 
-    class HelloWorldSpec extends StatelessReactClassSpec {
+    class HelloWorld extends StatelessReactClassSpec {
 
-      override type Props = HelloWorldProps
+      override type Props = HelloWorld.Props
 
       override def render() = <.div(^.id := "hello-world")(s"Hello, ${props.name}!")
     }
 
-    ReactDOM.render(new HelloWorldSpec(), HelloWorldProps("World"), element)
+    object HelloWorld {
+
+      case class Props(name: String)
+
+    }
+
+    ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), element)
   }
 }
