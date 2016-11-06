@@ -11,8 +11,6 @@ import scala.scalajs.js.annotation.JSExport
 object Main {
   @JSExport
   def main(mountNode: HTMLElement) = {
-    case class HelloWorldProps(name: String)
-
     class HelloWorld extends StatelessReactClassSpec {
 
       override type Props = HelloWorld.Props
