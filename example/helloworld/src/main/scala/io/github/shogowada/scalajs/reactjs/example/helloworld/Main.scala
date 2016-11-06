@@ -10,7 +10,7 @@ import scala.scalajs.js.annotation.JSExport
 @JSExport
 object Main {
   @JSExport
-  def main(element: HTMLElement) = {
+  def main(mountNode: HTMLElement) = {
     case class HelloWorldProps(name: String)
 
     class HelloWorld extends StatelessReactClassSpec {
@@ -26,6 +26,6 @@ object Main {
 
     }
 
-    ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), element)
+    ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
   }
 }

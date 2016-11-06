@@ -118,7 +118,7 @@ class InteractiveHelloWorld extends ReactClassSpec {
 @JSExport
 object Main {
   @JSExport
-  def main(element: HTMLElement): Unit = {
-    ReactDOM.render(new InteractiveHelloWorld(), element)
+  def main(mountNode: HTMLElement): Unit = {
+    ReactDOM.render(new InteractiveHelloWorld(), mountNode)
   }
 }
