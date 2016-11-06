@@ -26,7 +26,7 @@ class Main {
       override def render() = {
         <.div()(
           <.h3()("TODO"),
-          <.reactElement(new TodoList(), TodoList.Props(items = state.items)),
+          new TodoList()(TodoList.Props(items = state.items)),
           <.form(^.onSubmit := handleSubmit)(
             <.input(^.onChange := handleChange, ^.value := state.text)(),
             <.button()(s"Add #${state.items.size + 1}")
@@ -62,6 +62,6 @@ class Main {
 
     }
 
-    ReactDOM.render(<.reactElement(new TodoApp()), mountNode)
+    ReactDOM.render(new TodoApp(), mountNode)
   }
 }

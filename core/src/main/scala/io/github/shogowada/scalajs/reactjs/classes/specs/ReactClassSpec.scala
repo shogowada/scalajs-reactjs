@@ -1,6 +1,7 @@
 package io.github.shogowada.scalajs.reactjs.classes.specs
 
 import io.github.shogowada.scalajs.reactjs.Converters._
+import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 
 import scala.scalajs.js
@@ -25,6 +26,8 @@ trait ReactClassSpec {
   }
 
   def render(): ReactElement
+
+  def apply(props: Props): ReactElement = React.createElement(this, props)
 
   private var nativeThis: js.Dynamic = _
 

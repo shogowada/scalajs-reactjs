@@ -11,20 +11,7 @@ import scala.scalajs.js.JSConverters._
 
 trait VirtualDOM extends StaticTags {
 
-  class VirtualDOMElements extends Elements {
-
-    case class ReactElementSpec() {
-      def apply(spec: ReactClassSpec, props: Any): ReactElement = {
-        React.createElement(spec, props)
-      }
-
-      def apply(spec: ReactClassSpec): ReactElement = {
-        React.createElement(spec)
-      }
-    }
-
-    lazy val reactElement = ReactElementSpec()
-  }
+  class VirtualDOMElements extends Elements
 
   class VirtualDOMAttributes extends Attributes {
 
@@ -76,6 +63,7 @@ trait VirtualDOM extends StaticTags {
   private def staticTagsElementToReactElement(content: Any): js.Any = {
     content match {
       case element@Element(_, _, _, _) => staticTagsToVirtualDoms(element)
+      case spec: ReactClassSpec => React.createElement(spec)
       case _ => content.asInstanceOf[js.Any]
     }
   }

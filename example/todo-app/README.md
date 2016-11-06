@@ -86,7 +86,7 @@ class TodoApp extends ReactClassSpec {
   override def render() = {
     <.div()(
       <.h3()("TODO"),
-      <.reactElement(new TodoList(), TodoList.Props(items = state.items)),
+      new TodoList()(TodoList.Props(items = state.items)),
       <.form(^.onSubmit := handleSubmit)(
         <.input(^.onChange := handleChange, ^.value := state.text)(),
         <.button()(s"Add #${state.items.size + 1}")
@@ -179,7 +179,7 @@ class TodoApp extends ReactClassSpec {
   override def render() = {
     <.div()(
       <.h3()("TODO"),
-      <.reactElement(new TodoList(), TodoList.Props(items = state.items)),
+      new TodoList()(TodoList.Props(items = state.items)),
       <.form(^.onSubmit := handleSubmit)(
         <.input(^.onChange := handleChange, ^.value := state.text)(),
         <.button()(s"Add #${state.items.size + 1}")
@@ -193,11 +193,13 @@ class TodoList extends StatelessReactClassSpec {
 }
 ```
 
-Note that you can render other React components by using ```<.reactElement(ReactClassSpec, ReactClassSpec#Props)``` tag.
+Note that you could render other React components by doing ```new TodoList()(TodoList.Props(items = state.items))```. This is because all the React component has ```apply(props: Props): ReactElement = React.createElement(this, props)``` method.
+
+If the component doesn't have props, you can just do ```new TodoList()``` then it will be later converted to ```React.createElement(new TodoList())```.
 
 ## Update state
 
-If your component is stateful, you will often update your state. You can do so by using ```setState``` method.
+If your component is stateful, you can update the state by using ```setState``` method.
 
 ```scala
 class TodoApp extends ReactClassSpec {
@@ -219,7 +221,7 @@ class TodoApp extends ReactClassSpec {
 }
 ```
 
-When updating state, unlike you are overriding the whole state, you need to copy the previous state to generate a new state. This is because state update is async process, and you cannot partially update the state unlike JavaScript.
+Unless you are overriding the whole state, you need to copy the previous state to generate a new state. This is because state update is async process, and you cannot partially update the state unlike JavaScript.
 
 For example, the following might cause race condition and override ```items``` value with old one unexpectedly.
 
