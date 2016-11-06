@@ -81,14 +81,12 @@ class TodoApp extends ReactClassSpec {
   case class Props()
   case class State(items: Seq[Item], text: String)
 
-  val todoList = new TodoList()
-
   override def getInitialState() = State(items = Seq(), text = "")
 
   override def render() = {
     <.div()(
       <.h3()("TODO"),
-      <.reactElement(todoList, todoList.Props(items = state.items)),
+      <.reactElement(new TodoList(), TodoList.Props(items = state.items)),
       <.form(^.onSubmit := handleSubmit)(
         <.input(^.onChange := handleChange, ^.value := state.text)(),
         <.button()(s"Add #${state.items.size + 1}")
@@ -112,9 +110,13 @@ class TodoApp extends ReactClassSpec {
 }
 
 class TodoList extends StatelessReactClassSpec {
-  case class Props(items: Seq[Item])
+  override type Props = TodoList.Props
 
   override def render() = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
+}
+
+object TodoList {
+  case class Props(items: Seq[Item])
 }
 
 ReactDOM.render(new TodoApp(), mountNode)
@@ -146,24 +148,11 @@ class TodoApp extends ReactClassSpec {
 }
 
 class TodoList extends StatelessReactClassSpec {
+  override type Props = TodoList.Props
+}
+
+object TodoList {
   case class Props(items: Seq[Item])
-}
-```
-
-If you want to declare your ```Props``` and ```State``` outside the class, you can do that too.
-
-```scala
-case class TodoAppProps()
-case class TodoAppState(items: Seq[Item], text: String)
-case class TodoListProps(items: Seq[Item])
-
-class TodoApp extends ReactClassSpec {
-  type Props = TodoAppProps
-  type State = TodoAppState
-}
-
-class TodoList extends StatelessReactClassSpec {
-  type Props = TodoListProps
 }
 ```
 
@@ -187,12 +176,10 @@ You can render your virual DOMs using ```VirtualDOM``` class. To use it, ```impo
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 
 class TodoApp extends ReactClassSpec {
-  val todoList = new TodoList()
-
   override def render() = {
     <.div()(
       <.h3()("TODO"),
-      <.reactElement(todoList, todoList.Props(items = state.items)),
+      <.reactElement(new TodoList(), TodoList.Props(items = state.items)),
       <.form(^.onSubmit := handleSubmit)(
         <.input(^.onChange := handleChange, ^.value := state.text)(),
         <.button()(s"Add #${state.items.size + 1}")
