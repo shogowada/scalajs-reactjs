@@ -86,7 +86,7 @@ class TodoApp extends ReactClassSpec {
   override def render() = {
     <.div()(
       <.h3()("TODO"),
-      <.reactElement(new TodoList(), TodoList.Props(items = state.items)),
+      new TodoList()(TodoList.Props(items = state.items)),
       <.form(^.onSubmit := handleSubmit)(
         <.input(^.onChange := handleChange, ^.value := state.text)(),
         <.button()(s"Add #${state.items.size + 1}")
@@ -179,7 +179,7 @@ class TodoApp extends ReactClassSpec {
   override def render() = {
     <.div()(
       <.h3()("TODO"),
-      <.reactElement(new TodoList(), TodoList.Props(items = state.items)),
+      new TodoList()(TodoList.Props(items = state.items)),
       <.form(^.onSubmit := handleSubmit)(
         <.input(^.onChange := handleChange, ^.value := state.text)(),
         <.button()(s"Add #${state.items.size + 1}")
@@ -193,7 +193,9 @@ class TodoList extends StatelessReactClassSpec {
 }
 ```
 
-Note that you can render other React components by using ```<.reactElement(ReactClassSpec, ReactClassSpec#Props)``` tag.
+Note that you could render other React components by doing ```new TodoList()(TodoList.Props(items = state.items))```. This is because all the React component has ```apply(props: Props): ReactElement = React.createElement(this, props)``` method.
+
+If the component doesn't have props, you can just do ```new TodoList()``` then it will be later converted to ```React.createElement(new TodoList())```.
 
 ## Update state
 
