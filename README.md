@@ -32,7 +32,7 @@ ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
 
     |SBT|Scala Version|Scala JS Version|
     |---|---|---|
-    |```"io.github.shogowada" %%% "scalajs-reactjs" % "0.2.0"```|2.11|0.6|
+    |```"io.github.shogowada" %%% "scalajs-reactjs" % "0.3.0"```|2.11|0.6|
 
 2. Make ```React``` and ```ReactDOM``` available at global scope.
 
