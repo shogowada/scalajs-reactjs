@@ -21,14 +21,12 @@ class Main {
 
       case class State(items: Seq[Item], text: String)
 
-      val todoList = new TodoList()
-
       override def getInitialState() = State(items = Seq(), text = "")
 
       override def render() = {
         <.div()(
           <.h3()("TODO"),
-          <.reactElement(todoList, todoList.Props(items = state.items)),
+          <.reactElement(new TodoList(), TodoList.Props(items = state.items)),
           <.form(^.onSubmit := handleSubmit)(
             <.input(^.onChange := handleChange, ^.value := state.text)(),
             <.button()(s"Add #${state.items.size + 1}")
@@ -53,9 +51,15 @@ class Main {
 
     class TodoList extends StatelessReactClassSpec {
 
-      case class Props(items: Seq[Item])
+      override type Props = TodoList.Props
 
       override def render() = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
+    }
+
+    object TodoList {
+
+      case class Props(items: Seq[Item])
+
     }
 
     ReactDOM.render(<.reactElement(new TodoApp()), mountNode)
