@@ -199,7 +199,7 @@ If the component doesn't have props, you can just do ```new TodoList()``` then i
 
 ## Update state
 
-If your component is stateful, you will often update your state. You can do so by using ```setState``` method.
+If your component is stateful, you can update the state by using ```setState``` method.
 
 ```scala
 class TodoApp extends ReactClassSpec {
