@@ -15,7 +15,7 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 
 class HelloWorld extends StatelessReactClassSpec {
   override type Props = HelloWorld.Props
-  override def render() = <.div(^.id := "hello-world")(s"Hello, ${props.name}!")
+  override def render() = <.div()(s"Hello, ${props.name}!")
 }
 
 object HelloWorld {
@@ -62,7 +62,7 @@ ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
 
     class HelloWorld extends StatelessReactClassSpec {
       override type Props = HelloWorld.Props
-      override def render() = <.div(^.id := "hello-world")(s"Hello, ${props.name}!")
+      override def render() = <.div()(s"Hello, ${props.name}!")
     }
     ```
 
