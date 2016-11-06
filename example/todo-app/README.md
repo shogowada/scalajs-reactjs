@@ -221,7 +221,7 @@ class TodoApp extends ReactClassSpec {
 }
 ```
 
-When updating state, unlike you are overriding the whole state, you need to copy the previous state to generate a new state. This is because state update is async process, and you cannot partially update the state unlike JavaScript.
+Unless you are overriding the whole state, you need to copy the previous state to generate a new state. This is because state update is async process, and you cannot partially update the state unlike JavaScript.
 
 For example, the following might cause race condition and override ```items``` value with old one unexpectedly.
 
