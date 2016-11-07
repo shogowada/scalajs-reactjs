@@ -105,11 +105,12 @@ lazy val exampleTest = project.in(file("example") / "test")
       ),
       fork := true,
       (test in Test) := {
-        val dummy = Seq(
+        val results = Seq(
           (fastOptJS in Compile in exampleHelloWorld).value,
           (fastOptJS in Compile in exampleInteractiveHelloWorld).value,
           (fastOptJS in Compile in exampleTodoApp).value
         )
+        println(s"fastOptJS: $results")
         (test in Test).value
       }
     )

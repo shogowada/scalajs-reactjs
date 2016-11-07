@@ -15,6 +15,19 @@ class Main {
   def main(mountNode: HTMLElement): Unit = {
     case class Item(id: String, text: String)
 
+    class TodoList extends StatelessReactClassSpec {
+
+      override type Props = TodoList.Props
+
+      override def render() = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
+    }
+
+    object TodoList {
+
+      case class Props(items: Seq[Item])
+
+    }
+
     class TodoApp extends ReactClassSpec {
 
       case class Props()
@@ -47,19 +60,6 @@ class Main {
           text = ""
         ))
       }
-    }
-
-    class TodoList extends StatelessReactClassSpec {
-
-      override type Props = TodoList.Props
-
-      override def render() = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
-    }
-
-    object TodoList {
-
-      case class Props(items: Seq[Item])
-
     }
 
     ReactDOM.render(new TodoApp(), mountNode)
