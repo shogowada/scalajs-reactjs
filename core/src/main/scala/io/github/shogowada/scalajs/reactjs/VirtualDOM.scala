@@ -45,7 +45,7 @@ trait VirtualDOM extends StaticTags {
   implicit def staticTagsToVirtualDoms(element: Element): ReactElement = {
     React.createElement(
       element.name,
-      staticTagsAttributesToReactAttributes(element.attributes),
+      staticTagsAttributesToReactAttributes(element.flattenedAttributes),
       staticTagsElementsToReactElements(element.flattenedContents): _*
     )
   }

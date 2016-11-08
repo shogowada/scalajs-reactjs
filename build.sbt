@@ -46,7 +46,7 @@ lazy val core = project.in(file("core"))
     .settings(
       libraryDependencies ++= Seq(
         "org.scala-js" %%% "scalajs-dom" % "0.9.+",
-        "io.github.shogowada" %%% "statictags" % "1.+"
+        "io.github.shogowada" %%% "statictags" % "2.+"
       ),
       publishArtifact := true
     )
