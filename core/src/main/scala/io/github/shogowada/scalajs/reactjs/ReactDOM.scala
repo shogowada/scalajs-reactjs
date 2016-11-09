@@ -5,7 +5,7 @@ import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import org.scalajs.dom
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSName
+import scala.scalajs.js.annotation.JSImport
 
 object ReactDOM {
   def render(reactClassSpec: ReactClassSpec, node: dom.Node): Unit = {
@@ -22,7 +22,7 @@ object ReactDOM {
 }
 
 @js.native
-@JSName("ReactDOM")
+@JSImport("react-dom", JSImport.Namespace)
 object NativeReactDOM extends js.Object {
 
   def render(element: ReactElement, node: dom.Node): Unit = js.native

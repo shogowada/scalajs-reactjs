@@ -4,15 +4,13 @@ import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.specs.{ReactClassSpec, StatelessReactClassSpec}
 import io.github.shogowada.scalajs.reactjs.events.{InputElementSyntheticEvent, SyntheticEvent}
-import org.scalajs.dom.raw.HTMLElement
+import org.scalajs.dom
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSExport
+import scala.scalajs.js.JSApp
 
-@JSExport
-class Main {
-  @JSExport
-  def main(mountNode: HTMLElement): Unit = {
+object Main extends JSApp {
+  def main(): Unit = {
     case class Item(id: String, text: String)
 
     class TodoList extends StatelessReactClassSpec {
@@ -62,6 +60,7 @@ class Main {
       }
     }
 
+    val mountNode = dom.document.getElementById("mount-node")
     ReactDOM.render(new TodoApp(), mountNode)
   }
 }

@@ -5,9 +5,10 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.specs.{ReactClassSpec, StatelessReactClassSpec}
 import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLInputElement, ReactHTMLRadioElement}
 import io.github.shogowada.scalajs.reactjs.example.interactive.helloworld.LetterCase.{DEFAULT, LOWER_CASE, LetterCase, UPPER_CASE}
+import org.scalajs.dom
 import org.scalajs.dom.raw.HTMLElement
 
-import scala.scalajs.js.annotation.JSExport
+import scala.scalajs.js.JSApp
 
 object LetterCase {
 
@@ -115,10 +116,9 @@ class InteractiveHelloWorld extends ReactClassSpec {
   }
 }
 
-@JSExport
-object Main {
-  @JSExport
-  def main(mountNode: HTMLElement): Unit = {
+object Main extends JSApp {
+  def main(): Unit = {
+    val mountNode = dom.document.getElementById("mount-node")
     ReactDOM.render(new InteractiveHelloWorld(), mountNode)
   }
 }

@@ -12,7 +12,7 @@ publishArtifact := false
 val commonSettings = Seq(
   organization := "io.github.shogowada",
   name := "scalajs-reactjs",
-  version := "0.3.1-SNAPSHOT",
+  version := "0.4.0-SNAPSHOT",
   licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT")),
   homepage := Some(url("https://github.com/shogowada/scalajs-reactjs")),
   scalaVersion := "2.11.8",
@@ -48,20 +48,17 @@ lazy val core = project.in(file("core"))
         "org.scala-js" %%% "scalajs-dom" % "0.9.+",
         "io.github.shogowada" %%% "statictags" % "2.+"
       ),
+      npmDependencies in Compile ++= Seq(
+        "react" -> REACT_VERSION,
+        "react-dom" -> REACT_VERSION
+      ),
       publishArtifact := true
     )
-    .enablePlugins(ScalaJSPlugin)
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
 
 val exampleCommonSettings = commonSettings ++ Seq(
   name += "-example",
-  (unmanagedResourceDirectories in Compile) += baseDirectory.value / "src" / "main" / "webapp",
-  jsDependencies ++= Seq(
-    "org.webjars.bower" % "react" % REACT_VERSION / "react.js"
-        commonJSName "React",
-    "org.webjars.bower" % "react" % REACT_VERSION / "react-dom.js"
-        dependsOn "react.js"
-        commonJSName "ReactDOM"
-  )
+  (unmanagedResourceDirectories in Compile) += baseDirectory.value / "src" / "main" / "webapp"
 )
 
 lazy val exampleHelloWorld = project.in(file("example") / "helloworld")
@@ -69,7 +66,7 @@ lazy val exampleHelloWorld = project.in(file("example") / "helloworld")
     .settings(
       name += "-helloworld"
     )
-    .enablePlugins(ScalaJSPlugin)
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core)
 
 lazy val exampleInteractiveHelloWorld = project.in(file("example") / "interactive-helloworld")
@@ -77,7 +74,7 @@ lazy val exampleInteractiveHelloWorld = project.in(file("example") / "interactiv
     .settings(
       name += "-interactive-helloworld"
     )
-    .enablePlugins(ScalaJSPlugin)
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core)
 
 lazy val exampleTodoApp = project.in(file("example") / "todo-app")
@@ -85,7 +82,7 @@ lazy val exampleTodoApp = project.in(file("example") / "todo-app")
     .settings(
       name += "-todo-app"
     )
-    .enablePlugins(ScalaJSPlugin)
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core)
 
 lazy val exampleTest = project.in(file("example") / "test")
@@ -106,9 +103,9 @@ lazy val exampleTest = project.in(file("example") / "test")
       fork := true,
       (test in Test) := {
         val results = Seq(
-          (fastOptJS in Compile in exampleHelloWorld).value,
-          (fastOptJS in Compile in exampleInteractiveHelloWorld).value,
-          (fastOptJS in Compile in exampleTodoApp).value
+          (webpack in fastOptJS in Compile in exampleHelloWorld).value,
+          (webpack in fastOptJS in Compile in exampleInteractiveHelloWorld).value,
+          (webpack in fastOptJS in Compile in exampleTodoApp).value
         )
         println(s"fastOptJS: $results")
         (test in Test).value
