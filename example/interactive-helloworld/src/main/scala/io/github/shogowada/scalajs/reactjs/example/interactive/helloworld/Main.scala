@@ -6,7 +6,6 @@ import io.github.shogowada.scalajs.reactjs.classes.specs.{ReactClassSpec, Statel
 import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLInputElement, ReactHTMLRadioElement}
 import io.github.shogowada.scalajs.reactjs.example.interactive.helloworld.LetterCase.{DEFAULT, LOWER_CASE, LetterCase, UPPER_CASE}
 import org.scalajs.dom
-import org.scalajs.dom.raw.HTMLElement
 
 import scala.scalajs.js.JSApp
 
@@ -104,7 +103,8 @@ class InteractiveHelloWorld extends ReactClassSpec {
   }
 
   val onChange = () => {
-    setState(_.copy(name = nameElement.value))
+    val name = nameElement.value
+    setState(_.copy(name = name))
   }
 
   def name(state: State): String = {
