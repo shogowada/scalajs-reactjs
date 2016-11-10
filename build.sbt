@@ -85,8 +85,6 @@ lazy val exampleTodoApp = project.in(file("example") / "todo-app")
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core)
 
-val e2eTest = taskKey[Unit]("e2e test")
-
 lazy val exampleTest = project.in(file("example") / "test")
     .settings(commonSettings: _*)
     .settings(
@@ -102,11 +100,5 @@ lazy val exampleTest = project.in(file("example") / "test")
         s"-Dtarget.path.interactive-helloworld=${(crossTarget in exampleInteractiveHelloWorld).value}",
         s"-Dtarget.path.todo-app=${(crossTarget in exampleTodoApp).value}"
       ),
-      fork := true,
-      e2eTest := Def.sequential(
-        webpack in fastOptJS in Compile in exampleHelloWorld,
-        webpack in fastOptJS in Compile in exampleInteractiveHelloWorld,
-        webpack in fastOptJS in Compile in exampleTodoApp,
-        test in Test
-      ).value
+      fork := true
     )
