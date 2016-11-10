@@ -22,7 +22,7 @@ object HelloWorld {
   case class Props(name: String)
 }
 
-val mountNode = dom.document.getElementById("main")
+val mountNode = dom.document.getElementById("mount-node")
 ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
 ```
 
@@ -59,7 +59,7 @@ ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
 5. Render the class with the props.
 
     ```scala
-    val mountNode = dom.document.getElementById("main")
+    val mountNode = dom.document.getElementById("mount-node")
     ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
     ```
 
