@@ -3,14 +3,12 @@ package io.github.shogowada.scalajs.reactjs.example.helloworld
 import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.specs.StatelessReactClassSpec
-import org.scalajs.dom.raw.HTMLElement
+import org.scalajs.dom
 
-import scala.scalajs.js.annotation.JSExport
+import scala.scalajs.js.JSApp
 
-@JSExport
-object Main {
-  @JSExport
-  def main(mountNode: HTMLElement) = {
+object Main extends JSApp {
+  def main(): Unit = {
     class HelloWorld extends StatelessReactClassSpec {
 
       override type Props = HelloWorld.Props
@@ -23,7 +21,7 @@ object Main {
       case class Props(name: String)
 
     }
-
+    val mountNode = dom.document.getElementById("mount-node")
     ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
   }
 }

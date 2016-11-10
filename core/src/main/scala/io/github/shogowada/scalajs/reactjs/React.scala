@@ -6,7 +6,7 @@ import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 
 import scala.scalajs.js
-import scala.scalajs.js.annotation.JSName
+import scala.scalajs.js.annotation.JSImport
 
 object React {
 
@@ -28,7 +28,7 @@ object React {
 }
 
 @js.native
-@JSName("React")
+@JSImport("react", JSImport.Default)
 object NativeReact extends js.Object {
   def createClass(spec: js.Any): ReactClass = js.native
 

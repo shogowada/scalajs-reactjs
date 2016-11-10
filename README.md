@@ -22,7 +22,7 @@ object HelloWorld {
   case class Props(name: String)
 }
 
-val mountNode = dom.document.getElementById("main")
+val mountNode = dom.document.getElementById("mount-node")
 ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
 ```
 
@@ -32,19 +32,9 @@ ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
 
     |SBT|Scala Version|Scala JS Version|
     |---|---|---|
-    |```"io.github.shogowada" %%% "scalajs-reactjs" % "0.3.0"```|2.11|0.6|
+    |```"io.github.shogowada" %%% "scalajs-reactjs" % "0.4.0"```|2.11|0.6|
 
-2. Make ```React``` and ```ReactDOM``` available at global scope.
-
-    ```scala
-    jsDependencies ++= Seq(
-      "org.webjars.bower" % "react" % "15.3.2" / "react.js"
-          commonJSName "React",
-      "org.webjars.bower" % "react" % "15.3.2" / "react-dom.js"
-          dependsOn "react.js"
-          commonJSName "ReactDOM"
-    )
-    ```
+2. Apply [scalajs-bundler](https://scalacenter.github.io/scalajs-bundler/getting-started.html) plugin.
 
 3. Define props.
 
@@ -69,7 +59,7 @@ ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
 5. Render the class with the props.
 
     ```scala
-    val mountNode = dom.document.getElementById("main")
+    val mountNode = dom.document.getElementById("mount-node")
     ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
     ```
 
