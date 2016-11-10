@@ -56,6 +56,18 @@ lazy val core = project.in(file("core"))
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
 
+lazy val router = project.in(file("router"))
+    .settings(commonSettings: _*)
+    .settings(
+      name += "-router",
+      npmDependencies in Compile ++= Seq(
+        "react-router" -> "3.0.0"
+      ),
+      publishArtifact := true
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core)
+
 val exampleCommonSettings = commonSettings ++ Seq(
   name += "-example",
   (unmanagedResourceDirectories in Compile) += baseDirectory.value / "src" / "main" / "webapp"

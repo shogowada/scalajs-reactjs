@@ -25,6 +25,10 @@ object React {
     val reactClass = createClass(spec)
     NativeReact.createElement(reactClass, props.asJs)
   }
+
+  def createElement(reactClass: ReactClass, props: js.Any, contents: js.Any*): ReactElement = {
+    NativeReact.createElement(reactClass, props, contents)
+  }
 }
 
 @js.native
@@ -37,4 +41,6 @@ object NativeReact extends js.Object {
   def createElement(reactClass: ReactClass): ReactElement = js.native
 
   def createElement(reactClass: ReactClass, attributes: js.Any): ReactElement = js.native
+
+  def createElement(reactClass: ReactClass, props: js.Any, contents: js.Any*): ReactElement = js.native
 }
