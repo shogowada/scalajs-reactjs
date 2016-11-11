@@ -1,10 +1,10 @@
 package io.github.shogowada.scalajs.reactjs.router
 
-import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import io.github.shogowada.scalajs.reactjs.classes.specs.{ReactClassSpec, StatelessReactClassSpec}
+import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
+import io.github.shogowada.scalajs.reactjs.{React, VirtualDOM}
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
@@ -33,11 +33,8 @@ object NativeRoute extends ReactClass
 object NativeIndexRoute extends ReactClass
 
 @js.native
-trait RoutedComponentProps extends js.Object {
-  def params: js.Dynamic = js.native
-
-  def children: Seq[js.Object] = js.native
-}
+@JSImport("react-router", "Link")
+object NativeLink extends ReactClass
 
 object Router {
 
@@ -46,7 +43,7 @@ object Router {
       val props = js.Dynamic.literal(
         "history" -> history
       )
-      React.createElement(NativeRouter, props, routes)
+      React.createElement(NativeRouter, props, routes: _*)
     }
 
     def Route(path: String, component: ReactClassSpec)(childRoutes: ReactElement*): ReactElement = {
@@ -59,7 +56,7 @@ object Router {
         "path" -> path,
         "component" -> component
       )
-      React.createElement(NativeRoute, props, childRoutes)
+      React.createElement(NativeRoute, props, childRoutes: _*)
     }
 
     def IndexRoute(component: ReactClass): ReactElement = {
@@ -67,6 +64,13 @@ object Router {
         "component" -> component
       )
       React.createElement(NativeIndexRoute, props)
+    }
+
+    def Link(to: String)(contents: Any*): ReactElement = {
+      val props = js.Dynamic.literal(
+        "to" -> to
+      )
+      React.createElement(NativeLink, props, VirtualDOM.elementsToReactElements(contents): _*)
     }
   }
 

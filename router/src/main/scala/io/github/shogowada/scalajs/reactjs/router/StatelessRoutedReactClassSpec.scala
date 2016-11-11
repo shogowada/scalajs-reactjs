@@ -11,9 +11,11 @@ trait RoutedReactClassProps[PARAMS] extends js.Object {
   def children: Seq[js.Object] = js.native
 }
 
-trait RoutedReactClassSpec extends StatelessReactClassSpec {
+trait StatelessRoutedReactClassSpec extends StatelessReactClassSpec {
   type Params = js.Dynamic
 
   override type Props = RoutedReactClassProps[Params]
+
+  override def props: Props = nativeThis.props.asInstanceOf[Props]
 
 }

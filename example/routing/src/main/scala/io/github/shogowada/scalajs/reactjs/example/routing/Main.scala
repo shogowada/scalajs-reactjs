@@ -4,24 +4,39 @@ import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.specs.StatelessReactClassSpec
 import io.github.shogowada.scalajs.reactjs.router.Router._
-import io.github.shogowada.scalajs.reactjs.router.{BrowserHistory, RoutedReactClassSpec}
+import io.github.shogowada.scalajs.reactjs.router.{BrowserHistory, StatelessRoutedReactClassSpec}
 import org.scalajs.dom
 
 import scala.scalajs.js.JSApp
 
-class App extends RoutedReactClassSpec {
+class App extends StatelessRoutedReactClassSpec {
   override def render() = {
     <.div()(
       <.h1()("React Router Tutorial"),
-      <.ul()()
+      <.nav()(
+        <.li()(<.Link(to = "/about")("About")),
+        <.li()(<.Link(to = "/repos")("Repos"))
+      ),
+      props.children
     )
   }
 }
 
-class Index extends StatelessReactClassSpec {
+class About extends StatelessRoutedReactClassSpec {
+  override def render() = <.div()("About")
+}
 
+class Repos extends StatelessRoutedReactClassSpec {
+  override def render() = <.div()("Repos")
+}
+
+class Index extends StatelessReactClassSpec {
   override def render() = {
     <.Router(history = BrowserHistory)(
+      <.Route(path = "/", component = new App())(
+        <.Route(path = "/about", component = new About())(),
+        <.Route(path = "/repos", component = new Repos())()
+      )
     )
   }
 }

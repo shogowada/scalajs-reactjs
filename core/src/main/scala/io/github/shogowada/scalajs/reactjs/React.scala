@@ -27,7 +27,7 @@ object React {
   }
 
   def createElement(reactClass: ReactClass, props: js.Any, contents: js.Any*): ReactElement = {
-    NativeReact.createElement(reactClass, props, contents)
+    NativeReact.createElement(reactClass, props, contents: _*)
   }
 }
 
