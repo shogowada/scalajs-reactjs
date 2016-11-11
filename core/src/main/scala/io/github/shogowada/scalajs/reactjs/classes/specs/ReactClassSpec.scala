@@ -29,15 +29,17 @@ trait ReactClassSpec {
 
   def apply(props: Props): ReactElement = React.createElement(this, props)
 
-  private var nativeThis: js.Dynamic = _
+  private var _nativeThis: js.Dynamic = _
+
+  def nativeThis: js.Dynamic = _nativeThis
 
   def asNative = js.Dynamic.literal(
     "getInitialState" -> js.ThisFunction.fromFunction1((newNativeThis: js.Dynamic) => {
-      nativeThis = newNativeThis
+      _nativeThis = newNativeThis
       Option(getInitialState()).map(_.asJs).orNull
     }),
     "render" -> js.ThisFunction.fromFunction1((newNativeThis: js.Dynamic) => {
-      nativeThis = newNativeThis
+      _nativeThis = newNativeThis
       render()
     })
   )

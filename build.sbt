@@ -56,6 +56,18 @@ lazy val core = project.in(file("core"))
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
 
+lazy val router = project.in(file("router"))
+    .settings(commonSettings: _*)
+    .settings(
+      name += "-router",
+      npmDependencies in Compile ++= Seq(
+        "react-router" -> "3.0.0"
+      ),
+      publishArtifact := true
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core)
+
 val exampleCommonSettings = commonSettings ++ Seq(
   name += "-example",
   (unmanagedResourceDirectories in Compile) += baseDirectory.value / "src" / "main" / "webapp"
@@ -76,6 +88,14 @@ lazy val exampleInteractiveHelloWorld = project.in(file("example") / "interactiv
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core)
+
+lazy val exampleRouting = project.in(file("example") / "routing")
+    .settings(exampleCommonSettings: _*)
+    .settings(
+      name += "-routing"
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core, router)
 
 lazy val exampleTodoApp = project.in(file("example") / "todo-app")
     .settings(exampleCommonSettings: _*)
@@ -98,6 +118,7 @@ lazy val exampleTest = project.in(file("example") / "test")
       javaOptions ++= Seq(
         s"-Dtarget.path.helloworld=${(crossTarget in exampleHelloWorld).value}",
         s"-Dtarget.path.interactive-helloworld=${(crossTarget in exampleInteractiveHelloWorld).value}",
+        s"-Dtarget.path.routing=${(crossTarget in exampleRouting).value}",
         s"-Dtarget.path.todo-app=${(crossTarget in exampleTodoApp).value}"
       ),
       fork := true

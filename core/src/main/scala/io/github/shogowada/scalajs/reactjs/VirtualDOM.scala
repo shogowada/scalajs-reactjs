@@ -42,27 +42,27 @@ trait VirtualDOM extends StaticTags {
   override val < = new VirtualDOMElements()
   override val ^ = new VirtualDOMAttributes()
 
-  implicit def staticTagsToVirtualDoms(element: Element): ReactElement = {
+  implicit def elementsToVirtualDoms(element: Element): ReactElement = {
     React.createElement(
       element.name,
-      staticTagsAttributesToReactAttributes(element.flattenedAttributes),
-      staticTagsElementsToReactElements(element.flattenedContents): _*
+      attributesToReactAttributes(element.flattenedAttributes),
+      elementsToReactElements(element.flattenedContents): _*
     )
   }
 
-  private def staticTagsAttributesToReactAttributes(attributes: Iterable[Attribute[_]]): js.Dictionary[Any] = {
+  private def attributesToReactAttributes(attributes: Iterable[Attribute[_]]): js.Dictionary[Any] = {
     attributes.map(attribute => (attribute.name, attribute.value))
         .toMap
         .toJSDictionary
   }
 
-  private def staticTagsElementsToReactElements(contents: Seq[Any]): Seq[js.Any] = {
-    contents.map(staticTagsElementToReactElement)
+  def elementsToReactElements(contents: Seq[Any]): Seq[js.Any] = {
+    contents.map(elementToReactElement)
   }
 
-  private def staticTagsElementToReactElement(content: Any): js.Any = {
+  private def elementToReactElement(content: Any): js.Any = {
     content match {
-      case element@Element(_, _, _, _) => staticTagsToVirtualDoms(element)
+      case element@Element(_, _, _, _) => elementsToVirtualDoms(element)
       case spec: ReactClassSpec => React.createElement(spec)
       case _ => content.asInstanceOf[js.Any]
     }

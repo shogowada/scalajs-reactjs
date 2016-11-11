@@ -4,6 +4,13 @@
 
 Develop React JS applications with Scala.
 
+|Component|SBT|Scala Version|Scala JS Version|
+|---|---|---|---|
+|Core|```"io.github.shogowada" %%% "scalajs-reactjs" % "0.4.1"```|2.11|0.6|
+|[Router](/router)|```"io.github.shogowada" %%% "scalajs-reactjs-router" % "0.4.1"```|2.11|0.6|
+
+## Table of Contents
+
 - [Quick Look](#quick-look)
 - [Getting Started](#getting-started)
 - [Tutorial](#tutorial)
@@ -29,10 +36,6 @@ ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
 ## Getting Started
 
 1. Depend on scalajs-reactjs.
-
-    |SBT|Scala Version|Scala JS Version|
-    |---|---|---|
-    |```"io.github.shogowada" %%% "scalajs-reactjs" % "0.4.0"```|2.11|0.6|
 
 2. Apply [scalajs-bundler](https://scalacenter.github.io/scalajs-bundler/getting-started.html) plugin.
 
