@@ -40,6 +40,15 @@ class RoutingTest extends path.FunSpec
 
       itShouldDisplayRepos()
 
+      describe("when I jump to specific repo") {
+        val repoId = 123
+        go to s"${server.host}/#/repos/$repoId"
+
+        it("then it should display the repo") {
+          find(s"repo-$repoId").isDefined should equal(true)
+        }
+      }
+
       describe("when I jump to about via URL") {
         go to s"${server.host}/#/about"
 

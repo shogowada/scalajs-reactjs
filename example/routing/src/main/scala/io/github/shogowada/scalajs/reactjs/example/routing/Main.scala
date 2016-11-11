@@ -7,6 +7,7 @@ import io.github.shogowada.scalajs.reactjs.router.Router._
 import io.github.shogowada.scalajs.reactjs.router.{HashHistory, StatelessRoutedReactClassSpec}
 import org.scalajs.dom
 
+import scala.scalajs.js
 import scala.scalajs.js.JSApp
 
 class App extends StatelessRoutedReactClassSpec {
@@ -30,12 +31,26 @@ class Repos extends StatelessRoutedReactClassSpec {
   override def render() = <.div(^.id := "repos")("Repos")
 }
 
+@js.native
+trait RepoParams extends js.Object {
+
+  val id: String = js.native
+}
+
+class Repo extends StatelessRoutedReactClassSpec {
+
+  override type Params = RepoParams
+
+  override def render() = <.div(^.id := s"repo-${props.params.id}")(s"Repo ${props.params.id}")
+}
+
 class Index extends StatelessReactClassSpec {
   override def render() = {
     <.Router(history = HashHistory)(
       <.Route(path = "/", component = new App())(
         <.Route(path = "/about", component = new About())(),
-        <.Route(path = "/repos", component = new Repos())()
+        <.Route(path = "/repos", component = new Repos())(),
+        <.Route(path = "/repos/:id", component = new Repo())()
       )
     )
   }

@@ -12,7 +12,7 @@ trait RoutedReactClassProps[PARAMS] extends js.Object {
 }
 
 trait StatelessRoutedReactClassSpec extends StatelessReactClassSpec {
-  type Params = js.Dynamic
+  type Params
 
   override type Props = RoutedReactClassProps[Params]
 
