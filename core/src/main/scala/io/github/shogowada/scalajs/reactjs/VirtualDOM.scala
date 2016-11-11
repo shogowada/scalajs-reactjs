@@ -31,6 +31,7 @@ trait VirtualDOM extends StaticTags {
       }
     }
 
+    lazy val className = SpaceSeparatedStringAttributeSpec(name = "className")
     override lazy val `for` = htmlFor
     lazy val htmlFor = ForAttributeSpec("htmlFor")
     lazy val key = StringAttributeSpec("key")
@@ -51,7 +52,7 @@ trait VirtualDOM extends StaticTags {
   }
 
   private def attributesToReactAttributes(attributes: Iterable[Attribute[_]]): js.Dictionary[Any] = {
-    attributes.map(attribute => (attribute.name, attribute.value))
+    attributes.map(attribute => (VirtualDOMAttributeNameFactory(attribute.name), attribute.value))
         .toMap
         .toJSDictionary
   }
@@ -70,3 +71,40 @@ trait VirtualDOM extends StaticTags {
 }
 
 object VirtualDOM extends VirtualDOM
+
+object VirtualDOMAttributeNameFactory {
+  lazy val nameToReactNameMap = Map(
+    "accept-charset" -> "acceptCharset",
+    "accesskey" -> "accessKey",
+    "autocomplete" -> "autoComplete",
+    "autofocus" -> "autoFocus",
+    "autoplay" -> "autoPlay",
+    "charset" -> "charSet",
+    "colspan" -> "colSpan",
+    "contenteditable" -> "contentEditable",
+    "crossorigin" -> "crossOrigin",
+    "datetime" -> "dateTime",
+    "enctype" -> "encType",
+    "formaction" -> "formAction",
+    "formenctype" -> "formEncType",
+    "formmethod" -> "formMethod",
+    "formnovalidate" -> "formNoValidate",
+    "formtarget" -> "formTarget",
+    "hreflang" -> "hrefLang",
+    "http-equiv" -> "httpEquiv",
+    "keytype" -> "keyType",
+    "maxlength" -> "maxLength",
+    "mediagroup" -> "mediaGroup",
+    "minlength" -> "minLength",
+    "novalidate" -> "noValidate",
+    "spellcheck" -> "spellCheck",
+    "srcdoc" -> "srcDoc",
+    "srclang" -> "srcLang",
+    "tabindex" -> "tabIndex",
+    "usemap" -> "useMap"
+  )
+
+  def apply(name: String): String = {
+    nameToReactNameMap.getOrElse(name, name)
+  }
+}
