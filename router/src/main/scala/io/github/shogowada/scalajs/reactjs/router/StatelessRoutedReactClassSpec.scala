@@ -5,14 +5,14 @@ import io.github.shogowada.scalajs.reactjs.classes.specs.StatelessReactClassSpec
 import scala.scalajs.js
 
 @js.native
-trait RoutedReactClassProps[PARAMS] extends js.Object {
+trait RoutedReactClassProps[PARAMS <: js.Any] extends js.Object {
   def params: PARAMS = js.native
 
   def children: js.Any = js.native
 }
 
 trait StatelessRoutedReactClassSpec extends StatelessReactClassSpec {
-  type Params
+  type Params <: js.Any
 
   override type Props = RoutedReactClassProps[Params]
 
