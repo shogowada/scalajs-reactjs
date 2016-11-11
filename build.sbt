@@ -118,6 +118,7 @@ lazy val exampleTest = project.in(file("example") / "test")
       javaOptions ++= Seq(
         s"-Dtarget.path.helloworld=${(crossTarget in exampleHelloWorld).value}",
         s"-Dtarget.path.interactive-helloworld=${(crossTarget in exampleInteractiveHelloWorld).value}",
+        s"-Dtarget.path.routing=${(crossTarget in exampleRouting).value}",
         s"-Dtarget.path.todo-app=${(crossTarget in exampleTodoApp).value}"
       ),
       fork := true
