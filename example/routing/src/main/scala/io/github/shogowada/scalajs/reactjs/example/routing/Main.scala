@@ -14,8 +14,8 @@ class App extends StatelessRoutedReactClassSpec {
     <.div()(
       <.h1()("React Router Tutorial"),
       <.nav()(
-        <.li()(<.Link(to = "/about")("About")),
-        <.li()(<.Link(to = "/repos")("Repos"))
+        <.li()(<.Link(to = "about")("About")),
+        <.li()(<.Link(to = "repos")("Repos"))
       ),
       props.children
     )

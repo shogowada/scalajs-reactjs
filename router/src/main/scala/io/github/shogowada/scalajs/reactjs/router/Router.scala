@@ -10,17 +10,6 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
 @js.native
-trait History extends js.Object
-
-@js.native
-@JSImport("react-router", "browserHistory")
-object BrowserHistory extends History
-
-@js.native
-@JSImport("react-router", "hashHistory")
-object HashHistory extends History
-
-@js.native
 @JSImport("react-router", "Router")
 object NativeRouter extends ReactClass
 

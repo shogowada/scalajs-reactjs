@@ -8,7 +8,7 @@ import scala.scalajs.js
 trait RoutedReactClassProps[PARAMS] extends js.Object {
   def params: PARAMS = js.native
 
-  def children: Seq[js.Object] = js.native
+  def children: js.Any = js.native
 }
 
 trait StatelessRoutedReactClassSpec extends StatelessReactClassSpec {
