@@ -41,7 +41,7 @@ trait VirtualDOM extends StaticTags {
   }
 
   object VirtualDOMAttributes {
-    lazy val nameToReactNameMap = Map(
+    private lazy val nameToReactNameMap = Map(
       "accept-charset" -> "acceptCharset",
       "accesskey" -> "accessKey",
       "autocomplete" -> "autoComplete",
