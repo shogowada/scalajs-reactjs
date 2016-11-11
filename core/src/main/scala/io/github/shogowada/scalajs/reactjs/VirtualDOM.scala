@@ -41,7 +41,7 @@ trait VirtualDOM extends StaticTags {
   }
 
   object VirtualDOMAttributes {
-    private lazy val nameToReactNameMap = Map(
+    private lazy val htmlNameToReactNameMap = Map(
       "accept-charset" -> "acceptCharset",
       "accesskey" -> "accessKey",
       "autocomplete" -> "autoComplete",
@@ -73,7 +73,7 @@ trait VirtualDOM extends StaticTags {
     )
 
     def toReactAttributeName(name: String): String = {
-      nameToReactNameMap.getOrElse(name, name)
+      htmlNameToReactNameMap.getOrElse(name, name)
     }
   }
 
