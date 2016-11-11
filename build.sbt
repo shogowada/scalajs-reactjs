@@ -89,6 +89,14 @@ lazy val exampleInteractiveHelloWorld = project.in(file("example") / "interactiv
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core)
 
+lazy val exampleRouting = project.in(file("example") / "routing")
+    .settings(exampleCommonSettings: _*)
+    .settings(
+      name += "-routing"
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core, router)
+
 lazy val exampleTodoApp = project.in(file("example") / "todo-app")
     .settings(exampleCommonSettings: _*)
     .settings(

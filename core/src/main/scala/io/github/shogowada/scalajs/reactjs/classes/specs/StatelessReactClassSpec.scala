@@ -4,7 +4,7 @@ import scala.scalajs.js
 
 trait StatelessReactClassSpec extends ReactClassSpec {
 
-  type State = js.Object
+  override type State = js.Object
 
   override def getInitialState(): State = null
 }

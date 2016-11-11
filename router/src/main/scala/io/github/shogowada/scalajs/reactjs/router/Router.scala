@@ -3,7 +3,7 @@ package io.github.shogowada.scalajs.reactjs.router
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
+import io.github.shogowada.scalajs.reactjs.classes.specs.{ReactClassSpec, StatelessReactClassSpec}
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 
 import scala.scalajs.js
@@ -49,9 +49,9 @@ object Router {
       React.createElement(NativeRouter, props, routes)
     }
 
-    def Route(path: String, componentSpec: ReactClassSpec)(childRoutes: ReactElement*): ReactElement = {
-      val component = React.createClass(componentSpec)
-      Route(path = path, component = component)(childRoutes: _*)
+    def Route(path: String, component: ReactClassSpec)(childRoutes: ReactElement*): ReactElement = {
+      val realComponent = React.createClass(component)
+      Route(path = path, component = realComponent)(childRoutes: _*)
     }
 
     def Route(path: String, component: ReactClass)(childRoutes: ReactElement*): ReactElement = {
