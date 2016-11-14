@@ -28,7 +28,10 @@ class About extends StatelessRoutedReactClassSpec {
 }
 
 class Repos extends StatelessRoutedReactClassSpec {
-  override def render() = <.div(^.id := "repos")("Repos")
+  override def render() = <.div(^.id := "repos")(
+    "Repos",
+    props.children
+  )
 }
 
 @js.native
@@ -48,9 +51,10 @@ class Index extends StatelessReactClassSpec {
   override def render() = {
     <.Router(history = HashHistory)(
       <.Route(path = "/", component = new App())(
-        <.Route(path = "/about", component = new About())(),
-        <.Route(path = "/repos", component = new Repos())(),
-        <.Route(path = "/repos/:id", component = new Repo())()
+        <.Route(path = "about", component = new About())(),
+        <.Route(path = "repos", component = new Repos())(
+          <.Route(path = ":id", component = new Repo())()
+        )
       )
     )
   }
