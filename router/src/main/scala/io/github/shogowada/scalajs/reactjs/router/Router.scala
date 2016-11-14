@@ -48,6 +48,10 @@ object Router {
       React.createElement(NativeRoute, props, childRoutes: _*)
     }
 
+    def IndexRoute(component: ReactClassSpec): ReactElement = {
+      IndexRoute(React.createClass(component))
+    }
+
     def IndexRoute(component: ReactClass): ReactElement = {
       val props = js.Dynamic.literal(
         "component" -> component
