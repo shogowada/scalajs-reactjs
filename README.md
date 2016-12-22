@@ -39,7 +39,16 @@ ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
 
 2. Apply [scalajs-bundler](https://scalacenter.github.io/scalajs-bundler/getting-started.html) plugin.
 
-3. Define props.
+3. Depend on React and React DOM NPM packages.
+
+    ```sbt
+    npmDependencies in Compile ++= Seq(
+      "react" -> "15.3.2",
+      "react-dom" -> "15.3.2"
+    )
+    ```
+
+4. Define props.
 
     ```scala
     object HelloWorld {
@@ -47,7 +56,7 @@ ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
     }
     ```
 
-4. Define class spec.
+5. Define class spec.
     - [```VirtualDOM```](core/src/main/scala/io/github/shogowada/scalajs/reactjs/VirtualDOM.scala) enables you to create React elements using special version of [StaticTags](https://github.com/shogowada/statictags).
 
     ```scala
@@ -59,7 +68,7 @@ ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
     }
     ```
 
-5. Render the class with the props.
+6. Render the class with the props.
 
     ```scala
     val mountNode = dom.document.getElementById("mount-node")
