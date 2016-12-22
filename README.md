@@ -44,7 +44,8 @@ ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
     ```sbt
     npmDependencies in Compile ++= Seq(
       "react" -> "15.3.2",
-      "react-dom" -> "15.3.2"
+      "react-dom" -> "15.3.2",
+      "react-router" -> "3.0.0" // This is required only when you are using React Router.
     )
     ```
 
