@@ -48,29 +48,27 @@ lazy val core = project.in(file("core"))
         "org.scala-js" %%% "scalajs-dom" % "0.9.+",
         "io.github.shogowada" %%% "statictags" % "2.+"
       ),
-      npmDependencies in Compile ++= Seq(
-        "react" -> REACT_VERSION,
-        "react-dom" -> REACT_VERSION
-      ),
       publishArtifact := true
     )
-    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .enablePlugins(ScalaJSPlugin)
 
 lazy val router = project.in(file("router"))
     .settings(commonSettings: _*)
     .settings(
       name += "-router",
-      npmDependencies in Compile ++= Seq(
-        "react-router" -> "3.0.0"
-      ),
       publishArtifact := true
     )
-    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .enablePlugins(ScalaJSPlugin)
     .dependsOn(core)
 
 val exampleCommonSettings = commonSettings ++ Seq(
   name += "-example",
-  (unmanagedResourceDirectories in Compile) += baseDirectory.value / "src" / "main" / "webapp"
+  (unmanagedResourceDirectories in Compile) += baseDirectory.value / "src" / "main" / "webapp",
+  npmDependencies in Compile ++= Seq(
+    "react" -> REACT_VERSION,
+    "react-dom" -> REACT_VERSION,
+    "react-router" -> "3.0.0"
+  )
 )
 
 lazy val exampleHelloWorld = project.in(file("example") / "helloworld")
