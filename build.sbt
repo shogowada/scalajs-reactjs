@@ -46,12 +46,14 @@ lazy val core = project.in(file("core"))
     .settings(
       libraryDependencies ++= Seq(
         "org.scala-js" %%% "scalajs-dom" % "0.9.+",
-        "io.github.shogowada" %%% "statictags" % "2.+"
+        "io.github.shogowada" %%% "statictags" % "2.1.0"
       ),
       npmDependencies in Compile ++= Seq(
         "react" -> REACT_VERSION,
         "react-dom" -> REACT_VERSION
       ),
+      (webpack in(Compile, fastOptJS)) := Seq(),
+      (webpack in(Compile, fullOptJS)) := Seq(),
       publishArtifact := true
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
@@ -63,6 +65,8 @@ lazy val router = project.in(file("router"))
       npmDependencies in Compile ++= Seq(
         "react-router" -> "3.0.0"
       ),
+      (webpack in(Compile, fastOptJS)) := Seq(),
+      (webpack in(Compile, fullOptJS)) := Seq(),
       publishArtifact := true
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
