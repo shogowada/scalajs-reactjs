@@ -6,8 +6,8 @@ Develop React JS applications with Scala.
 
 |Component|SBT|Scala Version|Scala JS Version|
 |---|---|---|---|
-|Core|```"io.github.shogowada" %%% "scalajs-reactjs" % "0.4.3"```|2.11|0.6|
-|[Router](/router)|```"io.github.shogowada" %%% "scalajs-reactjs-router" % "0.4.3"```|2.11|0.6|
+|Core|```"io.github.shogowada" %%% "scalajs-reactjs" % "0.4.4"```|2.11, 2.12|0.6|
+|[Router](/router)|```"io.github.shogowada" %%% "scalajs-reactjs-router" % "0.4.4"```|2.11, 2.12|0.6|
 
 ## Table of Contents
 

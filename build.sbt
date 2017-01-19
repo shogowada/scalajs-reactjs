@@ -1,5 +1,7 @@
 val REACT_VERSION = "15.3.2"
 
+crossScalaVersions := Seq("2.11.8", "2.12.1")
+
 publishTo := {
   val nexus = "https://oss.sonatype.org/"
   isSnapshot.value match {
@@ -12,10 +14,10 @@ publishArtifact := false
 val commonSettings = Seq(
   organization := "io.github.shogowada",
   name := "scalajs-reactjs",
-  version := "0.4.4-SNAPSHOT",
+  version := "0.4.4",
   licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT")),
   homepage := Some(url("https://github.com/shogowada/scalajs-reactjs")),
-  scalaVersion := "2.11.8",
+  scalaVersion := "2.12.1",
   ivyScala := ivyScala.value.map {
     _.copy(overrideScalaVersion = true)
   },
