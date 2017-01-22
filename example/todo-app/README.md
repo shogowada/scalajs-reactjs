@@ -94,7 +94,7 @@ class TodoApp extends ReactClassSpec {
     )
   }
 
-  val handleChange = (event: InputElementSyntheticEvent) => {
+  val handleChange = (event: InputFormSyntheticEvent) => {
     val newText = event.target.value
     setState(_.copy(text = newText))
   }
@@ -205,7 +205,7 @@ If your component is stateful, you can update the state by using ```setState``` 
 class TodoApp extends ReactClassSpec {
   case class State(items: Seq[Item], text: String)
 
-  val handleChange = (event: InputElementSyntheticEvent) => {
+  val handleChange = (event: InputFormSyntheticEvent) => {
     val newText = event.target.value
     setState(_.copy(text = newText))
   }
