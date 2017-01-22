@@ -3,7 +3,8 @@ package io.github.shogowada.scalajs.reactjs.example.todoapp
 import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.specs.{ReactClassSpec, StatelessReactClassSpec}
-import io.github.shogowada.scalajs.reactjs.events.{InputElementSyntheticEvent, SyntheticEvent}
+import io.github.shogowada.scalajs.reactjs.elements.ReactElement
+import io.github.shogowada.scalajs.reactjs.events.{InputFormSyntheticEvent, SyntheticEvent}
 import org.scalajs.dom
 
 import scala.scalajs.js
@@ -17,7 +18,7 @@ object Main extends JSApp {
 
       override type Props = TodoList.Props
 
-      override def render() = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
+      override def render(): ReactElement = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
     }
 
     object TodoList {
@@ -34,7 +35,7 @@ object Main extends JSApp {
 
       override def getInitialState() = State(items = Seq(), text = "")
 
-      override def render() = {
+      override def render(): ReactElement = {
         <.div()(
           <.h3()("TODO"),
           new TodoList()(TodoList.Props(items = state.items)),
@@ -45,12 +46,12 @@ object Main extends JSApp {
         )
       }
 
-      val handleChange = (event: InputElementSyntheticEvent) => {
+      private val handleChange = (event: InputFormSyntheticEvent) => {
         val newText = event.target.value
         setState(_.copy(text = newText))
       }
 
-      val handleSubmit = (event: SyntheticEvent) => {
+      private val handleSubmit = (event: SyntheticEvent) => {
         event.preventDefault()
         val newItem = Item(text = state.text, id = js.Date.now().toString)
         setState((previousState: State) => State(
