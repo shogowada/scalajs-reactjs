@@ -1,4 +1,4 @@
-val REACT_VERSION = "15.3.2"
+val REACT_VERSION = "15.4.2"
 
 crossScalaVersions := Seq("2.11.8", "2.12.1")
 
@@ -14,7 +14,7 @@ publishArtifact := false
 val commonSettings = Seq(
   organization := "io.github.shogowada",
   name := "scalajs-reactjs",
-  version := "0.4.5-SNAPSHOT",
+  version := "0.5.0",
   licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT")),
   homepage := Some(url("https://github.com/shogowada/scalajs-reactjs")),
   scalaVersion := "2.12.1",
