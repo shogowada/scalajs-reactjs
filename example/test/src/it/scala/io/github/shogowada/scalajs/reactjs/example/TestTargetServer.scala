@@ -49,17 +49,20 @@ class TestTargetServer(project: String) {
 object TestTargetServers {
   val helloWorld = new TestTargetServer("helloworld")
   val interactiveHelloWorld = new TestTargetServer("interactive-helloworld")
+  val lifecycle = new TestTargetServer("lifecycle")
   val routing = new TestTargetServer("routing")
   val todoApp = new TestTargetServer("todo-app")
 
   helloWorld.start()
   interactiveHelloWorld.start()
+  lifecycle.start()
   routing.start()
   todoApp.start()
 
   sys.addShutdownHook(() => {
     helloWorld.stop()
     interactiveHelloWorld.stop()
+    lifecycle.stop()
     routing.stop()
     todoApp.stop()
   })
