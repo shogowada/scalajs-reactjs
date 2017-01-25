@@ -13,36 +13,28 @@ trait ReactClassSpec {
   val isPropsRawJs: Boolean = false
   val isStateRawJs: Boolean = false
 
-  def propsToRawJs(value: Props): js.Any = {
-    if (isPropsRawJs) {
-      value.asInstanceOf[js.Any]
-    } else {
-      js.Dynamic.literal("value" -> value.asInstanceOf[js.Any])
-    }
+  lazy val propsToRawJs: (Props) => js.Any = if (isPropsRawJs) {
+    (value) => value.asInstanceOf[js.Any]
+  } else {
+    (value) => js.Dynamic.literal("value" -> value.asInstanceOf[js.Any])
   }
 
-  def rawJsToProps(value: js.Any): Props = {
-    if (isPropsRawJs) {
-      value.asInstanceOf[Props]
-    } else {
-      value.asInstanceOf[js.Dynamic].value.asInstanceOf[Props]
-    }
+  lazy val rawJsToProps: (js.Any) => Props = if (isPropsRawJs) {
+    (value) => value.asInstanceOf[Props]
+  } else {
+    (value) => value.asInstanceOf[js.Dynamic].value.asInstanceOf[Props]
   }
 
-  def stateToRawJs(value: State): js.Any = {
-    if (isStateRawJs) {
-      value.asInstanceOf[js.Any]
-    } else {
-      js.Dynamic.literal("value" -> value.asInstanceOf[js.Any])
-    }
+  lazy val stateToRawJs: (State) => js.Any = if (isStateRawJs) {
+    (value) => value.asInstanceOf[js.Any]
+  } else {
+    (value) => js.Dynamic.literal("value" -> value.asInstanceOf[js.Any])
   }
 
-  def rawJsToState(value: js.Any): State = {
-    if (isStateRawJs) {
-      value.asInstanceOf[State]
-    } else {
-      value.asInstanceOf[js.Dynamic].value.asInstanceOf[State]
-    }
+  lazy val rawJsToState: (js.Any) => State = if (isStateRawJs) {
+    (value) => value.asInstanceOf[State]
+  } else {
+    (value) => value.asInstanceOf[js.Dynamic].value.asInstanceOf[State]
   }
 
   def props: Props = rawJsToProps(nativeThis.props)
