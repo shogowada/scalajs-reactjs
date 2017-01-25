@@ -111,8 +111,18 @@ lazy val exampleTodoApp = project.in(file("example") / "todo-app")
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core)
 
+lazy val exampleLifecycle = project.in(file("example") / "lifecycle")
+    .settings(exampleCommonSettings: _*)
+    .settings(
+      name += "-lifecycle"
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core)
+
 lazy val exampleTest = project.in(file("example") / "test")
+    .configs(IntegrationTest)
     .settings(commonSettings: _*)
+    .settings(Defaults.itSettings: _*)
     .settings(
       name += "-example-test",
       libraryDependencies ++= Seq(
@@ -124,8 +134,14 @@ lazy val exampleTest = project.in(file("example") / "test")
       javaOptions ++= Seq(
         s"-Dtarget.path.helloworld=${(crossTarget in exampleHelloWorld).value}",
         s"-Dtarget.path.interactive-helloworld=${(crossTarget in exampleInteractiveHelloWorld).value}",
+        s"-Dtarget.path.lifecycle=${(crossTarget in exampleLifecycle).value}",
         s"-Dtarget.path.routing=${(crossTarget in exampleRouting).value}",
-        s"-Dtarget.path.todo-app=${(crossTarget in exampleTodoApp).value}"
+        s"-Dtarget.path.todo-app=${(crossTarget in exampleTodoApp).value}",
+        s"-Ddummy.helloworld=${(webpack in fastOptJS in Compile in exampleHelloWorld).value}",
+        s"-Ddummy.interactive-helloworld=${(webpack in fastOptJS in Compile in exampleInteractiveHelloWorld).value}",
+        s"-Ddummy.lifecycle=${(webpack in fastOptJS in Compile in exampleLifecycle).value}",
+        s"-Ddummy.routing=${(webpack in fastOptJS in Compile in exampleRouting).value}",
+        s"-Ddummy.todo-app=${(webpack in fastOptJS in Compile in exampleTodoApp).value}"
       ),
       fork := true
     )

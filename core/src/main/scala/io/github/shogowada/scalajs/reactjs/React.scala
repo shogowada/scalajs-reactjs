@@ -1,6 +1,5 @@
 package io.github.shogowada.scalajs.reactjs
 
-import io.github.shogowada.scalajs.reactjs.Converters._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
@@ -21,9 +20,9 @@ object React {
     NativeReact.createElement(reactClass)
   }
 
-  def createElement(spec: ReactClassSpec, props: Any): ReactElement = {
+  def createElement(spec: ReactClassSpec, props: ReactClassSpec#Props): ReactElement = {
     val reactClass = createClass(spec)
-    NativeReact.createElement(reactClass, props.asJs)
+    NativeReact.createElement(reactClass, spec.propsToRawJs(props.asInstanceOf[spec.Props]))
   }
 
   def createElement(reactClass: ReactClass, props: js.Any, contents: js.Any*): ReactElement = {

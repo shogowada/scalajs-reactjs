@@ -4,18 +4,6 @@ import scala.scalajs.js
 
 object Converters {
 
-  implicit class ScalaObject[T](value: T) {
-    def asJs: js.Any = {
-      js.Dynamic.literal("value" -> value.asInstanceOf[js.Any])
-    }
-  }
-
-  implicit class JsObject(value: js.Any) {
-    def asScala[T]: T = {
-      value.asInstanceOf[js.Dynamic].value.asInstanceOf[T]
-    }
-  }
-
   implicit class ScalaFunction0[T](function: () => T) {
     def asJs: js.Function0[T] = {
       val jsFunction: js.Function0[T] = function
@@ -29,4 +17,5 @@ object Converters {
       jsFunction
     }
   }
+
 }
