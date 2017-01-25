@@ -6,5 +6,5 @@ trait StatelessReactClassSpec extends ReactClassSpec {
 
   override type State = js.Object
 
-  override def getInitialState(): State = null
+  override def getInitialState(): State = js.Object()
 }

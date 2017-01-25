@@ -1,6 +1,5 @@
 package io.github.shogowada.scalajs.reactjs.classes.specs
 
-import io.github.shogowada.scalajs.reactjs.Converters._
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 
@@ -11,9 +10,44 @@ trait ReactClassSpec {
   type Props
   type State
 
-  def props: Props = nativeThis.props.asScala[Props]
+  val isPropsRawJs: Boolean = false
+  val isStateRawJs: Boolean = false
 
-  def state: State = nativeThis.state.asScala[State]
+  def propsToRawJs(value: Props): js.Any = {
+    if (isPropsRawJs) {
+      value.asInstanceOf[js.Any]
+    } else {
+      js.Dynamic.literal("value" -> value.asInstanceOf[js.Any])
+    }
+  }
+
+  def rawJsToProps(value: js.Any): Props = {
+    if (isPropsRawJs) {
+      value.asInstanceOf[Props]
+    } else {
+      value.asInstanceOf[js.Dynamic].value.asInstanceOf[Props]
+    }
+  }
+
+  def stateToRawJs(value: State): js.Any = {
+    if (isStateRawJs) {
+      value.asInstanceOf[js.Any]
+    } else {
+      js.Dynamic.literal("value" -> value.asInstanceOf[js.Any])
+    }
+  }
+
+  def rawJsToState(value: js.Any): State = {
+    if (isStateRawJs) {
+      value.asInstanceOf[State]
+    } else {
+      value.asInstanceOf[js.Dynamic].value.asInstanceOf[State]
+    }
+  }
+
+  def props: Props = rawJsToProps(nativeThis.props)
+
+  def state: State = rawJsToState(nativeThis.state)
 
   def componentWillMount(): Unit = {}
 
@@ -37,17 +71,17 @@ trait ReactClassSpec {
 
   def getInitialState(): State
 
-  def setState(state: State): Unit = nativeThis.setState(state.asJs)
+  def setState(state: State): Unit = nativeThis.setState(stateToRawJs(state))
 
   def setState(stateMapper: State => State): Unit = {
     val nativeStateMapper: js.Function1[js.Object, js.Any] =
-      (prevState: js.Object) => stateMapper(prevState.asScala[State]).asJs
+      (prevState: js.Object) => stateToRawJs(stateMapper(rawJsToState(prevState)))
     nativeThis.setState(nativeStateMapper)
   }
 
   def setState(stateMapper: (State, Props) => State): Unit = {
     val nativeStateMapper: js.Function2[js.Object, js.Object, js.Any] =
-      (prevState: js.Object, props: js.Object) => stateMapper(prevState.asScala[State], props.asScala[Props]).asJs
+      (prevState: js.Object, props: js.Object) => stateToRawJs(stateMapper(rawJsToState(prevState), rawJsToProps(props)))
     nativeThis.setState(nativeStateMapper)
   }
 
@@ -70,19 +104,19 @@ trait ReactClassSpec {
     }),
     "componentWillReceiveProps" -> js.ThisFunction.fromFunction2((newNativeThis: js.Dynamic, nextProps: js.Object) => {
       _nativeThis = newNativeThis
-      componentWillReceiveProps(nextProps.asScala[Props])
+      componentWillReceiveProps(rawJsToProps(nextProps))
     }),
     "shouldComponentUpdate" -> js.ThisFunction.fromFunction3((newNativeThis: js.Dynamic, nextProps: js.Object, nextState: js.Object) => {
       _nativeThis = newNativeThis
-      shouldComponentUpdate(nextProps.asScala[Props], nextState.asScala[State])
+      shouldComponentUpdate(rawJsToProps(nextProps), rawJsToState(nextState))
     }),
     "componentWillUpdate" -> js.ThisFunction.fromFunction3((newNativeThis: js.Dynamic, nextProps: js.Object, nextState: js.Object) => {
       _nativeThis = newNativeThis
-      componentWillUpdate(nextProps.asScala[Props], nextState.asScala[State])
+      componentWillUpdate(rawJsToProps(nextProps), rawJsToState(nextState))
     }),
     "componentDidUpdate" -> js.ThisFunction.fromFunction3((newNativeThis: js.Dynamic, prevProps: js.Object, prevState: js.Object) => {
       _nativeThis = newNativeThis
-      componentDidUpdate(prevProps.asScala[Props], prevState.asScala[State])
+      componentDidUpdate(rawJsToProps(prevProps), rawJsToState(prevState))
     }),
     "componentWillUnmount" -> js.ThisFunction.fromFunction1((newNativeThis: js.Dynamic) => {
       _nativeThis = newNativeThis
@@ -90,7 +124,7 @@ trait ReactClassSpec {
     }),
     "getInitialState" -> js.ThisFunction.fromFunction1((newNativeThis: js.Dynamic) => {
       _nativeThis = newNativeThis
-      Option(getInitialState()).map(_.asJs).orNull
+      Option(getInitialState()).map(stateToRawJs).orNull
     }),
     "render" -> js.ThisFunction.fromFunction1((newNativeThis: js.Dynamic) => {
       _nativeThis = newNativeThis
