@@ -10,36 +10,19 @@ trait ReactClassSpec {
   type Props
   type State
 
-  val isPropsRawJs: Boolean = false
-  val isStateRawJs: Boolean = false
+  def propsToRawJs(value: Props): js.Any = js.Dynamic.literal("wrapped" -> value.asInstanceOf[js.Any])
 
-  lazy val propsToRawJs: (Props) => js.Any = if (isPropsRawJs) {
-    (value) => value.asInstanceOf[js.Any]
-  } else {
-    (value) => js.Dynamic.literal("value" -> value.asInstanceOf[js.Any])
-  }
+  def rawJsToProps(value: js.Any): Props = value.asInstanceOf[js.Dynamic].wrapped.asInstanceOf[Props]
 
-  lazy val rawJsToProps: (js.Any) => Props = if (isPropsRawJs) {
-    (value) => value.asInstanceOf[Props]
-  } else {
-    (value) => value.asInstanceOf[js.Dynamic].value.asInstanceOf[Props]
-  }
+  def stateToRawJs(value: State): js.Any = js.Dynamic.literal("wrapped" -> value.asInstanceOf[js.Any])
 
-  lazy val stateToRawJs: (State) => js.Any = if (isStateRawJs) {
-    (value) => value.asInstanceOf[js.Any]
-  } else {
-    (value) => js.Dynamic.literal("value" -> value.asInstanceOf[js.Any])
-  }
-
-  lazy val rawJsToState: (js.Any) => State = if (isStateRawJs) {
-    (value) => value.asInstanceOf[State]
-  } else {
-    (value) => value.asInstanceOf[js.Dynamic].value.asInstanceOf[State]
-  }
+  def rawJsToState(value: js.Any): State = value.asInstanceOf[js.Dynamic].wrapped.asInstanceOf[State]
 
   def props: Props = rawJsToProps(nativeThis.props)
 
   def state: State = rawJsToState(nativeThis.state)
+
+  def children: js.Any = nativeThis.props.children
 
   def componentWillMount(): Unit = {}
 
@@ -80,6 +63,8 @@ trait ReactClassSpec {
   def render(): ReactElement
 
   def apply(props: Props): ReactElement = React.createElement(this, props)
+
+  def apply(props: Props, children: Any*): ReactElement = React.createElement(this, props, children)
 
   private var _nativeThis: js.Dynamic = _
 

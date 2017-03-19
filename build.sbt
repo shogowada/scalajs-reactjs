@@ -74,6 +74,20 @@ lazy val router = project.in(file("router"))
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core)
 
+lazy val redux = project.in(file("redux"))
+    .settings(commonSettings: _*)
+    .settings(
+      name += "-redux",
+      npmDependencies in Compile ++= Seq(
+        "react-redux" -> "5.0.3"
+      ),
+      (webpack in(Compile, fastOptJS)) := Seq(),
+      (webpack in(Compile, fullOptJS)) := Seq(),
+      publishArtifact := true
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core)
+
 val exampleCommonSettings = commonSettings ++ Seq(
   name += "-example",
   (unmanagedResourceDirectories in Compile) += baseDirectory.value / "src" / "main" / "webapp"
@@ -111,6 +125,14 @@ lazy val exampleTodoApp = project.in(file("example") / "todo-app")
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core)
 
+lazy val exampleTodoAppRedux = project.in(file("example") / "todo-app-redux")
+    .settings(exampleCommonSettings: _*)
+    .settings(
+      name += "-todo-app-redux"
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core, redux)
+
 lazy val exampleLifecycle = project.in(file("example") / "lifecycle")
     .settings(exampleCommonSettings: _*)
     .settings(
@@ -137,11 +159,13 @@ lazy val exampleTest = project.in(file("example") / "test")
         s"-Dtarget.path.lifecycle=${(crossTarget in exampleLifecycle).value}",
         s"-Dtarget.path.routing=${(crossTarget in exampleRouting).value}",
         s"-Dtarget.path.todo-app=${(crossTarget in exampleTodoApp).value}",
+        s"-Dtarget.path.todo-app-redux=${(crossTarget in exampleTodoAppRedux).value}",
         s"-Ddummy.helloworld=${(webpack in fastOptJS in Compile in exampleHelloWorld).value}",
         s"-Ddummy.interactive-helloworld=${(webpack in fastOptJS in Compile in exampleInteractiveHelloWorld).value}",
         s"-Ddummy.lifecycle=${(webpack in fastOptJS in Compile in exampleLifecycle).value}",
         s"-Ddummy.routing=${(webpack in fastOptJS in Compile in exampleRouting).value}",
-        s"-Ddummy.todo-app=${(webpack in fastOptJS in Compile in exampleTodoApp).value}"
+        s"-Ddummy.todo-app=${(webpack in fastOptJS in Compile in exampleTodoApp).value}",
+        s"-Ddummy.todo-app-redux=${(webpack in fastOptJS in Compile in exampleTodoAppRedux).value}"
       ),
       fork := true
     )

@@ -18,7 +18,7 @@ class App extends StatelessRoutedReactClassSpec {
         <.li()(<.Link(to = "about")("About")),
         <.li()(<.Link(to = "repos")("Repos"))
       ),
-      props.children
+      children
     )
   }
 }
@@ -30,7 +30,7 @@ class About extends StatelessRoutedReactClassSpec {
 class Repos extends StatelessRoutedReactClassSpec {
   override def render() = <.div(^.id := "repos")(
     "Repos",
-    props.children
+    children
   )
 }
 
@@ -44,7 +44,7 @@ class Repo extends StatelessRoutedReactClassSpec {
 
   override type Params = RepoParams
 
-  override def render() = <.div(^.id := s"repo-${props.params.id}")(s"Repo ${props.params.id}")
+  override def render() = <.div(^.id := s"repo-${params.id}")(s"Repo ${params.id}")
 }
 
 class Index extends StatelessReactClassSpec {

@@ -12,8 +12,8 @@ object React {
   def createClass(spec: ReactClassSpec): ReactClass =
     NativeReact.createClass(spec.asNative)
 
-  def createElement(tagName: String, attributes: js.Any, content: js.Any*): ReactElement =
-    NativeReact.createElement(tagName, attributes, content: _*)
+  def createElement(tagName: String, attributes: js.Any, children: js.Any*): ReactElement =
+    NativeReact.createElement(tagName, attributes, children: _*)
 
   def createElement(spec: ReactClassSpec): ReactElement = {
     val reactClass = createClass(spec)
@@ -25,8 +25,13 @@ object React {
     NativeReact.createElement(reactClass, spec.propsToRawJs(props.asInstanceOf[spec.Props]))
   }
 
-  def createElement(reactClass: ReactClass, props: js.Any, contents: js.Any*): ReactElement = {
-    NativeReact.createElement(reactClass, props, contents: _*)
+  def createElement(spec: ReactClassSpec, props: ReactClassSpec#Props, children: js.Any*): ReactElement = {
+    val reactClass = createClass(spec)
+    NativeReact.createElement(reactClass, spec.propsToRawJs(props.asInstanceOf[spec.Props]), children: _*)
+  }
+
+  def createElement(reactClass: ReactClass, props: Any, children: js.Any*): ReactElement = {
+    NativeReact.createElement(reactClass, props.asInstanceOf[js.Any], children: _*)
   }
 }
 
@@ -35,11 +40,11 @@ object React {
 object NativeReact extends js.Object {
   def createClass(spec: js.Any): ReactClass = js.native
 
-  def createElement(tagName: String, attributes: js.Any, content: js.Any*): ReactElement = js.native
+  def createElement(tagName: String, attributes: js.Any, children: js.Any*): ReactElement = js.native
 
   def createElement(reactClass: ReactClass): ReactElement = js.native
 
   def createElement(reactClass: ReactClass, attributes: js.Any): ReactElement = js.native
 
-  def createElement(reactClass: ReactClass, props: js.Any, contents: js.Any*): ReactElement = js.native
+  def createElement(reactClass: ReactClass, props: js.Any, children: js.Any*): ReactElement = js.native
 }
