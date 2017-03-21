@@ -93,13 +93,13 @@ class InteractiveHelloWorld extends ReactClassSpec {
   }
 
   def createLetterCaseRadioBox(thisLetterCase: LetterCase): ReactElement = {
-    new LetterCaseRadioBox()(LetterCaseRadioBox.Props(
+    (new LetterCaseRadioBox()) (LetterCaseRadioBox.Props(
       letterCase = thisLetterCase,
       checked = thisLetterCase == state.letterCase,
       onChecked = () => {
         setState(_.copy(letterCase = thisLetterCase))
       }
-    ))
+    ))()
   }
 
   val onChange = () => {

@@ -1,4 +1,6 @@
-val REACT_VERSION = "15.4.2"
+val ReactVersion = "15.4.2"
+val ReactReduxVersion = "5.0.3"
+val ReduxVersion = "3.6.0"
 
 crossScalaVersions := Seq("2.11.8", "2.12.1")
 
@@ -51,8 +53,8 @@ lazy val core = project.in(file("core"))
         "io.github.shogowada" %%% "statictags" % "2.1.0"
       ),
       npmDependencies in Compile ++= Seq(
-        "react" -> REACT_VERSION,
-        "react-dom" -> REACT_VERSION
+        "react" -> ReactVersion,
+        "react-dom" -> ReactVersion
       ),
       (webpack in(Compile, fastOptJS)) := Seq(),
       (webpack in(Compile, fullOptJS)) := Seq(),
@@ -79,7 +81,8 @@ lazy val redux = project.in(file("redux"))
     .settings(
       name += "-redux",
       npmDependencies in Compile ++= Seq(
-        "react-redux" -> "5.0.3"
+        "react-redux" -> ReactReduxVersion,
+        "redux" -> ReduxVersion
       ),
       (webpack in(Compile, fastOptJS)) := Seq(),
       (webpack in(Compile, fullOptJS)) := Seq(),

@@ -1,43 +1,49 @@
 package io.github.shogowada.scalajs.reactjs.example.todoappredux
 
+import io.github.shogowada.scalajs.reactjs.redux.ReactRedux
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
-import io.github.shogowada.scalajs.reactjs.redux.{Action, Redux}
 
-case class SetVisibilityFilter(filter: String) extends Action {
-  override val `type` = "SET_VISIBILITY_FILTER"
-}
+object FilterLink {
 
-case class ToggleTodo(id: String) extends Action {
-  override val `type` = "TOGGLE_TODO"
-}
+  case class Props(filter: String)
 
-object ContainerComponents {
-  def FilterLink = Redux.connectAdvanced((dispatch: Dispatch) => {
-    (state: State, ownProps: FilterLinkProps) => {
+  def apply() = ReactRedux.connect(
+    (dispatch: Dispatch, state: State, ownProps: Props) => {
       Link.Props(
         active = ownProps.filter == state.visibilityFilter,
         onClick = () => {
-          dispatch(SetVisibilityFilter(ownProps.filter))
+          dispatch(SetVisibilityFilter(filter = ownProps.filter))
         }
       )
     }
-  })(new Link())
+  )(new Link())
+}
 
-  case class FilterLinkProps(filter: String)
-
-  def VisibleTodoList = Redux.connectAdvanced((dispatch: Dispatch) => {
-    (state: State, ownProps: Unit) => {
+object TodoListContainerComponent {
+  def apply() = ReactRedux.connect(
+    (dispatch: Dispatch, state: State, ownProps: Unit) => {
       TodoList.Props(
         todos = state.visibilityFilter match {
           case "SHOW_ALL" => state.todos
           case "SHOW_ACTIVE" => state.todos.filter(todo => !todo.completed)
           case "SHOW_COMPLETED" => state.todos.filter(todo => todo.completed)
         },
-        onTodoClick = (id: String) => {
-          dispatch(ToggleTodo(id))
+        onTodoClick = (id: Int) => {
+          dispatch(ToggleTodo(id = id))
         }
       )
     }
-  })(new TodoList())
+  )(new TodoList())
+}
 
+object AddTodoContainerComponent {
+  def apply() = ReactRedux.connect(
+    (dispatch: Dispatch, state: State, ownProps: Unit) => {
+      AddTodoComponent.Props(
+        onAddTodo = (text: String) => {
+          dispatch(AddTodo(text = text))
+        }
+      )
+    }
+  )(new AddTodoComponent())
 }

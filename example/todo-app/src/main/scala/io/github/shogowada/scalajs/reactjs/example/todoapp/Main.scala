@@ -38,7 +38,7 @@ object Main extends JSApp {
       override def render(): ReactElement = {
         <.div()(
           <.h3()("TODO"),
-          new TodoList()(TodoList.Props(items = state.items)),
+          new TodoList()(TodoList.Props(items = state.items))(),
           <.form(^.onSubmit := handleSubmit)(
             <.input(^.onChange := handleChange, ^.value := state.text)(),
             <.button()(s"Add #${state.items.size + 1}")

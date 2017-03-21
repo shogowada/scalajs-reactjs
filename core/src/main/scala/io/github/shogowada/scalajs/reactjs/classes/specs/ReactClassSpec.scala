@@ -62,9 +62,7 @@ trait ReactClassSpec {
 
   def render(): ReactElement
 
-  def apply(props: Props): ReactElement = React.createElement(this, props)
-
-  def apply(props: Props, children: Any*): ReactElement = React.createElement(this, props, children)
+  def apply(props: Props)(children: js.Any*): ReactElement = React.createElement(this, props, children: _*)
 
   private var _nativeThis: js.Dynamic = _
 

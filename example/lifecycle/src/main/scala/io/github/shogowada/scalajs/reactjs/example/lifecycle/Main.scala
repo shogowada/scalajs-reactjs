@@ -75,6 +75,6 @@ class App extends ReactClassSpec {
 object Main extends JSApp {
   override def main(): Unit = {
     val mountNode = dom.document.getElementById("mount-node")
-    ReactDOM.render(new App()(App.Props()), mountNode)
+    ReactDOM.render(new App()(App.Props())(), mountNode)
   }
 }
