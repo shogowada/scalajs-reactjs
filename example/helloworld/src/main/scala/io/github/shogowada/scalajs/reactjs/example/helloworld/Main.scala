@@ -20,9 +20,9 @@ object Main extends JSApp {
 
       case class Props(name: String)
 
-      def apply(props: Props) = new HelloWorld()(props)()
     }
     val mountNode = dom.document.getElementById("mount-node")
-    ReactDOM.render(HelloWorld(HelloWorld.Props("World")), mountNode)
+    val helloWorld = new HelloWorld()
+    ReactDOM.render(helloWorld(HelloWorld.Props("World"))(), mountNode)
   }
 }

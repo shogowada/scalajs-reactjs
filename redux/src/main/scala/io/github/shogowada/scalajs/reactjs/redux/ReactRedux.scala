@@ -5,17 +5,20 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
+import io.github.shogowada.scalajs.reactjs.redux.Redux.NativeDispatch
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
 class ContainerComponent[OwnProps](wrappedClass: ReactClass) {
-  def apply()(children: js.Any*): ReactElement = {
-    React.createElement(wrappedClass, new js.Object(), children: _*)
-  }
-
   def apply(ownProps: OwnProps)(children: js.Any*): ReactElement = {
     React.createElement(wrappedClass, ownProps, children: _*)
+  }
+}
+
+class ProplessContainerComponent(wrappedClass: ReactClass) {
+  def apply(children: js.Any*): ReactElement = {
+    React.createElement(wrappedClass, js.Object(), children: _*)
   }
 }
 
@@ -30,6 +33,26 @@ object ReactRedux {
       )
       React.createElement(NativeReactReduxProvider, props, children: _*)
     }
+  }
+
+  def connect[State, Props](
+      selector: (Dispatch, State) => Props
+  )(
+      classSpec: ReactClassSpec
+  ): ProplessContainerComponent = {
+    val nativeSelectorFactory: js.Function1[NativeDispatch, js.Function2[State, js.Object, js.Any]] =
+      (nativeDispatch: NativeDispatch) => {
+        val dispatch: Dispatch = (action: Action) => nativeDispatch(new ActionWrapper(action)).wrapped
+        (state: State, ownProps: js.Object) => {
+          val props: Props = selector(dispatch, state)
+          classSpec.propsToRawJs(props.asInstanceOf[classSpec.Props])
+        }
+      }
+
+    val nativeContainerComponent: ReactClass =
+      NativeReactRedux.connectAdvanced(nativeSelectorFactory)(React.createClass(classSpec))
+
+    new ProplessContainerComponent(nativeContainerComponent)
   }
 
   def connect[State, OwnProps, Props](
@@ -47,15 +70,18 @@ object ReactRedux {
   )(
       classSpec: ReactClassSpec
   ): ContainerComponent[OwnProps] = {
-    val nativeContainerComponent: ReactClass = NativeReactRedux.connectAdvanced(
-      (dispatch: Dispatch) => {
+    val nativeSelectorFactory: js.Function1[NativeDispatch, js.Function2[State, OwnProps, js.Any]] =
+      (nativeDispatch: NativeDispatch) => {
+        val dispatch: Dispatch = (action: Action) => nativeDispatch(new ActionWrapper(action)).wrapped
         val selector = selectorFactory(dispatch)
         (state: State, ownProps: OwnProps) => {
           val props: Props = selector(state, ownProps)
           classSpec.propsToRawJs(props.asInstanceOf[classSpec.Props])
         }
       }
-    )(React.createClass(classSpec))
+
+    val nativeContainerComponent: ReactClass =
+      NativeReactRedux.connectAdvanced(nativeSelectorFactory)(React.createClass(classSpec))
 
     new ContainerComponent[OwnProps](nativeContainerComponent)
   }
@@ -68,5 +94,5 @@ object NativeReactReduxProvider extends ReactClass
 @js.native
 @JSImport("react-redux", JSImport.Namespace)
 object NativeReactRedux extends js.Object {
-  def connectAdvanced[State, OwnProps](selectorFactory: js.Function1[Redux.Dispatch, js.Function2[State, OwnProps, js.Any]]): js.Function1[ReactClass, ReactClass] = js.native
+  def connectAdvanced[State, OwnProps](selectorFactory: js.Function1[Redux.NativeDispatch, js.Function2[State, OwnProps, js.Any]]): js.Function1[ReactClass, ReactClass] = js.native
 }

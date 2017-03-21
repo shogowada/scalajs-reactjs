@@ -2,8 +2,13 @@ package io.github.shogowada.scalajs.reactjs.example.todoappredux
 
 import io.github.shogowada.scalajs.reactjs.redux.Action
 
+object VisibilityFilters {
+  val ShowAll = "SHOW_ALL"
+  val ShowActive = "SHOW_ACTIVE"
+  val ShowCompleted = "SHOW_COMPLETED"
+}
+
 case class AddTodo(
-    `type`: String = "ADD_TODO",
     id: Int = AddTodo.nextId,
     text: String
 ) extends Action
@@ -18,11 +23,9 @@ object AddTodo {
 }
 
 case class SetVisibilityFilter(
-    `type`: String = "SET_VISIBILITY_FILTER",
     filter: String
 ) extends Action
 
 case class ToggleTodo(
-    `type`: String = "TOGGLE_TODO",
     id: Int
 ) extends Action
