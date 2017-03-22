@@ -4,12 +4,6 @@
 
 Develop React JS applications with Scala. It is compatible with Scala 2.11, 2.12, and Scala.js 0.6.14+.
 
-## Table of Contents
-
-- [Quick Look](#quick-look)
-- [How to Use](#how-to-use)
-- [Tutorial](#tutorial)
-
 ## Quick Look
 
 ```scala
