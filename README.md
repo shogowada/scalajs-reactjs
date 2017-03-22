@@ -6,8 +6,9 @@ Develop React JS applications with Scala.
 
 |Component|SBT|Scala Version|Scala JS Version|
 |---|---|---|---|
-|Core|```"io.github.shogowada" %%% "scalajs-reactjs" % "0.5.1"```|2.11, 2.12|0.6.14+|
-|[Router](/router)|```"io.github.shogowada" %%% "scalajs-reactjs-router" % "0.5.1"```|2.11, 2.12|0.6.14+|
+|react|```"io.github.shogowada" %%% "scalajs-reactjs" % "0.5.1"```|2.11, 2.12|0.6.14+|
+|react-router|```"io.github.shogowada" %%% "scalajs-reactjs-router" % "0.5.1"```|2.11, 2.12|0.6.14+|
+|react-redux|```"io.github.shogowada" %%% "scalajs-reactjs-redux" % "0.5.1"```|2.11, 2.12|0.6.14+|
 
 ## Table of Contents
 
@@ -69,3 +70,5 @@ ReactDOM.render(HelloWorld(HelloWorld.Props("World")), mountNode)
 ## Tutorial
 
 - [TODO App](example/todo-app)
+- [Routing](/router)
+- [Redux](/redux)
