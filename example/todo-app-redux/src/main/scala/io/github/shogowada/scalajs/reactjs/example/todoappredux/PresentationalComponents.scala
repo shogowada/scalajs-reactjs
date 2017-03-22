@@ -75,15 +75,15 @@ class Footer extends StaticReactClassSpec {
   override def render() = {
     <.p()(
       "Show: ",
-      LinkContainerComponent(LinkContainerComponentProps("SHOW_ALL"))(
+      <.LinkContainerComponent(LinkContainerComponentProps("SHOW_ALL"))(
         "All"
       ),
       ", ",
-      LinkContainerComponent(LinkContainerComponentProps("SHOW_ACTIVE"))(
+      <.LinkContainerComponent(LinkContainerComponentProps("SHOW_ACTIVE"))(
         "Active"
       ),
       ", ",
-      LinkContainerComponent(LinkContainerComponentProps("SHOW_COMPLETED"))(
+      <.LinkContainerComponent(LinkContainerComponentProps("SHOW_COMPLETED"))(
         "Completed"
       )
     )
@@ -128,8 +128,8 @@ class App extends StatelessReactClassSpec[App.Props] {
 
   override def render() = {
     <.div()(
-      AddTodoContainerComponent(),
-      TodoListContainerComponent(),
+      <.AddTodoContainerComponent(),
+      <.TodoListContainerComponent(),
       Footer()
     )
   }

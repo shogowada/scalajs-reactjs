@@ -44,6 +44,14 @@ object ReactRedux {
     }
   }
 
+  def connect[Props, State](
+      selector: (Dispatch) => Props
+  )(
+      classSpec: ReactClassSpec[Props, State]
+  ): PropslessContainerComponent = {
+    connect((dispatch: Dispatch, _: js.Any) => selector(dispatch))(classSpec)
+  }
+
   def connect[ReduxState, Props, State](
       selector: (Dispatch, ReduxState) => Props
   )(
