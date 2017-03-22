@@ -35,17 +35,17 @@ object ReactRedux {
     }
   }
 
-  def connect[State, Props](
-      selector: (Dispatch, State) => Props
+  def connect[ReduxState, Props, State](
+      selector: (Dispatch, ReduxState) => Props
   )(
-      classSpec: ReactClassSpec
+      classSpec: ReactClassSpec[Props, State]
   ): ProplessContainerComponent = {
-    val nativeSelectorFactory: js.Function1[NativeDispatch, js.Function2[State, js.Object, js.Any]] =
+    val nativeSelectorFactory: js.Function1[NativeDispatch, js.Function2[ReduxState, js.Object, js.Any]] =
       (nativeDispatch: NativeDispatch) => {
         val dispatch: Dispatch = (action: Action) => nativeDispatch(new ActionWrapper(action)).wrapped
-        (state: State, ownProps: js.Object) => {
+        (state: ReduxState, ownProps: js.Object) => {
           val props: Props = selector(dispatch, state)
-          classSpec.propsToRawJs(props.asInstanceOf[classSpec.Props])
+          classSpec.propsToRawJs(props)
         }
       }
 
@@ -55,28 +55,28 @@ object ReactRedux {
     new ProplessContainerComponent(nativeContainerComponent)
   }
 
-  def connect[State, OwnProps, Props](
-      selector: (Dispatch, State, OwnProps) => Props
+  def connect[ReduxState, OwnProps, Props, State](
+      selector: (Dispatch, ReduxState, OwnProps) => Props
   )(
-      classSpec: ReactClassSpec
+      classSpec: ReactClassSpec[Props, State]
   ): ContainerComponent[OwnProps] = {
     connectAdvanced(
-      (dispatch) => (state: State, ownProps: OwnProps) => selector(dispatch, state, ownProps)
+      (dispatch) => (state: ReduxState, ownProps: OwnProps) => selector(dispatch, state, ownProps)
     )(classSpec)
   }
 
-  def connectAdvanced[State, OwnProps, Props](
-      selectorFactory: Dispatch => (State, OwnProps) => Props
+  def connectAdvanced[ReduxState, OwnProps, Props, State](
+      selectorFactory: Dispatch => (ReduxState, OwnProps) => Props
   )(
-      classSpec: ReactClassSpec
+      classSpec: ReactClassSpec[Props, State]
   ): ContainerComponent[OwnProps] = {
-    val nativeSelectorFactory: js.Function1[NativeDispatch, js.Function2[State, OwnProps, js.Any]] =
+    val nativeSelectorFactory: js.Function1[NativeDispatch, js.Function2[ReduxState, OwnProps, js.Any]] =
       (nativeDispatch: NativeDispatch) => {
         val dispatch: Dispatch = (action: Action) => nativeDispatch(new ActionWrapper(action)).wrapped
         val selector = selectorFactory(dispatch)
-        (state: State, ownProps: OwnProps) => {
+        (state: ReduxState, ownProps: OwnProps) => {
           val props: Props = selector(state, ownProps)
-          classSpec.propsToRawJs(props.asInstanceOf[classSpec.Props])
+          classSpec.propsToRawJs(props)
         }
       }
 

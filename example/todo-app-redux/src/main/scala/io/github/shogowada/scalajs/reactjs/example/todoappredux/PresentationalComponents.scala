@@ -6,8 +6,7 @@ import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLInpu
 import io.github.shogowada.scalajs.reactjs.events.{InputFormSyntheticEvent, SyntheticEvent}
 
 
-class Todo extends StatelessReactClassSpec {
-  override type Props = Todo.Props
+class Todo extends StatelessReactClassSpec[Todo.Props] {
 
   override def render() = {
     <.li(
@@ -27,9 +26,7 @@ object Todo {
   def apply(props: Props) = new Todo()(props)()
 }
 
-class TodoList extends StatelessReactClassSpec {
-
-  override type Props = TodoList.Props
+class TodoList extends StatelessReactClassSpec[TodoList.Props] {
 
   override def render() = {
     <.ul()(
@@ -49,8 +46,7 @@ object TodoList {
 
 }
 
-class Link extends StatelessReactClassSpec {
-  override type Props = Link.Props
+class Link extends StatelessReactClassSpec[Link.Props] {
 
   override def render() = {
     if (props.active) {
@@ -75,9 +71,7 @@ object Link {
 
 }
 
-class Footer extends StatelessReactClassSpec {
-  override type Props = Footer.Props
-
+class Footer extends StatelessReactClassSpec[Footer.Props] {
   override def render() = {
     <.p()(
       "Show: ",
@@ -103,8 +97,7 @@ object Footer {
   def apply() = new Footer()
 }
 
-class AddTodoComponent extends StatelessReactClassSpec {
-  override type Props = AddTodoComponent.Props
+class AddTodoComponent extends StatelessReactClassSpec[AddTodoComponent.Props] {
 
   private var input: ReactHTMLInputElement = _
 
@@ -134,9 +127,7 @@ object AddTodoComponent {
 
 }
 
-class App extends StatelessReactClassSpec {
-
-  override type Props = App.Props
+class App extends StatelessReactClassSpec[App.Props] {
 
   override def render() = {
     <.div()(

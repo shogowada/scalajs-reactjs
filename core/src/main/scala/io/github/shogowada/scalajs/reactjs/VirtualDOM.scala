@@ -244,7 +244,7 @@ trait VirtualDOM extends StaticTags {
   private def elementToReactElement(content: Any): js.Any = {
     content match {
       case element@Element(_, _, _, _) => elementsToVirtualDoms(element)
-      case spec: ReactClassSpec => React.createElement(spec)
+      case spec: ReactClassSpec[_, _] => React.createElement(spec)
       case _ => content.asInstanceOf[js.Any]
     }
   }

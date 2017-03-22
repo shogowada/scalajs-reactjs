@@ -8,11 +8,11 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
 object ReactDOM {
-  def render(reactClassSpec: ReactClassSpec, node: dom.Node): Unit = {
+  def render[Props, State](reactClassSpec: ReactClassSpec[Props, State], node: dom.Node): Unit = {
     render(React.createElement(reactClassSpec), node)
   }
 
-  def render(reactClassSpec: ReactClassSpec, props: ReactClassSpec#Props, node: dom.Node): Unit = {
+  def render[Props, State](reactClassSpec: ReactClassSpec[Props, State], props: Props, node: dom.Node): Unit = {
     render(React.createElement(reactClassSpec, props), node)
   }
 

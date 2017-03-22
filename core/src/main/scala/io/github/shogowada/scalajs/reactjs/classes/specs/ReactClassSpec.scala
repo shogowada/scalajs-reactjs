@@ -5,10 +5,7 @@ import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 
 import scala.scalajs.js
 
-trait ReactClassSpec {
-
-  type Props
-  type State
+trait ReactClassSpec[Props, State] {
 
   def propsToRawJs(value: Props): js.Any = js.Dynamic.literal("wrapped" -> value.asInstanceOf[js.Any])
 
@@ -106,4 +103,22 @@ trait ReactClassSpec {
       render()
     })
   )
+}
+
+trait StatelessReactClassSpec[Props] extends ReactClassSpec[Props, Unit] {
+  override def getInitialState(): Unit = ()
+}
+
+trait PropslessReactClassSpec[State] extends ReactClassSpec[Unit, State] {
+  def apply(children: js.Any*): ReactElement =
+    this.asInstanceOf[ReactClassSpec[Unit, State]]
+        .apply(())(children: _*)
+}
+
+trait StaticReactClassSpec extends ReactClassSpec[Unit, Unit] {
+  override def getInitialState(): Unit = ()
+
+  def apply(children: js.Any*): ReactElement =
+    this.asInstanceOf[ReactClassSpec[Unit, Unit]]
+        .apply(())(children: _*)
 }

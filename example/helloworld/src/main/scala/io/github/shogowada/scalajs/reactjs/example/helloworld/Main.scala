@@ -9,10 +9,7 @@ import scala.scalajs.js.JSApp
 
 object Main extends JSApp {
   def main(): Unit = {
-    class HelloWorld extends StatelessReactClassSpec {
-
-      override type Props = HelloWorld.Props
-
+    class HelloWorld extends StatelessReactClassSpec[HelloWorld.Props] {
       override def render() = <.div(^.id := "hello-world")(s"Hello, ${props.name}!")
     }
 

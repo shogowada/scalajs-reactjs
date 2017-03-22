@@ -2,7 +2,7 @@ package io.github.shogowada.scalajs.reactjs.example.todoapp
 
 import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.specs.{ReactClassSpec, StatelessReactClassSpec}
+import io.github.shogowada.scalajs.reactjs.classes.specs.{PropslessReactClassSpec, StatelessReactClassSpec}
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events.{InputFormSyntheticEvent, SyntheticEvent}
 import org.scalajs.dom
@@ -14,10 +14,7 @@ object Main extends JSApp {
   def main(): Unit = {
     case class Item(id: String, text: String)
 
-    class TodoList extends StatelessReactClassSpec {
-
-      override type Props = TodoList.Props
-
+    class TodoList extends StatelessReactClassSpec[TodoList.Props] {
       override def render(): ReactElement = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
     }
 
@@ -27,11 +24,15 @@ object Main extends JSApp {
 
     }
 
-    class TodoApp extends ReactClassSpec {
-
-      case class Props()
+    object TodoApp {
 
       case class State(items: Seq[Item], text: String)
+
+    }
+
+    class TodoApp extends PropslessReactClassSpec[TodoApp.State] {
+
+      import TodoApp._
 
       override def getInitialState() = State(items = Seq(), text = "")
 

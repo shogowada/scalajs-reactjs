@@ -9,25 +9,25 @@ import scala.scalajs.js.annotation.JSImport
 
 object React {
 
-  def createClass(spec: ReactClassSpec): ReactClass =
+  def createClass[Props, State](spec: ReactClassSpec[Props, State]): ReactClass =
     NativeReact.createClass(spec.asNative)
 
   def createElement(tagName: String, attributes: js.Any, children: js.Any*): ReactElement =
     NativeReact.createElement(tagName, attributes, children: _*)
 
-  def createElement(spec: ReactClassSpec): ReactElement = {
+  def createElement[Props, State](spec: ReactClassSpec[Props, State]): ReactElement = {
     val reactClass = createClass(spec)
     NativeReact.createElement(reactClass)
   }
 
-  def createElement(spec: ReactClassSpec, props: ReactClassSpec#Props): ReactElement = {
+  def createElement[Props, State](spec: ReactClassSpec[Props, State], props: Props): ReactElement = {
     val reactClass = createClass(spec)
-    NativeReact.createElement(reactClass, spec.propsToRawJs(props.asInstanceOf[spec.Props]))
+    NativeReact.createElement(reactClass, spec.propsToRawJs(props))
   }
 
-  def createElement(spec: ReactClassSpec, props: ReactClassSpec#Props, children: js.Any*): ReactElement = {
+  def createElement[Props, State](spec: ReactClassSpec[Props, State], props: Props, children: js.Any*): ReactElement = {
     val reactClass = createClass(spec)
-    NativeReact.createElement(reactClass, spec.propsToRawJs(props.asInstanceOf[spec.Props]), children: _*)
+    NativeReact.createElement(reactClass, spec.propsToRawJs(props), children: _*)
   }
 
   def createElement(reactClass: ReactClass, props: Any, children: js.Any*): ReactElement = {
