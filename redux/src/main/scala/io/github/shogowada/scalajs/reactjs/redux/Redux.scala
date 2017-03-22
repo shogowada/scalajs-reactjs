@@ -4,7 +4,7 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
 object Action {
-  def nativeToAction(nativeAction: js.Dynamic): Action = nativeAction.wrapped.asInstanceOf[Action]
+  def actionFromNative(nativeAction: js.Dynamic): Action = nativeAction.wrapped.asInstanceOf[Action]
 
   def actionToNative(action: Action): js.Dynamic = js.Dynamic.literal(
     "type" -> action.getClass.getSimpleName,
@@ -26,7 +26,7 @@ object Redux {
       if (js.isUndefined(state)) {
         reducer(None, null).asInstanceOf[js.Object]
       } else {
-        val action = Action.nativeToAction(nativeAction)
+        val action = Action.actionFromNative(nativeAction)
         reducer(Some(state.asInstanceOf[State]), action).asInstanceOf[js.Object]
       }
     })

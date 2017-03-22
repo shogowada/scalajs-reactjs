@@ -11,7 +11,7 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
 object ContainerComponent {
-  def nativeToOwnProps[OwnProps](nativeOwnProps: js.Dynamic): OwnProps = nativeOwnProps.wrapped.asInstanceOf[OwnProps]
+  def ownPropsFromNative[OwnProps](nativeOwnProps: js.Dynamic): OwnProps = nativeOwnProps.wrapped.asInstanceOf[OwnProps]
 
   def ownPropsToNative[OwnProps](ownProps: OwnProps): js.Dynamic = js.Dynamic.literal(
     "wrapped" -> ownProps.asInstanceOf[js.Any]
@@ -87,7 +87,7 @@ object ReactRedux {
       classSpec: ReactClassSpec[Props, State]
   ): js.Function1[NativeDispatch, js.Function2[ReduxState, js.Dynamic, js.Any]] =
     (nativeDispatch: NativeDispatch) => {
-      val dispatch: Dispatch = nativeToDispatch(nativeDispatch)
+      val dispatch: Dispatch = dispatchFromNative(nativeDispatch)
       val selector = selectorFactory(dispatch)
       selectorToNative(selector, classSpec)
     }
@@ -97,15 +97,15 @@ object ReactRedux {
       classSpec: ReactClassSpec[Props, State]
   ): js.Function2[ReduxState, js.Dynamic, js.Any] =
     (state: ReduxState, nativeOwnProps: js.Dynamic) => {
-      val ownProps: OwnProps = ContainerComponent.nativeToOwnProps(nativeOwnProps)
+      val ownProps: OwnProps = ContainerComponent.ownPropsFromNative(nativeOwnProps)
       val props: Props = selector(state, ownProps)
       propsToNative(classSpec, props, nativeOwnProps)
     }
 
-  private def nativeToDispatch(nativeDispatch: NativeDispatch): Dispatch =
+  private def dispatchFromNative(nativeDispatch: NativeDispatch): Dispatch =
     (action: Action) => {
       val nativeAction = Action.actionToNative(action)
-      Action.nativeToAction(nativeDispatch(nativeAction))
+      Action.actionFromNative(nativeDispatch(nativeAction))
     }
 
   private def propsToNative[Props, State](
