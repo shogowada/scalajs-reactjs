@@ -22,10 +22,6 @@ object AddTodo {
   }
 }
 
-case class SetVisibilityFilter(
-    filter: String
-) extends Action
+case class SetVisibilityFilter(filter: String) extends Action
 
-case class ToggleTodo(
-    id: Int
-) extends Action
+case class ToggleTodo(id: Int) extends Action

@@ -9,30 +9,32 @@ object Reducer {
         todos = Seq.empty,
         visibilityFilter = VisibilityFilters.ShowAll
       )
-    )(state => {
-      action match {
-        case action: AddTodo => {
-          val newTodo = TodoItem(
-            id = action.id,
-            text = action.text,
-            completed = false
-          )
-          state.copy(todos = state.todos :+ newTodo)
-        }
-        case action: SetVisibilityFilter => {
-          state.copy(visibilityFilter = action.filter)
-        }
-        case action: ToggleTodo => {
-          val newTodos = state.todos
-              .map(todo => if (todo.id == action.id) {
-                todo.copy(completed = !todo.completed)
-              } else {
-                todo
-              })
-          state.copy(todos = newTodos)
-        }
-        case _ => state
+    )(state => reduce(state, action))
+  }
+
+  private def reduce(state: State, action: Action): State = {
+    action match {
+      case action: AddTodo => {
+        val newTodo = TodoItem(
+          id = action.id,
+          text = action.text,
+          completed = false
+        )
+        state.copy(todos = state.todos :+ newTodo)
       }
-    })
+      case action: SetVisibilityFilter => {
+        state.copy(visibilityFilter = action.filter)
+      }
+      case action: ToggleTodo => {
+        val newTodos = state.todos
+            .map(todo => if (todo.id == action.id) {
+              todo.copy(completed = !todo.completed)
+            } else {
+              todo
+            })
+        state.copy(todos = newTodos)
+      }
+      case _ => state
+    }
   }
 }

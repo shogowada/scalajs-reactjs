@@ -230,11 +230,22 @@ trait VirtualDOM extends StaticTags {
     )
   }
 
-  private def attributesToReactAttributes(attributes: Iterable[Attribute[_]]): js.Dictionary[Any] = {
+  private def attributesToReactAttributes(attributes: Iterable[Attribute[_]]): js.Dictionary[js.Any] = {
     attributes
-        .map(attribute => VirtualDOMAttributes.toReactAttributeName(attribute.name) -> attribute.value)
+        .map(attributeToReactAttribute)
         .toMap
         .toJSDictionary
+  }
+
+  private def attributeToReactAttribute(attribute: Attribute[_]): (String, js.Any) = {
+    VirtualDOMAttributes.toReactAttributeName(attribute.name) -> attributeValueToReactAttributeValue(attribute)
+  }
+
+  private def attributeValueToReactAttributeValue(attribute: Attribute[_]): js.Any = {
+    attribute.value match {
+      case value: Map[String, _] => value.toJSDictionary
+      case _ => attribute.value.asInstanceOf[js.Any]
+    }
   }
 
   def elementsToReactElements(contents: Seq[Any]): Seq[js.Any] = {

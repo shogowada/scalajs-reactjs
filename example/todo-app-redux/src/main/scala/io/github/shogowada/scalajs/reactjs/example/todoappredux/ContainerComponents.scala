@@ -3,12 +3,12 @@ package io.github.shogowada.scalajs.reactjs.example.todoappredux
 import io.github.shogowada.scalajs.reactjs.redux.ReactRedux
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 
-object LinkContainerComponent {
+object ContainerComponents {
 
-  case class Props(filter: String)
+  case class LinkContainerComponentProps(filter: String)
 
-  def apply() = ReactRedux.connect(
-    (dispatch: Dispatch, state: State, ownProps: Props) => {
+  def LinkContainerComponent = ReactRedux.connect(
+    (dispatch: Dispatch, state: State, ownProps: LinkContainerComponentProps) => {
       Link.Props(
         active = ownProps.filter == state.visibilityFilter,
         onClick = () => {
@@ -17,10 +17,8 @@ object LinkContainerComponent {
       )
     }
   )(new Link())
-}
 
-object TodoListContainerComponent {
-  def apply() = ReactRedux.connect(
+  def TodoListContainerComponent = ReactRedux.connect(
     (dispatch: Dispatch, state: State) => {
       TodoList.Props(
         todos = state.visibilityFilter match {
@@ -34,10 +32,8 @@ object TodoListContainerComponent {
       )
     }
   )(new TodoList())
-}
 
-object AddTodoContainerComponent {
-  def apply() = ReactRedux.connect(
+  def AddTodoContainerComponent = ReactRedux.connect(
     (dispatch: Dispatch, state: State) => {
       AddTodoComponent.Props(
         onAddTodo = (text: String) => {

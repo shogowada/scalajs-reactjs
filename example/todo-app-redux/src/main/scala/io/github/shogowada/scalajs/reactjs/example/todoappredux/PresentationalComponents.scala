@@ -1,10 +1,10 @@
 package io.github.shogowada.scalajs.reactjs.example.todoappredux
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.specs.StatelessReactClassSpec
+import io.github.shogowada.scalajs.reactjs.classes.specs.{StatelessReactClassSpec, StaticReactClassSpec}
 import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLInputElement}
 import io.github.shogowada.scalajs.reactjs.events.{InputFormSyntheticEvent, SyntheticEvent}
-
+import io.github.shogowada.scalajs.reactjs.example.todoappredux.ContainerComponents._
 
 class Todo extends StatelessReactClassSpec[Todo.Props] {
 
@@ -71,19 +71,19 @@ object Link {
 
 }
 
-class Footer extends StatelessReactClassSpec[Footer.Props] {
+class Footer extends StaticReactClassSpec {
   override def render() = {
     <.p()(
       "Show: ",
-      LinkContainerComponent()(LinkContainerComponent.Props("SHOW_ALL"))(
+      LinkContainerComponent(LinkContainerComponentProps("SHOW_ALL"))(
         "All"
       ),
       ", ",
-      LinkContainerComponent()(LinkContainerComponent.Props("SHOW_ACTIVE"))(
+      LinkContainerComponent(LinkContainerComponentProps("SHOW_ACTIVE"))(
         "Active"
       ),
       ", ",
-      LinkContainerComponent()(LinkContainerComponent.Props("SHOW_COMPLETED"))(
+      LinkContainerComponent(LinkContainerComponentProps("SHOW_COMPLETED"))(
         "Completed"
       )
     )
@@ -91,9 +91,6 @@ class Footer extends StatelessReactClassSpec[Footer.Props] {
 }
 
 object Footer {
-
-  case class Props()
-
   def apply() = new Footer()
 }
 
@@ -131,8 +128,8 @@ class App extends StatelessReactClassSpec[App.Props] {
 
   override def render() = {
     <.div()(
-      (AddTodoContainerComponent()) (),
-      (TodoListContainerComponent()) (),
+      AddTodoContainerComponent(),
+      TodoListContainerComponent(),
       Footer()
     )
   }
