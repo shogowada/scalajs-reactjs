@@ -85,18 +85,22 @@ object ReactRedux {
   private def selectorFactoryToNative[ReduxState, OwnProps, Props, State](
       selectorFactory: Dispatch => (ReduxState, OwnProps) => Props,
       classSpec: ReactClassSpec[Props, State]
-  ): js.Function1[NativeDispatch, js.Function2[ReduxState, js.Dynamic, js.Any]] = {
+  ): js.Function1[NativeDispatch, js.Function2[ReduxState, js.Dynamic, js.Any]] =
     (nativeDispatch: NativeDispatch) => {
       val dispatch: Dispatch = nativeToDispatch(nativeDispatch)
       val selector = selectorFactory(dispatch)
-
-      (state: ReduxState, nativeOwnProps: js.Dynamic) => {
-        val ownProps: OwnProps = ContainerComponent.nativeToOwnProps(nativeOwnProps)
-        val props: Props = selector(state, ownProps)
-        propsToNative(classSpec, props, nativeOwnProps)
-      }
+      selectorToNative(selector, classSpec)
     }
-  }
+
+  private def selectorToNative[ReduxState, OwnProps, Props, State](
+      selector: (ReduxState, OwnProps) => Props,
+      classSpec: ReactClassSpec[Props, State]
+  ): js.Function2[ReduxState, js.Dynamic, js.Any] =
+    (state: ReduxState, nativeOwnProps: js.Dynamic) => {
+      val ownProps: OwnProps = ContainerComponent.nativeToOwnProps(nativeOwnProps)
+      val props: Props = selector(state, ownProps)
+      propsToNative(classSpec, props, nativeOwnProps)
+    }
 
   private def nativeToDispatch(nativeDispatch: NativeDispatch): Dispatch =
     (action: Action) => {
