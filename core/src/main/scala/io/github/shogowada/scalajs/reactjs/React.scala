@@ -9,24 +9,29 @@ import scala.scalajs.js.annotation.JSImport
 
 object React {
 
-  def createClass(spec: ReactClassSpec): ReactClass =
+  def createClass[Props, State](spec: ReactClassSpec[Props, State]): ReactClass =
     NativeReact.createClass(spec.asNative)
 
-  def createElement(tagName: String, attributes: js.Any, content: js.Any*): ReactElement =
-    NativeReact.createElement(tagName, attributes, content: _*)
+  def createElement(tagName: String, attributes: js.Any, children: js.Any*): ReactElement =
+    NativeReact.createElement(tagName, attributes, children: _*)
 
-  def createElement(spec: ReactClassSpec): ReactElement = {
+  def createElement[Props, State](spec: ReactClassSpec[Props, State]): ReactElement = {
     val reactClass = createClass(spec)
     NativeReact.createElement(reactClass)
   }
 
-  def createElement(spec: ReactClassSpec, props: ReactClassSpec#Props): ReactElement = {
+  def createElement[Props, State](spec: ReactClassSpec[Props, State], props: Props): ReactElement = {
     val reactClass = createClass(spec)
-    NativeReact.createElement(reactClass, spec.propsToRawJs(props.asInstanceOf[spec.Props]))
+    NativeReact.createElement(reactClass, spec.propsToNative(props))
   }
 
-  def createElement(reactClass: ReactClass, props: js.Any, contents: js.Any*): ReactElement = {
-    NativeReact.createElement(reactClass, props, contents: _*)
+  def createElement[Props, State](spec: ReactClassSpec[Props, State], props: Props, children: js.Any*): ReactElement = {
+    val reactClass = createClass(spec)
+    NativeReact.createElement(reactClass, spec.propsToNative(props), children: _*)
+  }
+
+  def createElement(reactClass: ReactClass, props: js.Any, children: js.Any*): ReactElement = {
+    NativeReact.createElement(reactClass, props, children: _*)
   }
 }
 
@@ -35,11 +40,11 @@ object React {
 object NativeReact extends js.Object {
   def createClass(spec: js.Any): ReactClass = js.native
 
-  def createElement(tagName: String, attributes: js.Any, content: js.Any*): ReactElement = js.native
+  def createElement(tagName: String, attributes: js.Any, children: js.Any*): ReactElement = js.native
 
   def createElement(reactClass: ReactClass): ReactElement = js.native
 
   def createElement(reactClass: ReactClass, attributes: js.Any): ReactElement = js.native
 
-  def createElement(reactClass: ReactClass, props: js.Any, contents: js.Any*): ReactElement = js.native
+  def createElement(reactClass: ReactClass, props: js.Any, children: js.Any*): ReactElement = js.native
 }

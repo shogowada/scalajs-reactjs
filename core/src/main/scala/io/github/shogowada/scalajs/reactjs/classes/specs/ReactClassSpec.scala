@@ -5,41 +5,21 @@ import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 
 import scala.scalajs.js
 
-trait ReactClassSpec {
+trait ReactClassSpec[Props, State] {
 
-  type Props
-  type State
+  def propsToNative(value: Props): js.Dynamic = js.Dynamic.literal("wrapped" -> value.asInstanceOf[js.Any])
 
-  val isPropsRawJs: Boolean = false
-  val isStateRawJs: Boolean = false
+  def propsFromNative(value: js.Any): Props = value.asInstanceOf[js.Dynamic].wrapped.asInstanceOf[Props]
 
-  lazy val propsToRawJs: (Props) => js.Any = if (isPropsRawJs) {
-    (value) => value.asInstanceOf[js.Any]
-  } else {
-    (value) => js.Dynamic.literal("value" -> value.asInstanceOf[js.Any])
-  }
+  def stateToNative(value: State): js.Dynamic = js.Dynamic.literal("wrapped" -> value.asInstanceOf[js.Any])
 
-  lazy val rawJsToProps: (js.Any) => Props = if (isPropsRawJs) {
-    (value) => value.asInstanceOf[Props]
-  } else {
-    (value) => value.asInstanceOf[js.Dynamic].value.asInstanceOf[Props]
-  }
+  def stateFromNative(value: js.Any): State = value.asInstanceOf[js.Dynamic].wrapped.asInstanceOf[State]
 
-  lazy val stateToRawJs: (State) => js.Any = if (isStateRawJs) {
-    (value) => value.asInstanceOf[js.Any]
-  } else {
-    (value) => js.Dynamic.literal("value" -> value.asInstanceOf[js.Any])
-  }
+  def props: Props = propsFromNative(nativeThis.props)
 
-  lazy val rawJsToState: (js.Any) => State = if (isStateRawJs) {
-    (value) => value.asInstanceOf[State]
-  } else {
-    (value) => value.asInstanceOf[js.Dynamic].value.asInstanceOf[State]
-  }
+  def state: State = stateFromNative(nativeThis.state)
 
-  def props: Props = rawJsToProps(nativeThis.props)
-
-  def state: State = rawJsToState(nativeThis.state)
+  def children: ReactElement = nativeThis.props.children.asInstanceOf[ReactElement]
 
   def componentWillMount(): Unit = {}
 
@@ -63,23 +43,23 @@ trait ReactClassSpec {
 
   def getInitialState(): State
 
-  def setState(state: State): Unit = nativeThis.setState(stateToRawJs(state))
+  def setState(state: State): Unit = nativeThis.setState(stateToNative(state))
 
   def setState(stateMapper: State => State): Unit = {
     val nativeStateMapper: js.Function1[js.Object, js.Any] =
-      (prevState: js.Object) => stateToRawJs(stateMapper(rawJsToState(prevState)))
+      (prevState: js.Object) => stateToNative(stateMapper(stateFromNative(prevState)))
     nativeThis.setState(nativeStateMapper)
   }
 
   def setState(stateMapper: (State, Props) => State): Unit = {
     val nativeStateMapper: js.Function2[js.Object, js.Object, js.Any] =
-      (prevState: js.Object, props: js.Object) => stateToRawJs(stateMapper(rawJsToState(prevState), rawJsToProps(props)))
+      (prevState: js.Object, props: js.Object) => stateToNative(stateMapper(stateFromNative(prevState), propsFromNative(props)))
     nativeThis.setState(nativeStateMapper)
   }
 
   def render(): ReactElement
 
-  def apply(props: Props): ReactElement = React.createElement(this, props)
+  def apply(props: Props)(children: js.Any*): ReactElement = React.createElement(this, props, children: _*)
 
   private var _nativeThis: js.Dynamic = _
 
@@ -96,19 +76,19 @@ trait ReactClassSpec {
     }),
     "componentWillReceiveProps" -> js.ThisFunction.fromFunction2((newNativeThis: js.Dynamic, nextProps: js.Object) => {
       _nativeThis = newNativeThis
-      componentWillReceiveProps(rawJsToProps(nextProps))
+      componentWillReceiveProps(propsFromNative(nextProps))
     }),
     "shouldComponentUpdate" -> js.ThisFunction.fromFunction3((newNativeThis: js.Dynamic, nextProps: js.Object, nextState: js.Object) => {
       _nativeThis = newNativeThis
-      shouldComponentUpdate(rawJsToProps(nextProps), rawJsToState(nextState))
+      shouldComponentUpdate(propsFromNative(nextProps), stateFromNative(nextState))
     }),
     "componentWillUpdate" -> js.ThisFunction.fromFunction3((newNativeThis: js.Dynamic, nextProps: js.Object, nextState: js.Object) => {
       _nativeThis = newNativeThis
-      componentWillUpdate(rawJsToProps(nextProps), rawJsToState(nextState))
+      componentWillUpdate(propsFromNative(nextProps), stateFromNative(nextState))
     }),
     "componentDidUpdate" -> js.ThisFunction.fromFunction3((newNativeThis: js.Dynamic, prevProps: js.Object, prevState: js.Object) => {
       _nativeThis = newNativeThis
-      componentDidUpdate(rawJsToProps(prevProps), rawJsToState(prevState))
+      componentDidUpdate(propsFromNative(prevProps), stateFromNative(prevState))
     }),
     "componentWillUnmount" -> js.ThisFunction.fromFunction1((newNativeThis: js.Dynamic) => {
       _nativeThis = newNativeThis
@@ -116,11 +96,29 @@ trait ReactClassSpec {
     }),
     "getInitialState" -> js.ThisFunction.fromFunction1((newNativeThis: js.Dynamic) => {
       _nativeThis = newNativeThis
-      Option(getInitialState()).map(stateToRawJs).orNull
+      Option(getInitialState()).map(stateToNative).orNull
     }),
     "render" -> js.ThisFunction.fromFunction1((newNativeThis: js.Dynamic) => {
       _nativeThis = newNativeThis
       render()
     })
   )
+}
+
+trait StatelessReactClassSpec[Props] extends ReactClassSpec[Props, Unit] {
+  override def getInitialState(): Unit = ()
+}
+
+trait PropslessReactClassSpec[State] extends ReactClassSpec[Unit, State] {
+  def apply(children: js.Any*): ReactElement =
+    this.asInstanceOf[ReactClassSpec[Unit, State]]
+        .apply(())(children: _*)
+}
+
+trait StaticReactClassSpec extends ReactClassSpec[Unit, Unit] {
+  override def getInitialState(): Unit = ()
+
+  def apply(children: js.Any*): ReactElement =
+    this.asInstanceOf[ReactClassSpec[Unit, Unit]]
+        .apply(())(children: _*)
 }

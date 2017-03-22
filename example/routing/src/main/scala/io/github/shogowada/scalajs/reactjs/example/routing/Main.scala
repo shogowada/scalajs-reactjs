@@ -2,15 +2,15 @@ package io.github.shogowada.scalajs.reactjs.example.routing
 
 import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.specs.StatelessReactClassSpec
+import io.github.shogowada.scalajs.reactjs.classes.specs.StaticReactClassSpec
 import io.github.shogowada.scalajs.reactjs.router.Router._
-import io.github.shogowada.scalajs.reactjs.router.{HashHistory, StatelessRoutedReactClassSpec}
+import io.github.shogowada.scalajs.reactjs.router.{HashHistory, RoutedReactClassSpec}
 import org.scalajs.dom
 
 import scala.scalajs.js
 import scala.scalajs.js.JSApp
 
-class App extends StatelessRoutedReactClassSpec {
+class App extends StaticReactClassSpec {
   override def render() = {
     <.div()(
       <.h1()("React Router Tutorial"),
@@ -18,19 +18,19 @@ class App extends StatelessRoutedReactClassSpec {
         <.li()(<.Link(to = "about")("About")),
         <.li()(<.Link(to = "repos")("Repos"))
       ),
-      props.children
+      children
     )
   }
 }
 
-class About extends StatelessRoutedReactClassSpec {
+class About extends StaticReactClassSpec {
   override def render() = <.div(^.id := "about")("About")
 }
 
-class Repos extends StatelessRoutedReactClassSpec {
+class Repos extends StaticReactClassSpec {
   override def render() = <.div(^.id := "repos")(
     "Repos",
-    props.children
+    children
   )
 }
 
@@ -40,14 +40,12 @@ trait RepoParams extends js.Object {
   val id: String = js.native
 }
 
-class Repo extends StatelessRoutedReactClassSpec {
-
-  override type Params = RepoParams
-
-  override def render() = <.div(^.id := s"repo-${props.params.id}")(s"Repo ${props.params.id}")
+class Repo extends StaticReactClassSpec
+    with RoutedReactClassSpec[RepoParams] {
+  override def render() = <.div(^.id := s"repo-${params.id}")(s"Repo ${params.id}")
 }
 
-class Index extends StatelessReactClassSpec {
+class Index extends StaticReactClassSpec {
   override def render() = {
     <.Router(history = HashHistory)(
       <.Route(path = "/", component = new App())(

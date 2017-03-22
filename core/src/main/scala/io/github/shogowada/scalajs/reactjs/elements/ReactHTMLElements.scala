@@ -9,25 +9,25 @@ trait ReactHTMLElement extends HTMLElement
 
 @js.native
 trait ReactHTMLInputElement extends ReactHTMLElement {
-  def value: String = js.native
+  var value: String = js.native
 }
 
 @js.native
 trait ReactHTMLCheckBoxElement extends ReactHTMLElement {
-  def checked: Boolean = js.native
+  var checked: Boolean = js.native
 }
 
 @js.native
 trait ReactHTMLRadioElement extends ReactHTMLElement {
-  def checked: Boolean = js.native
+  var checked: Boolean = js.native
 }
 
 @js.native
 trait ReactHTMLTextAreaElement extends ReactHTMLElement {
-  def value: String = js.native
+  var value: String = js.native
 }
 
 @js.native
 trait ReactHTMLOptionElement extends ReactHTMLElement {
-  def selected: Boolean = js.native
+  var selected: Boolean = js.native
 }

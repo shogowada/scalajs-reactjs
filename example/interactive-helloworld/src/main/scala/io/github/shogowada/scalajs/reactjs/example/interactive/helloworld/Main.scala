@@ -2,7 +2,7 @@ package io.github.shogowada.scalajs.reactjs.example.interactive.helloworld
 
 import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.specs.{ReactClassSpec, StatelessReactClassSpec}
+import io.github.shogowada.scalajs.reactjs.classes.specs.{PropslessReactClassSpec, StatelessReactClassSpec}
 import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLInputElement, ReactHTMLRadioElement}
 import io.github.shogowada.scalajs.reactjs.example.interactive.helloworld.LetterCase.{DEFAULT, LOWER_CASE, LetterCase, UPPER_CASE}
 import org.scalajs.dom
@@ -26,11 +26,10 @@ object LetterCaseRadioBox {
 
   case class Props(letterCase: LetterCase, checked: Boolean, onChecked: () => Unit)
 
+  def apply(props: Props): ReactElement = (new LetterCaseRadioBox) (props)()
 }
 
-class LetterCaseRadioBox extends StatelessReactClassSpec {
-
-  override type Props = LetterCaseRadioBox.Props
+class LetterCaseRadioBox extends StatelessReactClassSpec[LetterCaseRadioBox.Props] {
 
   var letterCaseElement: ReactHTMLRadioElement = _
 
@@ -57,9 +56,15 @@ class LetterCaseRadioBox extends StatelessReactClassSpec {
   }
 }
 
-class InteractiveHelloWorld extends ReactClassSpec {
+object InteractiveHelloWorld {
 
   case class State(name: String, letterCase: LetterCase)
+
+}
+
+class InteractiveHelloWorld extends PropslessReactClassSpec[InteractiveHelloWorld.State] {
+
+  import InteractiveHelloWorld._
 
   override def getInitialState(): State = State(
     name = "whoever you are",
@@ -93,7 +98,7 @@ class InteractiveHelloWorld extends ReactClassSpec {
   }
 
   def createLetterCaseRadioBox(thisLetterCase: LetterCase): ReactElement = {
-    new LetterCaseRadioBox()(LetterCaseRadioBox.Props(
+    LetterCaseRadioBox(LetterCaseRadioBox.Props(
       letterCase = thisLetterCase,
       checked = thisLetterCase == state.letterCase,
       onChecked = () => {

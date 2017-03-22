@@ -35,7 +35,7 @@ object Router {
       React.createElement(NativeRouter, props, routes: _*)
     }
 
-    def Route(path: String, component: ReactClassSpec)(childRoutes: ReactElement*): ReactElement = {
+    def Route[Props, State](path: String, component: ReactClassSpec[Props, State])(childRoutes: ReactElement*): ReactElement = {
       val realComponent = React.createClass(component)
       Route(path = path, component = realComponent)(childRoutes: _*)
     }
@@ -48,7 +48,7 @@ object Router {
       React.createElement(NativeRoute, props, childRoutes: _*)
     }
 
-    def IndexRoute(component: ReactClassSpec): ReactElement = {
+    def IndexRoute[Props, State](component: ReactClassSpec[Props, State]): ReactElement = {
       IndexRoute(React.createClass(component))
     }
 

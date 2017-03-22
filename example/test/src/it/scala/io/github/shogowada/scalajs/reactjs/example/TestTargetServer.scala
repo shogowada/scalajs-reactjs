@@ -52,12 +52,14 @@ object TestTargetServers {
   val lifecycle = new TestTargetServer("lifecycle")
   val routing = new TestTargetServer("routing")
   val todoApp = new TestTargetServer("todo-app")
+  val todoAppRedux = new TestTargetServer("todo-app-redux")
 
   helloWorld.start()
   interactiveHelloWorld.start()
   lifecycle.start()
   routing.start()
   todoApp.start()
+  todoAppRedux.start()
 
   sys.addShutdownHook(() => {
     helloWorld.stop()
@@ -65,5 +67,6 @@ object TestTargetServers {
     lifecycle.stop()
     routing.stop()
     todoApp.stop()
+    todoAppRedux.stop()
   })
 }
