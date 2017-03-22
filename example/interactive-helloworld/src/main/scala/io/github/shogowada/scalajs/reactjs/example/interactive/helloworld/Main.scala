@@ -26,6 +26,7 @@ object LetterCaseRadioBox {
 
   case class Props(letterCase: LetterCase, checked: Boolean, onChecked: () => Unit)
 
+  def apply(props: Props): ReactElement = (new LetterCaseRadioBox) (props)()
 }
 
 class LetterCaseRadioBox extends StatelessReactClassSpec[LetterCaseRadioBox.Props] {
@@ -63,7 +64,7 @@ object InteractiveHelloWorld {
 
 class InteractiveHelloWorld extends PropslessReactClassSpec[InteractiveHelloWorld.State] {
 
-  import io.github.shogowada.scalajs.reactjs.example.interactive.helloworld.InteractiveHelloWorld.State
+  import InteractiveHelloWorld._
 
   override def getInitialState(): State = State(
     name = "whoever you are",
@@ -97,13 +98,13 @@ class InteractiveHelloWorld extends PropslessReactClassSpec[InteractiveHelloWorl
   }
 
   def createLetterCaseRadioBox(thisLetterCase: LetterCase): ReactElement = {
-    (new LetterCaseRadioBox()) (LetterCaseRadioBox.Props(
+    LetterCaseRadioBox(LetterCaseRadioBox.Props(
       letterCase = thisLetterCase,
       checked = thisLetterCase == state.letterCase,
       onChecked = () => {
         setState(_.copy(letterCase = thisLetterCase))
       }
-    ))()
+    ))
   }
 
   val onChange = () => {

@@ -22,6 +22,7 @@ object Main extends JSApp {
 
       case class Props(items: Seq[Item])
 
+      def apply(props: Props): ReactElement = (new TodoList) (props)()
     }
 
     object TodoApp {
@@ -39,7 +40,7 @@ object Main extends JSApp {
       override def render(): ReactElement = {
         <.div()(
           <.h3()("TODO"),
-          new TodoList()(TodoList.Props(items = state.items))(),
+          TodoList(TodoList.Props(items = state.items)),
           <.form(^.onSubmit := handleSubmit)(
             <.input(^.onChange := handleChange, ^.value := state.text)(),
             <.button()(s"Add #${state.items.size + 1}")

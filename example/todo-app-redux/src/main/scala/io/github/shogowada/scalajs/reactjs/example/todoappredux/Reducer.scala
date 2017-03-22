@@ -4,15 +4,22 @@ import io.github.shogowada.scalajs.reactjs.redux.Action
 
 object Reducer {
   def reduce(maybeState: Option[State], action: Action): State = {
-    maybeState.fold(
-      State(
-        todos = Seq.empty,
-        visibilityFilter = VisibilityFilters.ShowAll
-      )
-    )(state => reduce(state, action))
+    maybeState.fold(initialState)(state => reduce(state, action))
   }
 
+  def initialState = State(
+    todos = Seq.empty,
+    visibilityFilter = VisibilityFilters.ShowAll
+  )
+
   private def reduce(state: State, action: Action): State = {
+    state.copy(
+      todos = reduceTodos(state.todos, action),
+      visibilityFilter = reduceVisibilityFilter(state.visibilityFilter, action)
+    )
+  }
+
+  private def reduceTodos(todos: Seq[TodoItem], action: Action): Seq[TodoItem] = {
     action match {
       case action: AddTodo => {
         val newTodo = TodoItem(
@@ -20,21 +27,24 @@ object Reducer {
           text = action.text,
           completed = false
         )
-        state.copy(todos = state.todos :+ newTodo)
-      }
-      case action: SetVisibilityFilter => {
-        state.copy(visibilityFilter = action.filter)
+        todos :+ newTodo
       }
       case action: ToggleTodo => {
-        val newTodos = state.todos
+        todos
             .map(todo => if (todo.id == action.id) {
               todo.copy(completed = !todo.completed)
             } else {
               todo
             })
-        state.copy(todos = newTodos)
       }
-      case _ => state
+      case _ => todos
+    }
+  }
+
+  private def reduceVisibilityFilter(visibilityFilter: String, action: Action): String = {
+    action match {
+      case action: SetVisibilityFilter => action.filter
+      case _ => visibilityFilter
     }
   }
 }
