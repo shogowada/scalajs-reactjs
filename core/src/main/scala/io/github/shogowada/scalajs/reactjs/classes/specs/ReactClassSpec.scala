@@ -7,17 +7,17 @@ import scala.scalajs.js
 
 trait ReactClassSpec[Props, State] {
 
-  def propsToRawJs(value: Props): js.Any = js.Dynamic.literal("wrapped" -> value.asInstanceOf[js.Any])
+  def propsToNative(value: Props): js.Any = js.Dynamic.literal("wrapped" -> value.asInstanceOf[js.Any])
 
-  def rawJsToProps(value: js.Any): Props = value.asInstanceOf[js.Dynamic].wrapped.asInstanceOf[Props]
+  def nativeToProps(value: js.Any): Props = value.asInstanceOf[js.Dynamic].wrapped.asInstanceOf[Props]
 
-  def stateToRawJs(value: State): js.Any = js.Dynamic.literal("wrapped" -> value.asInstanceOf[js.Any])
+  def stateToNative(value: State): js.Any = js.Dynamic.literal("wrapped" -> value.asInstanceOf[js.Any])
 
-  def rawJsToState(value: js.Any): State = value.asInstanceOf[js.Dynamic].wrapped.asInstanceOf[State]
+  def nativeToState(value: js.Any): State = value.asInstanceOf[js.Dynamic].wrapped.asInstanceOf[State]
 
-  def props: Props = rawJsToProps(nativeThis.props)
+  def props: Props = nativeToProps(nativeThis.props)
 
-  def state: State = rawJsToState(nativeThis.state)
+  def state: State = nativeToState(nativeThis.state)
 
   def children: js.Any = nativeThis.props.children
 
@@ -43,17 +43,17 @@ trait ReactClassSpec[Props, State] {
 
   def getInitialState(): State
 
-  def setState(state: State): Unit = nativeThis.setState(stateToRawJs(state))
+  def setState(state: State): Unit = nativeThis.setState(stateToNative(state))
 
   def setState(stateMapper: State => State): Unit = {
     val nativeStateMapper: js.Function1[js.Object, js.Any] =
-      (prevState: js.Object) => stateToRawJs(stateMapper(rawJsToState(prevState)))
+      (prevState: js.Object) => stateToNative(stateMapper(nativeToState(prevState)))
     nativeThis.setState(nativeStateMapper)
   }
 
   def setState(stateMapper: (State, Props) => State): Unit = {
     val nativeStateMapper: js.Function2[js.Object, js.Object, js.Any] =
-      (prevState: js.Object, props: js.Object) => stateToRawJs(stateMapper(rawJsToState(prevState), rawJsToProps(props)))
+      (prevState: js.Object, props: js.Object) => stateToNative(stateMapper(nativeToState(prevState), nativeToProps(props)))
     nativeThis.setState(nativeStateMapper)
   }
 
@@ -76,19 +76,19 @@ trait ReactClassSpec[Props, State] {
     }),
     "componentWillReceiveProps" -> js.ThisFunction.fromFunction2((newNativeThis: js.Dynamic, nextProps: js.Object) => {
       _nativeThis = newNativeThis
-      componentWillReceiveProps(rawJsToProps(nextProps))
+      componentWillReceiveProps(nativeToProps(nextProps))
     }),
     "shouldComponentUpdate" -> js.ThisFunction.fromFunction3((newNativeThis: js.Dynamic, nextProps: js.Object, nextState: js.Object) => {
       _nativeThis = newNativeThis
-      shouldComponentUpdate(rawJsToProps(nextProps), rawJsToState(nextState))
+      shouldComponentUpdate(nativeToProps(nextProps), nativeToState(nextState))
     }),
     "componentWillUpdate" -> js.ThisFunction.fromFunction3((newNativeThis: js.Dynamic, nextProps: js.Object, nextState: js.Object) => {
       _nativeThis = newNativeThis
-      componentWillUpdate(rawJsToProps(nextProps), rawJsToState(nextState))
+      componentWillUpdate(nativeToProps(nextProps), nativeToState(nextState))
     }),
     "componentDidUpdate" -> js.ThisFunction.fromFunction3((newNativeThis: js.Dynamic, prevProps: js.Object, prevState: js.Object) => {
       _nativeThis = newNativeThis
-      componentDidUpdate(rawJsToProps(prevProps), rawJsToState(prevState))
+      componentDidUpdate(nativeToProps(prevProps), nativeToState(prevState))
     }),
     "componentWillUnmount" -> js.ThisFunction.fromFunction1((newNativeThis: js.Dynamic) => {
       _nativeThis = newNativeThis
@@ -96,7 +96,7 @@ trait ReactClassSpec[Props, State] {
     }),
     "getInitialState" -> js.ThisFunction.fromFunction1((newNativeThis: js.Dynamic) => {
       _nativeThis = newNativeThis
-      Option(getInitialState()).map(stateToRawJs).orNull
+      Option(getInitialState()).map(stateToNative).orNull
     }),
     "render" -> js.ThisFunction.fromFunction1((newNativeThis: js.Dynamic) => {
       _nativeThis = newNativeThis
