@@ -52,9 +52,9 @@ object ReactRedux {
     val nativeSelectorFactory: js.Function1[NativeDispatch, js.Function2[ReduxState, js.Dynamic, js.Any]] =
       (nativeDispatch: NativeDispatch) => {
         val dispatch: Dispatch = nativeToDispatch(nativeDispatch)
-        (state: ReduxState, ownProps: js.Dynamic) => {
+        (state: ReduxState, nativeOwnProps: js.Dynamic) => {
           val props: Props = selector(dispatch, state)
-          classSpec.propsToNative(props)
+          propsToNative(classSpec, props, nativeOwnProps)
         }
       }
 
@@ -86,7 +86,7 @@ object ReactRedux {
         (state: ReduxState, nativeOwnProps: js.Dynamic) => {
           val ownProps: OwnProps = ContainerComponent.nativeToOwnProps(nativeOwnProps)
           val props: Props = selector(state, ownProps)
-          classSpec.propsToNative(props)
+          propsToNative(classSpec, props, nativeOwnProps)
         }
       }
 
@@ -101,6 +101,17 @@ object ReactRedux {
       val nativeAction = Action.actionToNative(action)
       Action.nativeToAction(nativeDispatch(nativeAction))
     }
+
+  private def propsToNative[Props, State](
+      classSpec: ReactClassSpec[Props, State],
+      props: Props,
+      nativeOwnProps: js.Dynamic
+  ): js.Any = {
+    val nativeProps = classSpec.propsToNative(props)
+    nativeProps.children = nativeOwnProps.children
+    nativeProps.params = nativeOwnProps.params
+    nativeProps
+  }
 
 }
 

@@ -7,11 +7,11 @@ import scala.scalajs.js
 
 trait ReactClassSpec[Props, State] {
 
-  def propsToNative(value: Props): js.Any = js.Dynamic.literal("wrapped" -> value.asInstanceOf[js.Any])
+  def propsToNative(value: Props): js.Dynamic = js.Dynamic.literal("wrapped" -> value.asInstanceOf[js.Any])
 
   def nativeToProps(value: js.Any): Props = value.asInstanceOf[js.Dynamic].wrapped.asInstanceOf[Props]
 
-  def stateToNative(value: State): js.Any = js.Dynamic.literal("wrapped" -> value.asInstanceOf[js.Any])
+  def stateToNative(value: State): js.Dynamic = js.Dynamic.literal("wrapped" -> value.asInstanceOf[js.Any])
 
   def nativeToState(value: js.Any): State = value.asInstanceOf[js.Dynamic].wrapped.asInstanceOf[State]
 

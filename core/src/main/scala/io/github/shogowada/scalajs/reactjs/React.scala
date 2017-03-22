@@ -30,8 +30,8 @@ object React {
     NativeReact.createElement(reactClass, spec.propsToNative(props), children: _*)
   }
 
-  def createElement(reactClass: ReactClass, props: Any, children: js.Any*): ReactElement = {
-    NativeReact.createElement(reactClass, props.asInstanceOf[js.Any], children: _*)
+  def createElement(reactClass: ReactClass, props: js.Any, children: js.Any*): ReactElement = {
+    NativeReact.createElement(reactClass, props, children: _*)
   }
 }
 
