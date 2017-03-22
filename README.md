@@ -20,17 +20,18 @@ Develop React JS applications with Scala.
 ```scala
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 
-class HelloWorld extends StatelessReactClassSpec {
-  override type Props = HelloWorld.Props
-  override def render() = <.div()(s"Hello, ${props.name}!")
+class HelloWorld extends StatelessReactClassSpec[HelloWorld.Props] {
+  override def render() = <.div(^.id := "hello-world")(s"Hello, ${props.name}!")
 }
 
 object HelloWorld {
   case class Props(name: String)
+
+  def apply(props: Props): ReactElement = (new HelloWorld) (props)()
 }
 
 val mountNode = dom.document.getElementById("mount-node")
-ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
+ReactDOM.render(HelloWorld(HelloWorld.Props("World")), mountNode)
 ```
 
 ## Getting Started
@@ -53,8 +54,7 @@ ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
     ```scala
     import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 
-    class HelloWorld extends StatelessReactClassSpec {
-      override type Props = HelloWorld.Props
+    class HelloWorld extends StatelessReactClassSpec[HelloWorld.Props] {
       override def render() = <.div()(s"Hello, ${props.name}!")
     }
     ```
@@ -63,7 +63,7 @@ ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
 
     ```scala
     val mountNode = dom.document.getElementById("mount-node")
-    ReactDOM.render(new HelloWorld()(HelloWorld.Props("World")), mountNode)
+    ReactDOM.render(HelloWorld(HelloWorld.Props("World")), mountNode)
     ```
 
 ## Tutorial
