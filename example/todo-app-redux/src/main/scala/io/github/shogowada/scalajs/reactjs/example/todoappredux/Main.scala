@@ -17,7 +17,8 @@ object Main extends JSApp {
 
     /*
     * Use <.Provider(store)(children) to create a virtual DOM for your Redux containers.
-    * Note that you need to import the following to access the Provider
+    * Note that you need to import the following to access the Provider:
+    *
     * - import io.github.shogowada.scalajs.reactjs.VirtualDOM._
     * - import io.github.shogowada.scalajs.reactjs.redux.ReactRedux._
     * */
