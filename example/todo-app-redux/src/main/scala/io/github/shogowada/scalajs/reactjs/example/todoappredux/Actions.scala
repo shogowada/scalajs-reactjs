@@ -8,10 +8,14 @@ object VisibilityFilters {
   val ShowCompleted = "SHOW_COMPLETED"
 }
 
-case class AddTodo(
-    id: Int = AddTodo.nextId,
-    text: String
-) extends Action
+/*
+* You can define actions as case classes.
+* You don't need to define "type" field; it will automatically use the class name as its "type".
+* For example, the AddTodo action will have "AddTodo" as a type.
+* Make sure your actions extends "Action" trait.
+* */
+
+case class AddTodo(id: Int = AddTodo.nextId, text: String) extends Action
 
 object AddTodo {
   var currentId = 0

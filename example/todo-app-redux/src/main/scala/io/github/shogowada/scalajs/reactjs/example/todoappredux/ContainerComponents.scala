@@ -4,6 +4,17 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements
 import io.github.shogowada.scalajs.reactjs.redux.ReactRedux
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 
+/*
+* You can create container components by using ReactRedux.connect method.
+* The method has three signatures:
+*
+* - ReactRedux.connect(dispatch, state, ownProps)
+* - ReactRedux.connect(dispatch, state)
+* - ReactRedux.connect(dispatch)
+*
+* In this file, it shows example for the all three signatures.
+* */
+
 object ContainerComponents {
 
   case class LinkContainerComponentProps(filter: String)

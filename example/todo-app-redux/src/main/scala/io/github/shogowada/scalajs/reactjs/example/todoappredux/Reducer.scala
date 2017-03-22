@@ -2,6 +2,10 @@ package io.github.shogowada.scalajs.reactjs.example.todoappredux
 
 import io.github.shogowada.scalajs.reactjs.redux.Action
 
+/*
+* Reducer function has a signature of (Option[State], Action) => State.
+* If the state is absent, you need to return an initial state.
+* */
 object Reducer {
   def reduce(maybeState: Option[State], action: Action): State = {
     maybeState.fold(initialState)(state => reduce(state, action))
