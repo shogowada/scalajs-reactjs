@@ -19,15 +19,13 @@ object ContainerComponent {
 }
 
 class ContainerComponent[OwnProps](wrappedClass: ReactClass) {
+  def apply(children: js.Any*): ReactElement = {
+    React.createElement(wrappedClass, (), children: _*)
+  }
+
   def apply(ownProps: OwnProps)(children: js.Any*): ReactElement = {
     val nativeOwnProps = ContainerComponent.ownPropsToNative(ownProps)
     React.createElement(wrappedClass, nativeOwnProps, children: _*)
-  }
-}
-
-class PropslessContainerComponent(wrappedClass: ReactClass) {
-  def apply(children: js.Any*): ReactElement = {
-    React.createElement(wrappedClass, (), children: _*)
   }
 }
 
@@ -48,7 +46,7 @@ object ReactRedux {
       selector: (Dispatch) => Props
   )(
       classSpec: ReactClassSpec[Props, State]
-  ): PropslessContainerComponent = {
+  ): ContainerComponent[Unit] = {
     connect((dispatch: Dispatch, _: js.Any) => selector(dispatch))(classSpec)
   }
 
@@ -56,20 +54,8 @@ object ReactRedux {
       selector: (Dispatch, ReduxState) => Props
   )(
       classSpec: ReactClassSpec[Props, State]
-  ): PropslessContainerComponent = {
-    val nativeSelectorFactory: js.Function1[NativeDispatch, js.Function2[ReduxState, js.Dynamic, js.Any]] =
-      (nativeDispatch: NativeDispatch) => {
-        val dispatch: Dispatch = nativeToDispatch(nativeDispatch)
-        (state: ReduxState, nativeOwnProps: js.Dynamic) => {
-          val props: Props = selector(dispatch, state)
-          propsToNative(classSpec, props, nativeOwnProps)
-        }
-      }
-
-    val nativeContainerComponent: ReactClass =
-      NativeReactRedux.connectAdvanced(nativeSelectorFactory)(React.createClass(classSpec))
-
-    new PropslessContainerComponent(nativeContainerComponent)
+  ): ContainerComponent[Unit] = {
+    connect((dispatch, state: ReduxState, ownProps: Unit) => selector(dispatch, state))(classSpec)
   }
 
   def connect[ReduxState, OwnProps, Props, State](
@@ -78,7 +64,8 @@ object ReactRedux {
       classSpec: ReactClassSpec[Props, State]
   ): ContainerComponent[OwnProps] = {
     connectAdvanced(
-      (dispatch) => (state: ReduxState, ownProps: OwnProps) => selector(dispatch, state, ownProps)
+      (dispatch) => (state: ReduxState, ownProps: OwnProps) =>
+        selector(dispatch, state, ownProps)
     )(classSpec)
   }
 
@@ -87,21 +74,28 @@ object ReactRedux {
   )(
       classSpec: ReactClassSpec[Props, State]
   ): ContainerComponent[OwnProps] = {
-    val nativeSelectorFactory: js.Function1[NativeDispatch, js.Function2[ReduxState, js.Dynamic, js.Any]] =
-      (nativeDispatch: NativeDispatch) => {
-        val dispatch: Dispatch = nativeToDispatch(nativeDispatch)
-        val selector = selectorFactory(dispatch)
-        (state: ReduxState, nativeOwnProps: js.Dynamic) => {
-          val ownProps: OwnProps = ContainerComponent.nativeToOwnProps(nativeOwnProps)
-          val props: Props = selector(state, ownProps)
-          propsToNative(classSpec, props, nativeOwnProps)
-        }
-      }
+    val nativeSelectorFactory = selectorFactoryToNative(selectorFactory, classSpec)
 
-    val nativeContainerComponent: ReactClass =
-      NativeReactRedux.connectAdvanced(nativeSelectorFactory)(React.createClass(classSpec))
+    val nativeContainerComponent: ReactClass = NativeReactRedux
+        .connectAdvanced(nativeSelectorFactory)(React.createClass(classSpec))
 
     new ContainerComponent[OwnProps](nativeContainerComponent)
+  }
+
+  private def selectorFactoryToNative[ReduxState, OwnProps, Props, State](
+      selectorFactory: Dispatch => (ReduxState, OwnProps) => Props,
+      classSpec: ReactClassSpec[Props, State]
+  ): js.Function1[NativeDispatch, js.Function2[ReduxState, js.Dynamic, js.Any]] = {
+    (nativeDispatch: NativeDispatch) => {
+      val dispatch: Dispatch = nativeToDispatch(nativeDispatch)
+      val selector = selectorFactory(dispatch)
+
+      (state: ReduxState, nativeOwnProps: js.Dynamic) => {
+        val ownProps: OwnProps = ContainerComponent.nativeToOwnProps(nativeOwnProps)
+        val props: Props = selector(state, ownProps)
+        propsToNative(classSpec, props, nativeOwnProps)
+      }
+    }
   }
 
   private def nativeToDispatch(nativeDispatch: NativeDispatch): Dispatch =
