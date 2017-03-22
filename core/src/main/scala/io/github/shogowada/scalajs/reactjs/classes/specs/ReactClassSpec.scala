@@ -19,7 +19,7 @@ trait ReactClassSpec[Props, State] {
 
   def state: State = nativeToState(nativeThis.state)
 
-  def children: js.Any = nativeThis.props.children
+  def children: ReactElement = nativeThis.props.children.asInstanceOf[ReactElement]
 
   def componentWillMount(): Unit = {}
 
