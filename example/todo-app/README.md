@@ -77,16 +77,21 @@ ReactDOM.render(<TodoApp />, mountNode);
 ```scala
 case class Item(id: String, text: String)
 
-class TodoApp extends ReactClassSpec {
-  case class Props()
+object TodoApp {
   case class State(items: Seq[Item], text: String)
+
+  def apply() = new TodoApp()
+}
+
+class TodoApp extends PropslessReactClassSpec[TodoApp.State] {
+  import TodoApp._
 
   override def getInitialState() = State(items = Seq(), text = "")
 
-  override def render() = {
+  override def render(): ReactElement = {
     <.div()(
       <.h3()("TODO"),
-      new TodoList()(TodoList.Props(items = state.items)),
+      TodoList(TodoList.Props(items = state.items)),
       <.form(^.onSubmit := handleSubmit)(
         <.input(^.onChange := handleChange, ^.value := state.text)(),
         <.button()(s"Add #${state.items.size + 1}")
@@ -94,32 +99,33 @@ class TodoApp extends ReactClassSpec {
     )
   }
 
-  val handleChange = (event: InputFormSyntheticEvent) => {
-    val newText = event.target.value
+  private val handleChange = (e: InputFormSyntheticEvent) => {
+    val newText = e.target.value
     setState(_.copy(text = newText))
   }
 
-  val handleSubmit = (event: SyntheticEvent) => {
-    event.preventDefault()
+  private val handleSubmit = (e: SyntheticEvent) => {
+    e.preventDefault()
     val newItem = Item(text = state.text, id = js.Date.now().toString)
-    setState((previousState: State) => State(
-      items = previousState.items :+ newItem,
+    setState((prevState: State) => State(
+      items = prevState.items :+ newItem,
       text = ""
     ))
   }
 }
 
-class TodoList extends StatelessReactClassSpec {
-  override type Props = TodoList.Props
-
-  override def render() = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
-}
-
 object TodoList {
   case class Props(items: Seq[Item])
+
+  def apply(props: Props): ReactElement = (new TodoList) (props)()
 }
 
-ReactDOM.render(new TodoApp(), mountNode)
+class TodoList extends StatelessReactClassSpec[TodoList.Props] {
+  override def render(): ReactElement = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
+}
+
+val mountNode = dom.document.getElementById("mount-node")
+ReactDOM.render(TodoApp(), mountNode)
 ```
 
 ## Define a new React Component
@@ -127,42 +133,25 @@ ReactDOM.render(new TodoApp(), mountNode)
 To define a new React Component, you need to create a new class extending ```ReactClassSpec``` or its subclasses.
 
 ```scala
-class TodoApp extends ReactClassSpec
-class TodoList extends StatelessReactClassSpec
-````
+class TodoApp extends PropslessReactClassSpec[TodoApp.State]
+class TodoList extends StatelessReactClassSpec[TodoList.Props]
 
-Here, we are using 2 different specs. One is ```ReactClassSpec``` and the other one is ```StatelessReactClassSpec```.
-
-```ReactClassSpec``` gives you full control, while ```StatelessReactClassSpec``` cannot have state.
-
-## Define props and state
-
-You need to define types of props and state for ```ReactClassSpec```, and you need to define type of props for ```StatelessReactClassSpec```.
-
-You can do that by defining ```Props``` and ```State``` class inside your class spec.
-
-```scala
-class TodoApp extends ReactClassSpec {
-  case class Props()
+object TodoApp {
   case class State(items: Seq[Item], text: String)
-}
-
-class TodoList extends StatelessReactClassSpec {
-  override type Props = TodoList.Props
 }
 
 object TodoList {
   case class Props(items: Seq[Item])
 }
-```
+````
 
 ## Define an initial state
 
 If your class spec is stateful, you need to give it an initial state too. You don't need to do this for ```StatelessReactClassSpec```.
 
 ```scala
-class TodoApp extends ReactClassSpec {
-  case class State(items: Seq[Item], text: String)
+class TodoApp extends PropslessReactClassSpec[TodoApp.State] {
+  import TodoApp._
 
   override def getInitialState() = State(items = Seq(), text = "")
 }
@@ -175,11 +164,11 @@ You can render your virual DOMs using ```VirtualDOM``` class. To use it, ```impo
 ```scala
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 
-class TodoApp extends ReactClassSpec {
-  override def render() = {
+class TodoApp extends PropslessReactClassSpec[TodoApp.State] {
+  override def render(): ReactElement = {
     <.div()(
       <.h3()("TODO"),
-      new TodoList()(TodoList.Props(items = state.items)),
+      TodoList(TodoList.Props(items = state.items)),
       <.form(^.onSubmit := handleSubmit)(
         <.input(^.onChange := handleChange, ^.value := state.text)(),
         <.button()(s"Add #${state.items.size + 1}")
@@ -188,8 +177,8 @@ class TodoApp extends ReactClassSpec {
   }
 }
 
-class TodoList extends StatelessReactClassSpec {
-  override def render() = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
+class TodoList extends StatelessReactClassSpec[TodoList.Props] {
+  override def render(): ReactElement = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
 }
 ```
 
@@ -202,19 +191,20 @@ If the component doesn't have props, you can just do ```new TodoList()``` then i
 If your component is stateful, you can update the state by using ```setState``` method.
 
 ```scala
-class TodoApp extends ReactClassSpec {
-  case class State(items: Seq[Item], text: String)
 
-  val handleChange = (event: InputFormSyntheticEvent) => {
-    val newText = event.target.value
+class TodoApp extends PropslessReactClassSpec[TodoApp.State] {
+  import TodoApp._
+
+  private val handleChange = (e: InputFormSyntheticEvent) => {
+    val newText = e.target.value
     setState(_.copy(text = newText))
   }
 
-  val handleSubmit = (event: SyntheticEvent) => {
-    event.preventDefault()
+  private val handleSubmit = (e: SyntheticEvent) => {
+    e.preventDefault()
     val newItem = Item(text = state.text, id = js.Date.now().toString)
-    setState((previousState: State) => State(
-      items = previousState.items :+ newItem,
+    setState((prevState: State) => State(
+      items = prevState.items :+ newItem,
       text = ""
     ))
   }
@@ -226,28 +216,28 @@ Unless you are overriding the whole state, you need to copy the previous state t
 For example, the following might cause race condition and override ```items``` value with old one unexpectedly.
 
 ```scala
-setState(state.copy(text = event.target.value))
+setState(state.copy(text = e.target.value))
 ```
 
 So it needs to be the following instead:
 
 ```scala
-val newText = event.target.value
-setState((previousState: State) => previousState.copy(text = newText))
+val newText = e.target.value
+setState((prevState: State) => prevState.copy(text = newText))
 ```
 
 Or, to make it less verbose:
 
 ```scala
-val newText = event.target.value
+val newText = e.target.value
 setState(_.copy(text = newText))
 ```
 
 If the new state depends on the current state, you can use the previous state to generate the new state.
 
 ```scala
-setState((previousState: State) => State(
-  items = previousState.items :+ newItem,
+setState((prevState: State) => State(
+  items = prevState.items :+ newItem,
   text = ""
 ))
 ```
@@ -257,5 +247,5 @@ setState((previousState: State) => State(
 Finally, you can mount your React component to DOM.
 
 ```scala
-ReactDOM.render(new TodoApp(), mountNode)
+ReactDOM.render(TodoApp(), mountNode)
 ```

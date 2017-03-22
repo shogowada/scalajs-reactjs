@@ -14,21 +14,11 @@ object Main extends JSApp {
   def main(): Unit = {
     case class Item(id: String, text: String)
 
-    class TodoList extends StatelessReactClassSpec[TodoList.Props] {
-      override def render(): ReactElement = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
-    }
-
-    object TodoList {
-
-      case class Props(items: Seq[Item])
-
-      def apply(props: Props): ReactElement = (new TodoList) (props)()
-    }
-
     object TodoApp {
 
       case class State(items: Seq[Item], text: String)
 
+      def apply() = new TodoApp()
     }
 
     class TodoApp extends PropslessReactClassSpec[TodoApp.State] {
@@ -48,22 +38,33 @@ object Main extends JSApp {
         )
       }
 
-      private val handleChange = (event: InputFormSyntheticEvent) => {
-        val newText = event.target.value
+      private val handleChange = (e: InputFormSyntheticEvent) => {
+        val newText = e.target.value
         setState(_.copy(text = newText))
       }
 
-      private val handleSubmit = (event: SyntheticEvent) => {
-        event.preventDefault()
+      private val handleSubmit = (e: SyntheticEvent) => {
+        e.preventDefault()
         val newItem = Item(text = state.text, id = js.Date.now().toString)
-        setState((previousState: State) => State(
-          items = previousState.items :+ newItem,
+        setState((prevState: State) => State(
+          items = prevState.items :+ newItem,
           text = ""
         ))
       }
     }
 
+    object TodoList {
+
+      case class Props(items: Seq[Item])
+
+      def apply(props: Props): ReactElement = (new TodoList) (props)()
+    }
+
+    class TodoList extends StatelessReactClassSpec[TodoList.Props] {
+      override def render(): ReactElement = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
+    }
+
     val mountNode = dom.document.getElementById("mount-node")
-    ReactDOM.render(new TodoApp(), mountNode)
+    ReactDOM.render(TodoApp(), mountNode)
   }
 }
