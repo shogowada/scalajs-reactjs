@@ -48,6 +48,7 @@ class TestTargetServer(project: String) {
 
 object TestTargetServers {
   val helloWorld = new TestTargetServer("helloworld")
+  val helloWorldFunction = new TestTargetServer("helloworld-function")
   val interactiveHelloWorld = new TestTargetServer("interactive-helloworld")
   val lifecycle = new TestTargetServer("lifecycle")
   val routing = new TestTargetServer("routing")
@@ -55,6 +56,7 @@ object TestTargetServers {
   val todoAppRedux = new TestTargetServer("todo-app-redux")
 
   helloWorld.start()
+  helloWorldFunction.start()
   interactiveHelloWorld.start()
   lifecycle.start()
   routing.start()
@@ -63,6 +65,7 @@ object TestTargetServers {
 
   sys.addShutdownHook(() => {
     helloWorld.stop()
+    helloWorldFunction.stop()
     interactiveHelloWorld.stop()
     lifecycle.stop()
     routing.stop()
