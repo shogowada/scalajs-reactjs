@@ -2,7 +2,7 @@ package io.github.shogowada.scalajs.reactjs.example.todoapp
 
 import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.specs.{PropslessReactClassSpec, StatelessReactClassSpec}
+import io.github.shogowada.scalajs.reactjs.classes.specs.PropslessReactClassSpec
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events.{InputFormSyntheticEvent, SyntheticEvent}
 import org.scalajs.dom
@@ -57,11 +57,7 @@ object Main extends JSApp {
 
       case class Props(items: Seq[Item])
 
-      def apply(props: Props): ReactElement = (new TodoList) (props)()
-    }
-
-    class TodoList extends StatelessReactClassSpec[TodoList.Props] {
-      override def render(): ReactElement = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
+      def apply(props: Props): ReactElement = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
     }
 
     val mountNode = dom.document.getElementById("mount-node")

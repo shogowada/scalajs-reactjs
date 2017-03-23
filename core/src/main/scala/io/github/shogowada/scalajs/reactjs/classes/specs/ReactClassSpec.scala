@@ -5,15 +5,29 @@ import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 
 import scala.scalajs.js
 
+object ReactClassSpec {
+
+  type Renderer[Props] = Props => ReactElement
+  type RendererWithChildren[Props] = (Props, ReactElement) => ReactElement
+
+  def propsToNative[Props](value: Props): js.Dynamic = js.Dynamic.literal("wrapped" -> value.asInstanceOf[js.Any])
+
+  def propsFromNative[Props](value: js.Any): Props = value.asInstanceOf[js.Dynamic].wrapped.asInstanceOf[Props]
+
+  def stateToNative[State](value: State): js.Dynamic = js.Dynamic.literal("wrapped" -> value.asInstanceOf[js.Any])
+
+  def stateFromNative[State](value: js.Any): State = value.asInstanceOf[js.Dynamic].wrapped.asInstanceOf[State]
+}
+
 trait ReactClassSpec[Props, State] {
 
-  def propsToNative(value: Props): js.Dynamic = js.Dynamic.literal("wrapped" -> value.asInstanceOf[js.Any])
+  def propsToNative(value: Props) = ReactClassSpec.propsToNative(value)
 
-  def propsFromNative(value: js.Any): Props = value.asInstanceOf[js.Dynamic].wrapped.asInstanceOf[Props]
+  def propsFromNative(value: js.Any) = ReactClassSpec.propsFromNative[Props](value)
 
-  def stateToNative(value: State): js.Dynamic = js.Dynamic.literal("wrapped" -> value.asInstanceOf[js.Any])
+  def stateToNative(value: State) = ReactClassSpec.stateToNative(value)
 
-  def stateFromNative(value: js.Any): State = value.asInstanceOf[js.Dynamic].wrapped.asInstanceOf[State]
+  def stateFromNative(value: js.Any) = ReactClassSpec.stateFromNative[State](value)
 
   def props: Props = propsFromNative(nativeThis.props)
 

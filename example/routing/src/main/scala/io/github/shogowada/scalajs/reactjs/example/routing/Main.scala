@@ -45,8 +45,8 @@ class Repo extends StaticReactClassSpec
   override def render() = <.div(^.id := s"repo-${params.id}")(s"Repo ${params.id}")
 }
 
-class Index extends StaticReactClassSpec {
-  override def render() = {
+object Index {
+  def apply() = {
     <.Router(history = HashHistory)(
       <.Route(path = "/", component = new App())(
         <.Route(path = "about", component = new About())(),
@@ -61,6 +61,6 @@ class Index extends StaticReactClassSpec {
 object Main extends JSApp {
   override def main(): Unit = {
     val mountNode = dom.document.getElementById("mount-node")
-    ReactDOM.render(new Index(), mountNode)
+    ReactDOM.render(Index(), mountNode)
   }
 }

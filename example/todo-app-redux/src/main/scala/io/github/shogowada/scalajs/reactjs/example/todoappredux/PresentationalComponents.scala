@@ -1,14 +1,16 @@
 package io.github.shogowada.scalajs.reactjs.example.todoappredux
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.specs.{StatelessReactClassSpec, StaticReactClassSpec}
+import io.github.shogowada.scalajs.reactjs.classes.specs.StatelessReactClassSpec
 import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLInputElement}
 import io.github.shogowada.scalajs.reactjs.events.{InputFormSyntheticEvent, SyntheticEvent}
 import io.github.shogowada.scalajs.reactjs.example.todoappredux.ContainerComponents._
 
-class Todo extends StatelessReactClassSpec[Todo.Props] {
+object Todo {
 
-  override def render() = {
+  case class Props(onClick: () => Unit, todoItem: TodoItem)
+
+  def apply(props: Props) =
     <.li(
       ^.key := props.todoItem.id.toString,
       ^.onClick := props.onClick,
@@ -16,19 +18,13 @@ class Todo extends StatelessReactClassSpec[Todo.Props] {
         "textDecoration" -> (if (props.todoItem.completed) "line-through" else "none")
       )
     )(props.todoItem.text)
-  }
 }
 
-object Todo {
+object TodoList {
 
-  case class Props(onClick: () => Unit, todoItem: TodoItem)
+  case class Props(todos: Seq[TodoItem], onTodoClick: (Int) => Unit)
 
-  def apply(props: Props) = new Todo()(props)()
-}
-
-class TodoList extends StatelessReactClassSpec[TodoList.Props] {
-
-  override def render() = {
+  def apply(props: Props): ReactElement =
     <.ul()(
       props.todos.map(todo => {
         Todo(Todo.Props(
@@ -37,18 +33,13 @@ class TodoList extends StatelessReactClassSpec[TodoList.Props] {
         ))
       })
     )
-  }
 }
 
-object TodoList {
+object Link {
 
-  case class Props(todos: Seq[TodoItem], onTodoClick: (Int) => Unit)
+  case class Props(active: Boolean, onClick: () => Unit)
 
-}
-
-class Link extends StatelessReactClassSpec[Link.Props] {
-
-  override def render() = {
+  def apply(props: Props, children: ReactElement): ReactElement =
     if (props.active) {
       <.span()(children)
     } else {
@@ -62,17 +53,10 @@ class Link extends StatelessReactClassSpec[Link.Props] {
         children
       )
     }
-  }
 }
 
-object Link {
-
-  case class Props(active: Boolean, onClick: () => Unit)
-
-}
-
-class Footer extends StaticReactClassSpec {
-  override def render() = {
+object Footer {
+  def apply(): ReactElement =
     <.p()(
       "Show: ",
       <.LinkContainerComponent(LinkContainerComponentProps("SHOW_ALL"))(
@@ -87,18 +71,13 @@ class Footer extends StaticReactClassSpec {
         "Completed"
       )
     )
-  }
-}
-
-object Footer {
-  def apply() = new Footer()
 }
 
 class AddTodoComponent extends StatelessReactClassSpec[AddTodoComponent.Props] {
 
   private var input: ReactHTMLInputElement = _
 
-  override def render() = {
+  override def render() =
     <.div()(
       <.form(
         ^.onSubmit := ((event: InputFormSyntheticEvent) => {
@@ -114,8 +93,7 @@ class AddTodoComponent extends StatelessReactClassSpec[AddTodoComponent.Props] {
           "Add Todo"
         )
       )
-    ).asReactElement
-  }
+    )
 }
 
 object AddTodoComponent {
@@ -124,21 +102,13 @@ object AddTodoComponent {
 
 }
 
-class App extends StatelessReactClassSpec[App.Props] {
+object App {
 
-  override def render() = {
+  def apply(): ReactElement =
     <.div()(
       <.AddTodoContainerComponent(),
       <.TodoListContainerComponent(),
       Footer()
     )
-  }
-}
-
-object App {
-
-  case class Props()
-
-  def apply(): ReactElement = (new App) (Props())()
 
 }

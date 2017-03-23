@@ -104,6 +104,14 @@ lazy val exampleHelloWorld = project.in(file("example") / "helloworld")
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core)
 
+lazy val exampleHelloWorldFunction = project.in(file("example") / "helloworld-function")
+    .settings(exampleCommonSettings: _*)
+    .settings(
+      name += "-helloworld-function"
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core)
+
 lazy val exampleInteractiveHelloWorld = project.in(file("example") / "interactive-helloworld")
     .settings(exampleCommonSettings: _*)
     .settings(
@@ -158,12 +166,14 @@ lazy val exampleTest = project.in(file("example") / "test")
       ),
       javaOptions ++= Seq(
         s"-Dtarget.path.helloworld=${(crossTarget in exampleHelloWorld).value}",
+        s"-Dtarget.path.helloworld-function=${(crossTarget in exampleHelloWorldFunction).value}",
         s"-Dtarget.path.interactive-helloworld=${(crossTarget in exampleInteractiveHelloWorld).value}",
         s"-Dtarget.path.lifecycle=${(crossTarget in exampleLifecycle).value}",
         s"-Dtarget.path.routing=${(crossTarget in exampleRouting).value}",
         s"-Dtarget.path.todo-app=${(crossTarget in exampleTodoApp).value}",
         s"-Dtarget.path.todo-app-redux=${(crossTarget in exampleTodoAppRedux).value}",
         s"-Ddummy.helloworld=${(webpack in fastOptJS in Compile in exampleHelloWorld).value}",
+        s"-Ddummy.helloworld-function=${(webpack in fastOptJS in Compile in exampleHelloWorldFunction).value}",
         s"-Ddummy.interactive-helloworld=${(webpack in fastOptJS in Compile in exampleInteractiveHelloWorld).value}",
         s"-Ddummy.lifecycle=${(webpack in fastOptJS in Compile in exampleLifecycle).value}",
         s"-Ddummy.routing=${(webpack in fastOptJS in Compile in exampleRouting).value}",

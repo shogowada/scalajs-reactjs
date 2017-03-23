@@ -23,6 +23,22 @@ val mountNode = dom.document.getElementById("mount-node")
 ReactDOM.render(HelloWorld(HelloWorld.Props("World")), mountNode)
 ```
 
+You can also use a pure function to render:
+
+```scala
+import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+
+object HelloWorld {
+  case class Props(name: String)
+
+  def apply(props: Props): ReactElement = <.div(^.id := "hello-world")(s"Hello, ${props.name}!")
+}
+
+val mountNode = dom.document.getElementById("mount-node")
+ReactDOM.render(HelloWorld(HelloWorld.Props("World")), mountNode)
+
+```
+
 ## How to Use
 
 1. Apply [scalajs-bundler](https://scalacenter.github.io/scalajs-bundler/getting-started.html) plugin.
