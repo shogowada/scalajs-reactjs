@@ -22,12 +22,12 @@ object React {
 
   def createElement[Props, State](spec: ReactClassSpec[Props, State], props: Props): ReactElement = {
     val reactClass = createClass(spec)
-    NativeReact.createElement(reactClass, spec.propsToNative(props))
+    NativeReact.createElement(reactClass, ReactClassSpec.propsToNative(props))
   }
 
   def createElement[Props, State](spec: ReactClassSpec[Props, State], props: Props, children: js.Any*): ReactElement = {
     val reactClass = createClass(spec)
-    NativeReact.createElement(reactClass, spec.propsToNative(props), children: _*)
+    NativeReact.createElement(reactClass, ReactClassSpec.propsToNative(props), children: _*)
   }
 
   def createElement(reactClass: ReactClass, props: js.Any, children: js.Any*): ReactElement = {

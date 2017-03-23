@@ -12,7 +12,18 @@ import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 * - ReactRedux.connect(dispatch, state)
 * - ReactRedux.connect(dispatch)
 *
-* In this file, it shows example for the all three signatures.
+* It shows example for all of them.
+*
+* Container components are higher-order components.
+* This means you need to pass another component to it to create a real component.
+*
+* You can pass either one of the following to create a real component:
+*
+* - Render function of type (props: Props, children: ReactElement) => ReactElement
+* - Render function of type (props: Props) => ReactElement
+* - Presentational component of type ReactClassSpec
+*
+* It shows example for all of them.
 * */
 
 object ContainerComponents {
@@ -29,7 +40,7 @@ object ContainerComponents {
           }
         )
       }
-    )(new Link())
+    )(Link(_, _)) // (Props, ReactElement) => ReactElement
 
     def TodoListContainerComponent = ReactRedux.connect(
       (dispatch: Dispatch, state: State) => {
@@ -44,7 +55,7 @@ object ContainerComponents {
           }
         )
       }
-    )(new TodoList())
+    )(TodoList(_)) // (Props) => ReactElement
 
     def AddTodoContainerComponent = ReactRedux.connect(
       (dispatch: Dispatch) => {
@@ -54,7 +65,7 @@ object ContainerComponents {
           }
         )
       }
-    )(new AddTodoComponent())
+    )(new AddTodoComponent()) // ReactClassSpec
   }
 
 }

@@ -117,11 +117,7 @@ class TodoApp extends PropslessReactClassSpec[TodoApp.State] {
 object TodoList {
   case class Props(items: Seq[Item])
 
-  def apply(props: Props): ReactElement = (new TodoList) (props)()
-}
-
-class TodoList extends StatelessReactClassSpec[TodoList.Props] {
-  override def render(): ReactElement = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
+  def apply(props: Props): ReactElement = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
 }
 
 val mountNode = dom.document.getElementById("mount-node")
@@ -133,12 +129,11 @@ ReactDOM.render(TodoApp(), mountNode)
 To define a new React Component, you need to create a new class extending ```ReactClassSpec``` or its subclasses.
 
 ```scala
-class TodoApp extends PropslessReactClassSpec[TodoApp.State]
-class TodoList extends StatelessReactClassSpec[TodoList.Props]
-
 object TodoApp {
   case class State(items: Seq[Item], text: String)
 }
+
+class TodoApp extends PropslessReactClassSpec[TodoApp.State]
 
 object TodoList {
   case class Props(items: Seq[Item])
@@ -177,14 +172,14 @@ class TodoApp extends PropslessReactClassSpec[TodoApp.State] {
   }
 }
 
-class TodoList extends StatelessReactClassSpec[TodoList.Props] {
-  override def render(): ReactElement = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
+object TodoList {
+  case class Props(items: Seq[Item])
+
+  def apply(props: Props): ReactElement = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))
 }
 ```
 
-Note that you could render other React components by doing ```new TodoList()(TodoList.Props(items = state.items))```. This is because all the React component has ```apply(props: Props): ReactElement = React.createElement(this, props)``` method.
-
-If the component doesn't have props, you can just do ```new TodoList()``` then it will be later converted to ```React.createElement(new TodoList())```.
+In this example, TodoApp is implementing a render method by extending `ReactClassSpec`, and TodoList is implementing a render method as a pure function.
 
 ## Update state
 
