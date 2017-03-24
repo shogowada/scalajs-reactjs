@@ -9,6 +9,24 @@ import scala.language.implicitConversions
 import scala.scalajs.js
 import scala.scalajs.js.JSConverters._
 
+/** Factory for virtual DOMs
+  *
+  * Virtual DOMs have type of [[Element]], which are implicitly converted to [[ReactElement]].
+  *
+  * Import VirtualDOM._ and access factory methods for DOMs with {{{<}}} and attributes with {{{^}}}.
+  * {{{
+  * import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+  *
+  * object Foo {
+  *   def render(): ReactElement = <.div(^.id := "main")(
+  *     <.div()("first child"),
+  *     <.div()("second child")
+  *   )
+  * }
+  * }}}
+  * */
+object VirtualDOM extends VirtualDOM
+
 trait EventVirtualDOMAttributes {
 
   trait OnEventAttribute[Event <: SyntheticEvent] extends AttributeSpec {
@@ -260,5 +278,3 @@ trait VirtualDOM extends StaticTags {
     }
   }
 }
-
-object VirtualDOM extends VirtualDOM

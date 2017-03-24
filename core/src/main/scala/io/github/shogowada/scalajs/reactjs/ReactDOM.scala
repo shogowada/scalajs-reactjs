@@ -7,15 +7,19 @@ import org.scalajs.dom
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
+/** Facade for react-dom */
 object ReactDOM {
+  /** Mounts [[ReactClassSpec]] to given node */
   def render[Props, State](reactClassSpec: ReactClassSpec[Props, State], node: dom.Node): Unit = {
     render(React.createElement(reactClassSpec), node)
   }
 
+  /** Mounts [[ReactClassSpec]] with its props to given node */
   def render[Props, State](reactClassSpec: ReactClassSpec[Props, State], props: Props, node: dom.Node): Unit = {
     render(React.createElement(reactClassSpec, props), node)
   }
 
+  /** Mounts [[ReactElement]] to given node */
   def render(element: ReactElement, node: dom.Node): Unit = {
     NativeReactDOM.render(element, node)
   }
