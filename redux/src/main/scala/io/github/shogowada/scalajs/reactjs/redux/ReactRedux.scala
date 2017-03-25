@@ -56,10 +56,12 @@ class ContainerComponentFactory[OwnProps, Props](nativeFactory: js.Function1[js.
   }
 }
 
+/** Facade for react-redux */
 object ReactRedux {
 
   import Redux.Dispatch
 
+  /** [[io.github.shogowada.scalajs.reactjs.VirtualDOM]] extension for react-redux components */
   implicit class RichVirtualDOMElements(elements: VirtualDOMElements) {
     def Provider(store: Store)(children: js.Any*): ReactElement = {
       val props = js.Dynamic.literal(

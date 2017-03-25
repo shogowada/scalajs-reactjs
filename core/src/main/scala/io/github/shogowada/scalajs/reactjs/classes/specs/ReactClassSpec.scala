@@ -19,6 +19,36 @@ object ReactClassSpec {
   def stateFromNative[State](value: js.Any): State = value.asInstanceOf[js.Dynamic].wrapped.asInstanceOf[State]
 }
 
+/** Specification for React components
+  *
+  * {{{
+  * object Foo {
+  *   case class Props(foo: String)
+  *   case class State(bar: String)
+  * }
+  *
+  * class Foo extends ReactClassSpec[Foo.Props, Foo.State] {
+  *   import Foo._
+  *
+  *   override def getInitialState() = State("bar")
+  *
+  *   override def render(): ReactElement = <.div()(
+  *     s"foo = ${props.foo}",
+  *     s"bar = ${state.bar}",
+  *     children // equivalent of props.children in native React
+  *   )
+  * }
+  *
+  * val foo = new Foo()
+  * ReactDOM.render(
+  *   foo(Foo.Props("foo"))( // first parameter group of apply method takes props
+  *     <.div()("first child"), // second parameter group of apply method takes children
+  *     <.div()("second child)
+  *   ),
+  *   mountNode
+  * )
+  * }}}
+  * */
 trait ReactClassSpec[Props, State] {
 
   def propsToNative(value: Props) = ReactClassSpec.propsToNative(value)
@@ -33,6 +63,7 @@ trait ReactClassSpec[Props, State] {
 
   def state: State = stateFromNative(nativeThis.state)
 
+  /** Returns props.children equivalent in native React */
   def children: ReactElement = nativeThis.props.children.asInstanceOf[ReactElement]
 
   def componentWillMount(): Unit = {}
@@ -73,6 +104,7 @@ trait ReactClassSpec[Props, State] {
 
   def render(): ReactElement
 
+  /** Returns [[ReactElement]] */
   def apply(props: Props)(children: js.Any*): ReactElement = React.createElement(this, props, children: _*)
 
   private var _nativeThis: js.Dynamic = _
@@ -119,19 +151,30 @@ trait ReactClassSpec[Props, State] {
   )
 }
 
+/** [[ReactClassSpec]] without state */
 trait StatelessReactClassSpec[Props] extends ReactClassSpec[Props, Unit] {
   override def getInitialState(): Unit = ()
 }
 
+/** [[ReactClassSpec]] without props */
 trait PropslessReactClassSpec[State] extends ReactClassSpec[Unit, State] {
+  /** Returns [[ReactElement]]
+    *
+    * Because [[PropslessReactClassSpec]] does not have props, it only takes one parameter group for children.
+    * */
   def apply(children: js.Any*): ReactElement =
     this.asInstanceOf[ReactClassSpec[Unit, State]]
         .apply(())(children: _*)
 }
 
+/** [[ReactClassSpec]] without props and state */
 trait StaticReactClassSpec extends ReactClassSpec[Unit, Unit] {
   override def getInitialState(): Unit = ()
 
+  /** Returns [[ReactElement]]
+    *
+    * Because [[StaticReactClassSpec]] does not have props, it only takes one parameter group for children.
+    * */
   def apply(children: js.Any*): ReactElement =
     this.asInstanceOf[ReactClassSpec[Unit, Unit]]
         .apply(())(children: _*)
