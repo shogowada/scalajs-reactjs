@@ -25,8 +25,25 @@ object NativeIndexRoute extends ReactClass
 @JSImport("react-router", "Link")
 object NativeLink extends ReactClass
 
+/** Facade for react-router */
 object Router {
 
+  /** [[VirtualDOM]] extension for router components
+    *
+    * {{{
+    * import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+    * import io.github.shogowada.scalajs.reactjs.router.Router._
+    *
+    * <.Router(history = HashHistory)(
+    *   <.Route(path = "/", component = new App())(
+    *     <.Route(path = "about", component = new About())(),
+    *     <.Route(path = "repos", component = new Repos())(
+    *       <.Route(path = ":id", component = new Repo())()
+    *     )
+    *   )
+    * )
+    * }}}
+    * */
   implicit class RichVirtualDOMElements(elements: VirtualDOMElements) {
     def Router(history: History)(routes: ReactElement*): ReactElement = {
       val props = js.Dynamic.literal(

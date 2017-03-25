@@ -56,3 +56,9 @@ ReactDOM.render(HelloWorld(HelloWorld.Props("World")), mountNode)
 - [TODO App](example/todo-app)
 - [Routing](/router)
 - [Redux](/redux)
+
+## API References
+
+- [react facade](./core)
+- [react-router facade](./router)
+- [react-redux facade](./redux)
