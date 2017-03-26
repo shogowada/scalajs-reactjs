@@ -96,6 +96,14 @@ val exampleCommonSettings = commonSettings ++ Seq(
   (unmanagedResourceDirectories in Compile) += baseDirectory.value / "src" / "main" / "webapp"
 )
 
+lazy val exampleCustomVirtualDOM = project.in(file("example") / "custom-virtual-dom")
+    .settings(exampleCommonSettings: _*)
+    .settings(
+      name += "-custom-virtual-dom"
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core)
+
 lazy val exampleHelloWorld = project.in(file("example") / "helloworld")
     .settings(exampleCommonSettings: _*)
     .settings(
@@ -165,6 +173,7 @@ lazy val exampleTest = project.in(file("example") / "test")
         "org.scalatest" %% "scalatest" % "3.+"
       ),
       javaOptions ++= Seq(
+        s"-Dtarget.path.custom-virtual-dom=${(crossTarget in exampleCustomVirtualDOM).value}",
         s"-Dtarget.path.helloworld=${(crossTarget in exampleHelloWorld).value}",
         s"-Dtarget.path.helloworld-function=${(crossTarget in exampleHelloWorldFunction).value}",
         s"-Dtarget.path.interactive-helloworld=${(crossTarget in exampleInteractiveHelloWorld).value}",
@@ -172,6 +181,7 @@ lazy val exampleTest = project.in(file("example") / "test")
         s"-Dtarget.path.routing=${(crossTarget in exampleRouting).value}",
         s"-Dtarget.path.todo-app=${(crossTarget in exampleTodoApp).value}",
         s"-Dtarget.path.todo-app-redux=${(crossTarget in exampleTodoAppRedux).value}",
+        s"-Ddummy.custom-virtual-dom=${(webpack in fastOptJS in Compile in exampleCustomVirtualDOM).value}",
         s"-Ddummy.helloworld=${(webpack in fastOptJS in Compile in exampleHelloWorld).value}",
         s"-Ddummy.helloworld-function=${(webpack in fastOptJS in Compile in exampleHelloWorldFunction).value}",
         s"-Ddummy.interactive-helloworld=${(webpack in fastOptJS in Compile in exampleInteractiveHelloWorld).value}",
