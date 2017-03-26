@@ -63,11 +63,11 @@ object ReactRedux {
 
   /** [[io.github.shogowada.scalajs.reactjs.VirtualDOM]] extension for react-redux components */
   implicit class RichVirtualDOMElements(elements: VirtualDOMElements) {
-    def Provider(store: Store)(children: js.Any*): ReactElement = {
+    def Provider(store: Store)(child: ReactElement): ReactElement = {
       val props = js.Dynamic.literal(
         "store" -> store
       )
-      React.createElement(NativeReactReduxProvider, props, children: _*)
+      React.createElement(NativeReactReduxProvider, props, child)
     }
   }
 
