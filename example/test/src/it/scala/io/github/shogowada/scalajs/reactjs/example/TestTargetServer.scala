@@ -47,6 +47,7 @@ class TestTargetServer(project: String) {
 }
 
 object TestTargetServers {
+  val customVirtualDOM = new TestTargetServer("custom-virtual-dom")
   val helloWorld = new TestTargetServer("helloworld")
   val helloWorldFunction = new TestTargetServer("helloworld-function")
   val interactiveHelloWorld = new TestTargetServer("interactive-helloworld")
@@ -55,6 +56,7 @@ object TestTargetServers {
   val todoApp = new TestTargetServer("todo-app")
   val todoAppRedux = new TestTargetServer("todo-app-redux")
 
+  customVirtualDOM.start()
   helloWorld.start()
   helloWorldFunction.start()
   interactiveHelloWorld.start()
@@ -64,6 +66,7 @@ object TestTargetServers {
   todoAppRedux.start()
 
   sys.addShutdownHook(() => {
+    customVirtualDOM.stop()
     helloWorld.stop()
     helloWorldFunction.stop()
     interactiveHelloWorld.stop()

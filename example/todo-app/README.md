@@ -1,6 +1,6 @@
-# Tutorial: TODO App
+# TODO App Example
 
-In this tutorial, we will replicate [the TODO App application from the official React website](https://facebook.github.io/react/).
+In this example, we will replicate [the TODO App application from the official React website](https://facebook.github.io/react/).
 
 - [JSX vs. Scala](#jsx-vs-scala)
     - [JSX](#jsx)
