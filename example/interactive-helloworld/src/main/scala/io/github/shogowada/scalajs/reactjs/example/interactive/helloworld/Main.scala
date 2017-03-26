@@ -3,7 +3,8 @@ package io.github.shogowada.scalajs.reactjs.example.interactive.helloworld
 import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.specs.{PropslessReactClassSpec, StatelessReactClassSpec}
-import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLInputElement, ReactHTMLRadioElement}
+import io.github.shogowada.scalajs.reactjs.elements.ReactElement
+import io.github.shogowada.scalajs.reactjs.events.{InputFormSyntheticEvent, RadioFormSyntheticEvent}
 import io.github.shogowada.scalajs.reactjs.example.interactive.helloworld.LetterCase.{DEFAULT, LOWER_CASE, LetterCase, UPPER_CASE}
 import org.scalajs.dom
 
@@ -31,17 +32,12 @@ object LetterCaseRadioBox {
 
 class LetterCaseRadioBox extends StatelessReactClassSpec[LetterCaseRadioBox.Props] {
 
-  var letterCaseElement: ReactHTMLRadioElement = _
-
   override def render(): ReactElement = {
     <.span()(
       <.input(
         ^.`type` := "radio",
         ^.name := "letter-case",
         ^.value := props.letterCase.name,
-        ^.ref := ((element: ReactHTMLRadioElement) => {
-          letterCaseElement = element
-        }),
         ^.checked := props.checked,
         ^.onChange := onChange
       )(),
@@ -49,8 +45,8 @@ class LetterCaseRadioBox extends StatelessReactClassSpec[LetterCaseRadioBox.Prop
     )
   }
 
-  val onChange = () => {
-    if (letterCaseElement.checked) {
+  val onChange = (event: RadioFormSyntheticEvent) => {
+    if (event.target.checked) {
       props.onChecked()
     }
   }
@@ -72,30 +68,24 @@ class InteractiveHelloWorld extends PropslessReactClassSpec[InteractiveHelloWorl
   )
 
   val nameId = "name"
-  var nameElement: ReactHTMLInputElement = _
 
-  override def render() = {
+  override def render() =
     <.div()(
       createNameInput(),
       LetterCase.ALL.map(createLetterCaseRadioBox),
       <.br.empty,
       <.div(^.id := "greet")(s"Hello, ${name(state)}!")
     )
-  }
 
-  def createNameInput() = {
+  def createNameInput() =
     <.div()(
       <.label(^.`for` := nameId)("Name: "),
       <.input(
         ^.id := nameId,
-        ^.ref := ((element: ReactHTMLInputElement) => {
-          nameElement = element
-        }),
         ^.value := state.name,
         ^.onChange := onChange
       )()
     )
-  }
 
   def createLetterCaseRadioBox(thisLetterCase: LetterCase): ReactElement = {
     LetterCaseRadioBox(LetterCaseRadioBox.Props(
@@ -107,8 +97,8 @@ class InteractiveHelloWorld extends PropslessReactClassSpec[InteractiveHelloWorl
     ))
   }
 
-  val onChange = () => {
-    val name = nameElement.value
+  val onChange = (event: InputFormSyntheticEvent) => {
+    val name = event.target.value
     setState(_.copy(name = name))
   }
 
