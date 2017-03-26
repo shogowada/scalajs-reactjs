@@ -9,17 +9,19 @@ trait RoutedReactClassSpec[Params <: js.Any] {
   /** props.params equivalent of native React
     *
     * {{{
-    * @js.native
-    * trait FooParams extends js.Object {
-    *   val foo: String = js.native
+    * object Foo {
+    *   @js.native
+    *   trait Params extends js.Object {
+    *     val foo: String = js.native
+    *   }
     * }
     *
     * class Foo extends StaticReactClassSpec
-    *     with RoutedReactClassSpec[FooParams] {
+    *     with RoutedReactClassSpec[Foo.Params] {
     *   override def render(): ReactElement = <.div()(params.foo)
     * }
     * }}}
     * */
   def params: Params = this.asInstanceOf[ReactClassSpec[_, _]]
-      .nativeThis.props.params.asInstanceOf[Params]
+      .nativeProps.params.asInstanceOf[Params]
 }
