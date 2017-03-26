@@ -34,14 +34,18 @@ class Repos extends StaticReactClassSpec {
   )
 }
 
-@js.native
-trait RepoParams extends js.Object {
+object Repo {
 
-  val id: String = js.native
+  @js.native
+  trait Params extends js.Object {
+
+    val id: String = js.native
+  }
+
 }
 
 class Repo extends StaticReactClassSpec
-    with RoutedReactClassSpec[RepoParams] {
+    with RoutedReactClassSpec[Repo.Params] {
   override def render() = <.div(^.id := s"repo-${params.id}")(s"Repo ${params.id}")
 }
 
