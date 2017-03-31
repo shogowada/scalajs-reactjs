@@ -2,6 +2,7 @@ package io.github.shogowada.scalajs.reactjs.classes.specs
 
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
+import io.github.shogowada.scalajs.reactjs.utils.FbJsShallowEqual
 
 import scala.scalajs.js
 
@@ -66,10 +67,35 @@ trait ReactClassSpec[Props, State] {
 
   def componentWillReceiveProps(nextProps: Props): Unit = {}
 
-  def nativeShouldComponentUpdate(nativeNextProps: js.Dynamic, nativeNextState: js.Dynamic): Boolean =
-    shouldComponentUpdate(propsFromNative(nativeNextProps), stateFromNative(nativeNextState))
+  def nativeShouldComponentUpdate(nextProps: js.Dynamic, nextState: js.Dynamic): Boolean = {
+    if (shouldComponentUpdate(propsFromNative(nextProps), stateFromNative(nextState))) {
+      true
+    } else {
+      def shallowEqualWithoutWrapped(lhs: js.Dynamic, rhs: js.Dynamic): Boolean = {
+        def temporarilyUndefineWrapped(value: js.Dynamic, onUndefined: () => Boolean): Boolean = {
+          val wrapped = value.wrapped
+          if (!js.isUndefined(wrapped)) {
+            value.wrapped = js.undefined
+          }
+          val result = onUndefined()
+          if (!js.isUndefined(wrapped)) {
+            value.wrapped = wrapped
+          }
+          result
+        }
 
-  def shouldComponentUpdate(nextProps: Props, nextState: State): Boolean = true
+        temporarilyUndefineWrapped(lhs, () => temporarilyUndefineWrapped(rhs, () => FbJsShallowEqual(lhs, rhs)))
+      }
+
+      val props = nativeThis.props
+      val state = nativeThis.state
+
+      !shallowEqualWithoutWrapped(props, nextProps) || !shallowEqualWithoutWrapped(state, nextState)
+    }
+  }
+
+  def shouldComponentUpdate(nextProps: Props, nextState: State): Boolean =
+    props != nextProps || state != nextState
 
   def nativeComponentWillUpdate(nativeNextProps: js.Dynamic, nativeNextState: js.Dynamic): Unit =
     componentWillUpdate(propsFromNative(nativeNextProps), stateFromNative(nativeNextState))
