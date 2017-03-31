@@ -71,43 +71,26 @@ trait ReactClassSpec[Props, State] {
     if (shouldComponentUpdate(propsFromNative(nextProps), stateFromNative(nextState))) {
       true
     } else {
+      def shallowEqualWithoutWrapped(lhs: js.Dynamic, rhs: js.Dynamic): Boolean = {
+        def temporarilyUndefineWrapped(value: js.Dynamic, onUndefined: () => Boolean): Boolean = {
+          val wrapped = value.wrapped
+          if (!js.isUndefined(wrapped)) {
+            value.wrapped = js.undefined
+          }
+          val result = onUndefined()
+          if (!js.isUndefined(wrapped)) {
+            value.wrapped = wrapped
+          }
+          result
+        }
+
+        temporarilyUndefineWrapped(lhs, () => temporarilyUndefineWrapped(rhs, () => FbJsShallowEqual(lhs, rhs)))
+      }
+
       val props = nativeThis.props
       val state = nativeThis.state
 
-      val wrappedProps = props.wrapped
-      val wrappedState = state.wrapped
-      if (!js.isUndefined(wrappedProps)) {
-        props.wrapped = js.undefined
-      }
-      if (!js.isUndefined(wrappedState)) {
-        state.wrapped = js.undefined
-      }
-
-      val nextWrappedProps = nextProps.wrapped
-      val nextWrappedState = nextState.wrapped
-      if (!js.isUndefined(nextWrappedProps)) {
-        nextProps.wrapped = js.undefined
-      }
-      if (!js.isUndefined(nextWrappedState)) {
-        nextState.wrapped = js.undefined
-      }
-
-      val shouldUpdate = !FbJsShallowEqual(props, nextProps) || !FbJsShallowEqual(state, nextState)
-
-      if (!js.isUndefined(wrappedProps)) {
-        props.wrapped = wrappedProps
-      }
-      if (!js.isUndefined(wrappedState)) {
-        state.wrapped = wrappedState
-      }
-      if (!js.isUndefined(nextWrappedProps)) {
-        nextProps.wrapped = nextWrappedProps
-      }
-      if (!js.isUndefined(nextWrappedState)) {
-        nextState.wrapped = nextWrappedState
-      }
-
-      shouldUpdate
+      !shallowEqualWithoutWrapped(props, nextProps) || !shallowEqualWithoutWrapped(state, nextState)
     }
   }
 
