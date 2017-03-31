@@ -1,6 +1,7 @@
-val ReactVersion = "15.4.2"
-val ReactReduxVersion = "5.0.3"
-val ReduxVersion = "3.6.0"
+val FbJsVersion = "^0.8.9"
+val ReactVersion = "^15.4.2"
+val ReactReduxVersion = "^5.0.3"
+val ReduxVersion = "^3.6.0"
 
 crossScalaVersions := Seq("2.11.8", "2.12.1")
 
@@ -53,6 +54,7 @@ lazy val core = project.in(file("core"))
         "io.github.shogowada" %%% "statictags" % "2.1.0"
       ),
       npmDependencies in Compile ++= Seq(
+        "fbjs" -> FbJsVersion,
         "react" -> ReactVersion,
         "react-dom" -> ReactVersion
       ),

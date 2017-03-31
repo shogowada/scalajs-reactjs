@@ -2,6 +2,7 @@ package io.github.shogowada.scalajs.reactjs.classes.specs
 
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
+import io.github.shogowada.scalajs.reactjs.utils.FbJsShallowEqual
 
 import scala.scalajs.js
 
@@ -66,10 +67,52 @@ trait ReactClassSpec[Props, State] {
 
   def componentWillReceiveProps(nextProps: Props): Unit = {}
 
-  def nativeShouldComponentUpdate(nativeNextProps: js.Dynamic, nativeNextState: js.Dynamic): Boolean =
-    shouldComponentUpdate(propsFromNative(nativeNextProps), stateFromNative(nativeNextState))
+  def nativeShouldComponentUpdate(nextProps: js.Dynamic, nextState: js.Dynamic): Boolean = {
+    if (shouldComponentUpdate(propsFromNative(nextProps), stateFromNative(nextState))) {
+      true
+    } else {
+      val props = nativeThis.props
+      val state = nativeThis.state
 
-  def shouldComponentUpdate(nextProps: Props, nextState: State): Boolean = true
+      val wrappedProps = props.wrapped
+      val wrappedState = state.wrapped
+      if (!js.isUndefined(wrappedProps)) {
+        props.wrapped = js.undefined
+      }
+      if (!js.isUndefined(wrappedState)) {
+        state.wrapped = js.undefined
+      }
+
+      val nextWrappedProps = nextProps.wrapped
+      val nextWrappedState = nextState.wrapped
+      if (!js.isUndefined(nextWrappedProps)) {
+        nextProps.wrapped = js.undefined
+      }
+      if (!js.isUndefined(nextWrappedState)) {
+        nextState.wrapped = js.undefined
+      }
+
+      val shouldUpdate = !FbJsShallowEqual(props, nextProps) || !FbJsShallowEqual(state, nextState)
+
+      if (!js.isUndefined(wrappedProps)) {
+        props.wrapped = wrappedProps
+      }
+      if (!js.isUndefined(wrappedState)) {
+        state.wrapped = wrappedState
+      }
+      if (!js.isUndefined(nextWrappedProps)) {
+        nextProps.wrapped = nextWrappedProps
+      }
+      if (!js.isUndefined(nextWrappedState)) {
+        nextState.wrapped = nextWrappedState
+      }
+
+      shouldUpdate
+    }
+  }
+
+  def shouldComponentUpdate(nextProps: Props, nextState: State): Boolean =
+    props != nextProps || state != nextState
 
   def nativeComponentWillUpdate(nativeNextProps: js.Dynamic, nativeNextState: js.Dynamic): Unit =
     componentWillUpdate(propsFromNative(nativeNextProps), stateFromNative(nativeNextState))
