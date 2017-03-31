@@ -1,4 +1,4 @@
-val FbJsVersion = "^0.8.9"
+val FbJsVersion = "^0.8.9" // Match the version with the one as React's dependency
 val ReactVersion = "^15.4.2"
 val ReactReduxVersion = "^5.0.3"
 val ReduxVersion = "^3.6.0"
