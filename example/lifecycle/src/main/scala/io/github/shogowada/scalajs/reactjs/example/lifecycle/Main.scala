@@ -2,19 +2,17 @@ package io.github.shogowada.scalajs.reactjs.example.lifecycle
 
 import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.specs.{PropslessReactClassSpec, ReactClassSpec}
+import io.github.shogowada.scalajs.reactjs.classes.specs.PropslessReactClassSpec
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import org.scalajs.dom
 
 import scala.scalajs.js.JSApp
 
 object App {
-
   case class State(
       componentDidMountCalled: Boolean,
       componentDidUpdateCalled: Boolean
   )
-
 }
 
 class App extends PropslessReactClassSpec[App.State] {

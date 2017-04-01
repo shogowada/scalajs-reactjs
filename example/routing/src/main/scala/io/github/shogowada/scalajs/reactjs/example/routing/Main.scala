@@ -35,13 +35,10 @@ class Repos extends StaticReactClassSpec {
 }
 
 object Repo {
-
   @js.native
   trait Params extends js.Object {
-
     val id: String = js.native
   }
-
 }
 
 class Repo extends StaticReactClassSpec
@@ -49,6 +46,13 @@ class Repo extends StaticReactClassSpec
   override def render() = <.div(^.id := s"repo-${params.id}")(s"Repo ${params.id}")
 }
 
+/*
+* To access router components, import the following:
+*
+* - import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+* - import io.github.shogowada.scalajs.reactjs.router.Router._
+*
+* */
 object Index {
   def apply() = {
     <.Router(history = HashHistory)(

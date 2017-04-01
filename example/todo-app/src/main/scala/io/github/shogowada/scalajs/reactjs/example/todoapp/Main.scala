@@ -15,7 +15,6 @@ object Main extends JSApp {
     case class Item(id: String, text: String)
 
     object TodoApp {
-
       case class State(items: Seq[Item], text: String)
 
       def apply() = new TodoApp()
@@ -54,7 +53,6 @@ object Main extends JSApp {
     }
 
     object TodoList {
-
       case class Props(items: Seq[Item])
 
       def apply(props: Props): ReactElement = <.ul()(props.items.map(item => <.li(^.key := item.id)(item.text)))

@@ -7,7 +7,6 @@ import io.github.shogowada.scalajs.reactjs.events.{InputFormSyntheticEvent, Synt
 import io.github.shogowada.scalajs.reactjs.example.todoappredux.ContainerComponents._
 
 object Todo {
-
   case class Props(onClick: () => Unit, todoItem: TodoItem)
 
   def apply(props: Props) =
@@ -21,7 +20,6 @@ object Todo {
 }
 
 object TodoList {
-
   case class Props(todos: Seq[TodoItem], onTodoClick: (Int) => Unit)
 
   def apply(props: Props): ReactElement =
@@ -36,7 +34,6 @@ object TodoList {
 }
 
 object Link {
-
   case class Props(active: Boolean, onClick: () => Unit)
 
   def apply(props: Props, children: ReactElement): ReactElement =
@@ -97,18 +94,14 @@ class AddTodoComponent extends StatelessReactClassSpec[AddTodoComponent.Props] {
 }
 
 object AddTodoComponent {
-
   case class Props(onAddTodo: (String) => Unit)
-
 }
 
 object App {
-
   def apply(): ReactElement =
     <.div()(
       <.AddTodoContainerComponent(),
       <.TodoListContainerComponent(),
       Footer()
     )
-
 }

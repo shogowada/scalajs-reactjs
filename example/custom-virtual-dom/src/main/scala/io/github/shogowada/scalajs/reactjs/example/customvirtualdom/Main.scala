@@ -8,7 +8,6 @@ import org.scalajs.dom
 import scala.scalajs.js.JSApp
 
 object HelloWorld {
-
   def apply(): ReactElement = E.div(A.id := "hello-world")("Hello, World!")
 }
 

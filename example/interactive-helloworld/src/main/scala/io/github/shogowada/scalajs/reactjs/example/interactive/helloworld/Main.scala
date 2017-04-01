@@ -11,27 +11,22 @@ import org.scalajs.dom
 import scala.scalajs.js.JSApp
 
 object LetterCase {
-
   sealed class LetterCase(val name: String)
 
   case object DEFAULT extends LetterCase("Default")
-
   case object LOWER_CASE extends LetterCase("Lower Case")
-
   case object UPPER_CASE extends LetterCase("Upper Case")
 
   val ALL = Seq(DEFAULT, LOWER_CASE, UPPER_CASE)
 }
 
 object LetterCaseRadioBox {
-
   case class Props(letterCase: LetterCase, checked: Boolean, onChecked: () => Unit)
 
   def apply(props: Props): ReactElement = (new LetterCaseRadioBox) (props)()
 }
 
 class LetterCaseRadioBox extends StatelessReactClassSpec[LetterCaseRadioBox.Props] {
-
   override def render(): ReactElement = {
     <.span()(
       <.input(
@@ -53,9 +48,7 @@ class LetterCaseRadioBox extends StatelessReactClassSpec[LetterCaseRadioBox.Prop
 }
 
 object InteractiveHelloWorld {
-
   case class State(name: String, letterCase: LetterCase)
-
 }
 
 class InteractiveHelloWorld extends PropslessReactClassSpec[InteractiveHelloWorld.State] {

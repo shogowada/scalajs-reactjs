@@ -15,7 +15,6 @@ object Main extends JSApp {
     }
 
     object HelloWorld {
-
       case class Props(name: String)
 
       def apply(props: Props): ReactElement = (new HelloWorld) (props)()
