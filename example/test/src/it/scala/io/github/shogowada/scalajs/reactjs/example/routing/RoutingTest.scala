@@ -32,6 +32,24 @@ class RoutingTest extends path.FunSpec
         go to s"${server.host}/#/repos"
 
         itShouldDisplayRepos()
+
+        describe("when I push /about via history API") {
+          clickOn(id("push-about"))
+
+          itShouldDisplayAbout()
+
+          describe("when I go back via history API") {
+            clickOn(id("go-back"))
+
+            itShouldDisplayRepos()
+
+            describe("when I go forward via history API") {
+              clickOn(id("go-forward"))
+
+              itShouldDisplayAbout()
+            }
+          }
+        }
       }
     }
 
