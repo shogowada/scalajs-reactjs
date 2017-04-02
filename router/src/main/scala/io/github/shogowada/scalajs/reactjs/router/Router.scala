@@ -8,6 +8,7 @@ import io.github.shogowada.scalajs.reactjs.{React, VirtualDOM}
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
+import scala.scalajs.js.|
 
 @js.native
 @JSImport("react-router", "Router")
@@ -27,7 +28,6 @@ object NativeLink extends ReactClass
 
 /** Facade for react-router */
 object Router {
-
   /** [[VirtualDOM]] extension for router components
     *
     * {{{
@@ -83,5 +83,26 @@ object Router {
       React.createElement(NativeLink, props, VirtualDOM.elementsToReactElements(contents): _*)
     }
   }
+}
 
+@js.native
+trait Location extends js.Object {
+  val pathname: String = js.native
+  val search: String = js.native
+  val state: js.UndefOr[js.Object] = js.native
+  val action: String = js.native
+  val key: js.UndefOr[String] = js.native
+}
+
+@js.native
+trait Router extends js.Object {
+  def push(path: String): Unit = js.native
+  def replace(path: String): Unit = js.native
+  def go(delta: Int): Unit = js.native
+  def goBack(): Unit = js.native
+  def goForward(): Unit = js.native
+
+  def setRouteLeaveHook(route: ReactElement, hook: js.Function1[Location, Boolean | String]): js.Function0[js.Any] = js.native
+
+  def isActive(path: String): Boolean = js.native
 }
