@@ -1,6 +1,7 @@
 package io.github.shogowada.scalajs.reactjs.example.routing
 
 import io.github.shogowada.scalajs.reactjs.example.TestTargetServers
+import org.openqa.selenium.Alert
 import org.scalatest.concurrent.Eventually
 import org.scalatest.selenium.Firefox
 import org.scalatest.{Matchers, path}
@@ -73,21 +74,80 @@ class RoutingTest extends path.FunSpec
         itShouldDisplayAbout()
       }
     }
-  }
 
-  def itShouldDisplayAbout(): Unit = {
-    it("then it should display about") {
-      eventually {
-        find("about").isDefined should equal(true)
+    describe("when I go to form route") {
+      go to s"${server.host}/#/form"
+
+      itShouldDisplayForm()
+
+      describe("and it is to confirm before leave") {
+        confirmBeforeLeave()
+
+        describe("when I try to go to about page") {
+          go to s"${server.host}/#/about"
+
+          it("then it should show confirmation box") {
+            eventually {
+              val alert: Alert = webDriver.switchTo().alert()
+              alert.getText should equal("Are you sure you want to leave the page?")
+              alert.dismiss()
+            }
+          }
+
+          describe("when I accept the confirmation") {
+            webDriver.switchTo().alert().accept()
+
+            itShouldDisplayAbout()
+          }
+
+          describe("when I dismiss the confirmation") {
+            webDriver.switchTo().alert().dismiss()
+
+            itShouldDisplayForm()
+          }
+        }
+      }
+
+      describe("and it is not to confirm before leave") {
+        doNotConfirmBeforeLeave()
+
+        describe("when I try to go to about page") {
+          go to s"${server.host}/#/about"
+
+          itShouldDisplayAbout()
+        }
+      }
+
+      describe("and I unset route leave hook") {
+        clickOn(id("unset-route-leave-hook"))
+
+        describe("when I try to got to about page") {
+          go to s"${server.host}/#/about"
+
+          itShouldDisplayAbout()
+        }
       }
     }
   }
 
-  def itShouldDisplayRepos(): Unit = {
-    it("then it should display repos") {
+  def itShouldDisplayAbout(): Unit = itShouldDisplay("about")
+  def itShouldDisplayRepos(): Unit = itShouldDisplay("repos")
+  def itShouldDisplayForm(): Unit = itShouldDisplay("form")
+
+  def itShouldDisplay(elementId: String): Unit =
+    it(s"then it should display $elementId") {
       eventually {
-        find("repos").isDefined should equal(true)
+        find(id(elementId)).isDefined should equal(true)
       }
+    }
+
+  def confirmBeforeLeave(): Unit = confirmBeforeLeave(true)
+  def doNotConfirmBeforeLeave(): Unit = confirmBeforeLeave(false)
+
+  def confirmBeforeLeave(confirm: Boolean): Unit = {
+    val safeToLeaveCheckBox = find(id("confirm-before-leave")).get
+    if (safeToLeaveCheckBox.isSelected != confirm) {
+      clickOn(safeToLeaveCheckBox)
     }
   }
 

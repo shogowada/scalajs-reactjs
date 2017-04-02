@@ -1,11 +1,12 @@
 package io.github.shogowada.scalajs.reactjs.example.routing
 
-import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.specs.{PropslessReactClassSpec, StaticReactClassSpec}
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
+import io.github.shogowada.scalajs.reactjs.events.CheckBoxFormSyntheticEvent
 import io.github.shogowada.scalajs.reactjs.router.Router._
-import io.github.shogowada.scalajs.reactjs.router.{HashHistory, RoutedReactClassSpec}
+import io.github.shogowada.scalajs.reactjs.router.{HashHistory, Location, RoutedReactClassSpec, WithRouter}
+import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
 
 import scala.scalajs.js
@@ -18,35 +19,35 @@ object Links {
   )
 }
 
-object HistoryApiButtons {
-  case class State(unblock: Option[js.Function0[js.Any]])
-
-  def apply(): ReactElement = (new HistoryApiButtons()) ()
+object RouterApiButtons {
+  /* Wrap with WithRouter to create a component with router API available */
+  def apply(): ReactElement = React.createElement(WithRouter(new RouterApiButtons()))
 }
 
-class HistoryApiButtons extends PropslessReactClassSpec[HistoryApiButtons.State] {
-
-  import HistoryApiButtons._
-
-  override def getInitialState() = State(None)
+/*
+* Extend RoutedReactClassSpec to access router API.
+* If you don't have params, just use js.Object as Params type parameter.
+**/
+class RouterApiButtons extends StaticReactClassSpec
+    with RoutedReactClassSpec[js.Object] {
 
   override def render(): ReactElement = <.div()(
     <.button(
       ^.id := "push-about",
       ^.onClick := (() => {
-        HashHistory.push("/about")
+        router.push("/about")
       })
     )("Push /about"),
     <.button(
       ^.id := "go-back",
       ^.onClick := (() => {
-        HashHistory.goBack()
+        router.goBack()
       })
     )("Go back"),
     <.button(
       ^.id := "go-forward",
       ^.onClick := (() => {
-        HashHistory.goForward()
+        router.goForward()
       })
     )("Go forward")
   )
@@ -57,7 +58,7 @@ class App extends StaticReactClassSpec {
     <.div()(
       <.h1()("React Router Tutorial"),
       Links(),
-      HistoryApiButtons(),
+      RouterApiButtons(),
       children
     ).asReactElement
 }
@@ -85,6 +86,55 @@ class Repo extends StaticReactClassSpec
   override def render() = <.div(^.id := s"repo-${params.id}")(s"Repo ${params.id}")
 }
 
+object Form {
+  case class State(confirmBeforeLeave: Boolean)
+}
+
+class Form extends PropslessReactClassSpec[Form.State]
+    with RoutedReactClassSpec[js.Object] {
+
+  import Form._
+
+  private var unsetRouteLeaveHook: js.Function0[js.Any] = _
+
+  override def getInitialState() = State(
+    confirmBeforeLeave = true
+  )
+
+  override def componentDidMount(): Unit = {
+    /* Confirm users if they want to leave */
+    unsetRouteLeaveHook = router.setRouteLeaveHook(route, (nextLocation: Location) => {
+      if (state.confirmBeforeLeave) {
+        "Are you sure you want to leave the page?"
+      } else {
+        true
+      }
+    })
+  }
+
+  override def render(): ReactElement = <.div(^.id := "form")(
+    <.label()(
+      "Confirm before leave",
+      <.input(
+        ^.id := "confirm-before-leave",
+        ^.`type` := "checkbox",
+        ^.checked := state.confirmBeforeLeave,
+        ^.onChange := ((event: CheckBoxFormSyntheticEvent) => {
+          val checked = event.target.checked
+          setState(State(confirmBeforeLeave = checked))
+        })
+      )()
+    ),
+    <.button(
+      ^.id := "unset-route-leave-hook",
+      ^.onClick := (() => {
+        unsetRouteLeaveHook()
+        unsetRouteLeaveHook = null
+      })
+    )("Unset route leave hook")
+  )
+}
+
 /*
 * To access router components, import the following:
 *
@@ -99,7 +149,8 @@ object Index {
         <.Route(path = "about", component = new About())(),
         <.Route(path = "repos", component = new Repos())(
           <.Route(path = ":id", component = new Repo())()
-        )
+        ),
+        <.Route(path = "form", component = new Form())()
       )
     )
   }

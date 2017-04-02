@@ -17,7 +17,7 @@ object WithRouter {
 }
 
 @js.native
-@JSImport("withRouter", JSImport.Default)
+@JSImport("react-router", "withRouter")
 object NativeWithRouter extends js.Object {
   def apply(reactClass: ReactClass): ReactClass = js.native
 }
