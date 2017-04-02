@@ -20,7 +20,12 @@ object Links {
 }
 
 object RouterApiButtons {
-  /* Wrap with WithRouter to create a component with router API available */
+  /* Wrap with WithRoute if
+   *
+   * - You want to use router API
+   * - The component is not a direct child of the routing components
+   *
+   * */
   def apply(): ReactElement = React.createElement(WithRouter(new RouterApiButtons()))
 }
 
@@ -102,7 +107,18 @@ class Form extends PropslessReactClassSpec[Form.State]
   )
 
   override def componentDidMount(): Unit = {
-    /* Confirm users if they want to leave */
+    /* Sets hook before leaving the route
+     * Returns function to unset the hook
+     *
+     * First argument must be route.
+     *
+     * Second argument is a hook. The hook can return one of the three:
+     *
+     * - true if you want to allow leaving without confirmation
+     * - false if you want to deny leaving without confirmation
+     * - confirmation text if you want to confirm user before leaving
+     *
+     * */
     unsetRouteLeaveHook = router.setRouteLeaveHook(route, (nextLocation: Location) => {
       if (state.confirmBeforeLeave) {
         "Are you sure you want to leave the page?"

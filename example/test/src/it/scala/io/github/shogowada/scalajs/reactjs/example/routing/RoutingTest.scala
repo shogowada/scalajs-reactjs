@@ -30,7 +30,7 @@ class RoutingTest extends path.FunSpec
       itShouldDisplayAbout()
 
       describe("when I jump to repos via URL") {
-        go to s"${server.host}/#/repos"
+        goToRepos()
 
         itShouldDisplayRepos()
 
@@ -61,7 +61,7 @@ class RoutingTest extends path.FunSpec
 
       describe("when I jump to specific repo") {
         val repoId = 123
-        go to s"${server.host}/#/repos/$repoId"
+        goToRepo(repoId)
 
         it("then it should display the repo") {
           find(s"repo-$repoId").isDefined should equal(true)
@@ -69,14 +69,14 @@ class RoutingTest extends path.FunSpec
       }
 
       describe("when I jump to about via URL") {
-        go to s"${server.host}/#/about"
+        goToAbout()
 
         itShouldDisplayAbout()
       }
     }
 
     describe("when I go to form route") {
-      go to s"${server.host}/#/form"
+      goToForm()
 
       itShouldDisplayForm()
 
@@ -84,7 +84,7 @@ class RoutingTest extends path.FunSpec
         confirmBeforeLeave()
 
         describe("when I try to go to about page") {
-          go to s"${server.host}/#/about"
+          goToAbout()
 
           it("then it should show confirmation box") {
             eventually {
@@ -112,7 +112,7 @@ class RoutingTest extends path.FunSpec
         doNotConfirmBeforeLeave()
 
         describe("when I try to go to about page") {
-          go to s"${server.host}/#/about"
+          goToAbout()
 
           itShouldDisplayAbout()
         }
@@ -122,13 +122,18 @@ class RoutingTest extends path.FunSpec
         clickOn(id("unset-route-leave-hook"))
 
         describe("when I try to got to about page") {
-          go to s"${server.host}/#/about"
+          goToAbout()
 
           itShouldDisplayAbout()
         }
       }
     }
   }
+
+  def goToAbout(): Unit = goTo(s"${server.host}/#/about")
+  def goToRepos(): Unit = goTo(s"${server.host}/#/repos")
+  def goToRepo(id: Int): Unit = goTo(s"${server.host}/#/repos/$id")
+  def goToForm(): Unit = goTo(s"${server.host}/#/form")
 
   def itShouldDisplayAbout(): Unit = itShouldDisplay("about")
   def itShouldDisplayRepos(): Unit = itShouldDisplay("repos")
