@@ -20,7 +20,7 @@ object Links {
 }
 
 object RouterApiButtons {
-  /* Wrap with WithRoute if
+  /* Wrap your component with WithRouter if
    *
    * - You want to use router API
    * - The component is not a direct child of the routing components
@@ -29,10 +29,9 @@ object RouterApiButtons {
   def apply(): ReactElement = React.createElement(WithRouter(new RouterApiButtons()))
 }
 
-/*
-* Extend RoutedReactClassSpec to access router API.
-* If you don't have params, just use js.Object as Params type parameter.
-**/
+/* Extend RoutedReactClassSpec to access router API.
+ * If you don't have params, just use js.Object as Params type parameter.
+ * */
 class RouterApiButtons extends StaticReactClassSpec
     with RoutedReactClassSpec[js.Object] {
 
@@ -151,13 +150,12 @@ class Form extends PropslessReactClassSpec[Form.State]
   )
 }
 
-/*
-* To access router components, import the following:
-*
-* - import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-* - import io.github.shogowada.scalajs.reactjs.router.Router._
-*
-* */
+/* To access router components, import the following:
+ *
+ * - import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+ * - import io.github.shogowada.scalajs.reactjs.router.Router._
+ *
+ * */
 object Index {
   def apply() = {
     <.Router(history = HashHistory)(
