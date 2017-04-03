@@ -12,6 +12,40 @@ import org.scalajs.dom
 import scala.scalajs.js
 import scala.scalajs.js.JSApp
 
+object Main extends JSApp {
+  override def main(): Unit = {
+    /* Import the following to access router components:
+     *
+     * - import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+     * - import io.github.shogowada.scalajs.reactjs.router.Router._
+     *
+     * */
+    val mountNode = dom.document.getElementById("mount-node")
+    ReactDOM.render(
+      <.Router(history = HashHistory)(
+        <.Route(path = "/", component = new App())(
+          <.Route(path = "about", component = new About())(),
+          <.Route(path = "repos", component = new Repos())(
+            <.Route(path = ":id", component = new Repo())()
+          ),
+          <.Route(path = "form", component = new Form())()
+        )
+      ),
+      mountNode
+    )
+  }
+}
+
+class App extends StaticReactClassSpec {
+  override def render() =
+    <.div()(
+      <.h1()("React Router Tutorial"),
+      Links(),
+      RouterApiButtons(),
+      children
+    ).asReactElement
+}
+
 object Links {
   def apply(): ReactElement = <.nav()(
     <.li()(<.Link(to = "about")("About")),
@@ -57,16 +91,6 @@ class RouterApiButtons extends StaticReactClassSpec
   )
 }
 
-class App extends StaticReactClassSpec {
-  override def render() =
-    <.div()(
-      <.h1()("React Router Tutorial"),
-      Links(),
-      RouterApiButtons(),
-      children
-    ).asReactElement
-}
-
 class About extends StaticReactClassSpec {
   override def render() = <.div(^.id := "about")("About")
 }
@@ -106,8 +130,7 @@ class Form extends PropslessReactClassSpec[Form.State]
   )
 
   override def componentDidMount(): Unit = {
-    /* Sets hook before leaving the route
-     * Returns function to unset the hook
+    /* Confirm user before leaving the route.
      *
      * First argument must be route.
      *
@@ -117,6 +140,7 @@ class Form extends PropslessReactClassSpec[Form.State]
      * - false if you want to deny leaving without confirmation
      * - confirmation text if you want to confirm user before leaving
      *
+     * It returns a function to unset the hook.
      * */
     unsetRouteLeaveHook = router.setRouteLeaveHook(route, (nextLocation: Location) => {
       if (state.confirmBeforeLeave) {
@@ -148,31 +172,4 @@ class Form extends PropslessReactClassSpec[Form.State]
       })
     )("Unset route leave hook")
   )
-}
-
-/* To access router components, import the following:
- *
- * - import io.github.shogowada.scalajs.reactjs.VirtualDOM._
- * - import io.github.shogowada.scalajs.reactjs.router.Router._
- *
- * */
-object Index {
-  def apply() = {
-    <.Router(history = HashHistory)(
-      <.Route(path = "/", component = new App())(
-        <.Route(path = "about", component = new About())(),
-        <.Route(path = "repos", component = new Repos())(
-          <.Route(path = ":id", component = new Repo())()
-        ),
-        <.Route(path = "form", component = new Form())()
-      )
-    )
-  }
-}
-
-object Main extends JSApp {
-  override def main(): Unit = {
-    val mountNode = dom.document.getElementById("mount-node")
-    ReactDOM.render(Index(), mountNode)
-  }
 }
