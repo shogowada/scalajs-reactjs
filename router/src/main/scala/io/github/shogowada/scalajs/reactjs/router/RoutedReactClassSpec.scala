@@ -1,11 +1,25 @@
 package io.github.shogowada.scalajs.reactjs.router
 
 import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
+import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 
 import scala.scalajs.js
 
+object RoutedReactClassSpec {
+  def nativeProps[Params <: js.Object](classSpec: RoutedReactClassSpec[Params]): js.Dynamic =
+    classSpec.asInstanceOf[ReactClassSpec[_, _]].nativeProps
+}
+
+import io.github.shogowada.scalajs.reactjs.router.RoutedReactClassSpec._
+
 /** [[ReactClassSpec]] extension for routed components */
-trait RoutedReactClassSpec[Params <: js.Any] {
+trait RoutedReactClassSpec[Params <: js.Object] {
+
+  def router: Router = new Router(nativeProps(this).router.asInstanceOf[NativeRouter])
+  def location: Location = nativeProps(this).location.asInstanceOf[Location]
+  def route: ReactElement = nativeProps(this).route.asInstanceOf[ReactElement]
+  def routes: js.Array[ReactElement] = nativeProps(this).routes.asInstanceOf[js.Array[ReactElement]]
+
   /** props.params equivalent of native React
     *
     * {{{
@@ -22,6 +36,5 @@ trait RoutedReactClassSpec[Params <: js.Any] {
     * }
     * }}}
     * */
-  def params: Params = this.asInstanceOf[ReactClassSpec[_, _]]
-      .nativeProps.params.asInstanceOf[Params]
+  def params: Params = nativeProps(this).params.asInstanceOf[Params]
 }

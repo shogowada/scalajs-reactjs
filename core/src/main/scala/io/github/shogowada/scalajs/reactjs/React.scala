@@ -40,6 +40,9 @@ object React {
   def createElement(reactClass: ReactClass, props: js.Any, children: js.Any*): ReactElement = {
     NativeReact.createElement(reactClass, props, children: _*)
   }
+
+  def createElement(reactClass: ReactClass): ReactElement =
+    NativeReact.createElement(reactClass)
 }
 
 @js.native
