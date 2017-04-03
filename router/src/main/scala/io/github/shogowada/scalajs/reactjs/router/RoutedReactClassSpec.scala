@@ -15,7 +15,7 @@ import io.github.shogowada.scalajs.reactjs.router.RoutedReactClassSpec._
 /** [[ReactClassSpec]] extension for routed components */
 trait RoutedReactClassSpec[Params <: js.Object] {
 
-  def router: Router = nativeProps(this).router.asInstanceOf[Router]
+  def router: Router = new Router(nativeProps(this).router.asInstanceOf[NativeRouter])
   def location: Location = nativeProps(this).location.asInstanceOf[Location]
   def route: ReactElement = nativeProps(this).route.asInstanceOf[ReactElement]
   def routes: js.Array[ReactElement] = nativeProps(this).routes.asInstanceOf[js.Array[ReactElement]]

@@ -99,7 +99,7 @@ class Form extends PropslessReactClassSpec[Form.State]
 
   import Form._
 
-  private var unsetRouteLeaveHook: js.Function0[js.Any] = _
+  private var unsetRouteLeaveHook: () => Unit = _
 
   override def getInitialState() = State(
     confirmBeforeLeave = true

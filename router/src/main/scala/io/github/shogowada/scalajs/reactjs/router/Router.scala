@@ -95,7 +95,7 @@ trait Location extends js.Object {
 }
 
 @js.native
-trait Router extends js.Object {
+trait NativeRouter extends js.Object {
   def push(path: String): Unit = js.native
   def replace(path: String): Unit = js.native
   def go(delta: Int): Unit = js.native
@@ -105,4 +105,19 @@ trait Router extends js.Object {
   def setRouteLeaveHook(route: ReactElement, hook: js.Function1[Location, Boolean | String]): js.Function0[js.Any] = js.native
 
   def isActive(path: String): Boolean = js.native
+}
+
+class Router(native: NativeRouter) {
+  def push(path: String): Unit = native.push(path)
+  def replace(path: String): Unit = native.replace(path)
+  def go(delta: Int): Unit = native.go(delta)
+  def goBack(): Unit = native.goBack()
+  def goForward(): Unit = native.goForward()
+
+  def setRouteLeaveHook(route: ReactElement, hook: Location => Boolean | String): () => Unit = {
+    val unset = native.setRouteLeaveHook(route, hook)
+    () => unset()
+  }
+
+  def isActive(path: String): Boolean = native.isActive(path)
 }
