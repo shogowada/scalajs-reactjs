@@ -53,6 +53,7 @@ object TestTargetServers {
   val interactiveHelloWorld = new TestTargetServer("interactive-helloworld")
   val lifecycle = new TestTargetServer("lifecycle")
   val routing = new TestTargetServer("routing")
+  val style = new TestTargetServer("style")
   val todoApp = new TestTargetServer("todo-app")
   val todoAppRedux = new TestTargetServer("todo-app-redux")
 
@@ -62,6 +63,7 @@ object TestTargetServers {
   interactiveHelloWorld.start()
   lifecycle.start()
   routing.start()
+  style.start()
   todoApp.start()
   todoAppRedux.start()
 
@@ -72,6 +74,7 @@ object TestTargetServers {
     interactiveHelloWorld.stop()
     lifecycle.stop()
     routing.stop()
+    style.stop()
     todoApp.stop()
     todoAppRedux.stop()
   })

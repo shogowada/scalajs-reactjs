@@ -4,6 +4,8 @@ val ReactReduxVersion = "^5.0.3"
 val ReactRouterVersion = "^3.0.0"
 val ReduxVersion = "^3.6.0"
 
+val StaticTagsVersion = "[2.2.0,3.0.0["
+
 crossScalaVersions := Seq("2.11.8", "2.12.1")
 
 publishTo := {
@@ -18,7 +20,7 @@ publishArtifact := false
 val commonSettings = Seq(
   organization := "io.github.shogowada",
   name := "scalajs-reactjs",
-  version := "0.6.4-SNAPSHOT",
+  version := "0.6.4",
   licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT")),
   homepage := Some(url("https://github.com/shogowada/scalajs-reactjs")),
   scalaVersion := "2.12.1",
@@ -52,7 +54,7 @@ lazy val core = project.in(file("core"))
     .settings(
       libraryDependencies ++= Seq(
         "org.scala-js" %%% "scalajs-dom" % "0.9.+",
-        "io.github.shogowada" %%% "statictags" % "2.1.0"
+        "io.github.shogowada" %%% "statictags" % StaticTagsVersion
       ),
       npmDependencies in Compile ++= Seq(
         "fbjs" -> FbJsVersion,
@@ -139,6 +141,14 @@ lazy val exampleRouting = project.in(file("example") / "routing")
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core, router)
 
+lazy val exampleStyle = project.in(file("example") / "style")
+    .settings(exampleCommonSettings: _*)
+    .settings(
+      name += "-style"
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core)
+
 lazy val exampleTodoApp = project.in(file("example") / "todo-app")
     .settings(exampleCommonSettings: _*)
     .settings(
@@ -182,6 +192,7 @@ lazy val exampleTest = project.in(file("example") / "test")
         s"-Dtarget.path.interactive-helloworld=${(crossTarget in exampleInteractiveHelloWorld).value}",
         s"-Dtarget.path.lifecycle=${(crossTarget in exampleLifecycle).value}",
         s"-Dtarget.path.routing=${(crossTarget in exampleRouting).value}",
+        s"-Dtarget.path.style=${(crossTarget in exampleStyle).value}",
         s"-Dtarget.path.todo-app=${(crossTarget in exampleTodoApp).value}",
         s"-Dtarget.path.todo-app-redux=${(crossTarget in exampleTodoAppRedux).value}",
         s"-Ddummy.custom-virtual-dom=${(webpack in fastOptJS in Compile in exampleCustomVirtualDOM).value}",
@@ -190,6 +201,7 @@ lazy val exampleTest = project.in(file("example") / "test")
         s"-Ddummy.interactive-helloworld=${(webpack in fastOptJS in Compile in exampleInteractiveHelloWorld).value}",
         s"-Ddummy.lifecycle=${(webpack in fastOptJS in Compile in exampleLifecycle).value}",
         s"-Ddummy.routing=${(webpack in fastOptJS in Compile in exampleRouting).value}",
+        s"-Ddummy.style=${(webpack in fastOptJS in Compile in exampleStyle).value}",
         s"-Ddummy.todo-app=${(webpack in fastOptJS in Compile in exampleTodoApp).value}",
         s"-Ddummy.todo-app-redux=${(webpack in fastOptJS in Compile in exampleTodoAppRedux).value}"
       ),

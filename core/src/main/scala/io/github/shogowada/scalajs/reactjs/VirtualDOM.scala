@@ -240,41 +240,37 @@ trait VirtualDOM extends StaticTags {
     }
   }
 
-  implicit def elementsToVirtualDoms(element: Element): ReactElement = {
+  implicit def elementsToVirtualDoms(element: Element): ReactElement =
     React.createElement(
       element.name,
       attributesToReactAttributes(element.flattenedAttributes),
       elementsToReactElements(element.flattenedContents): _*
     )
-  }
 
-  private def attributesToReactAttributes(attributes: Iterable[Attribute[_]]): js.Dictionary[js.Any] = {
+  private def attributesToReactAttributes(attributes: Iterable[Attribute[_]]): js.Dictionary[js.Any] =
     attributes
         .map(attributeToReactAttribute)
         .toMap
         .toJSDictionary
-  }
 
-  private def attributeToReactAttribute(attribute: Attribute[_]): (String, js.Any) = {
+  private def attributeToReactAttribute(attribute: Attribute[_]): (String, js.Any) =
     VirtualDOMAttributes.toReactAttributeName(attribute.name) -> attributeValueToReactAttributeValue(attribute)
-  }
 
-  private def attributeValueToReactAttributeValue(attribute: Attribute[_]): js.Any = {
-    attribute.value match {
-      case value: Map[String, _] => value.toJSDictionary
-      case _ => attribute.value.asInstanceOf[js.Any]
+  private def attributeValueToReactAttributeValue(attribute: Attribute[_]): js.Any =
+    attribute match {
+      case Attribute(_, value, AttributeValueType.CSS) => value.asInstanceOf[Map[String, _]].toJSDictionary
+      case Attribute(_, value, _) if js.typeOf(value.asInstanceOf[js.Any]) == "function" => value.asInstanceOf[js.Any]
+        value.asInstanceOf[js.Any]
+      case _ => attribute.valueToString
     }
-  }
 
-  def elementsToReactElements(contents: Seq[Any]): Seq[js.Any] = {
+  def elementsToReactElements(contents: Seq[Any]): Seq[js.Any] =
     contents.map(elementToReactElement)
-  }
 
-  private def elementToReactElement(content: Any): js.Any = {
+  private def elementToReactElement(content: Any): js.Any =
     content match {
       case element@Element(_, _, _, _) => elementsToVirtualDoms(element)
       case spec: ReactClassSpec[_, _] => React.createElement(spec)
       case _ => content.asInstanceOf[js.Any]
     }
-  }
 }
