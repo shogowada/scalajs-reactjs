@@ -86,7 +86,7 @@ class AddTodoComponent extends StatelessReactClassSpec[AddTodoComponent.Props] {
         })
       )(
         <.input(^.ref := ((node: ReactHTMLInputElement) => input = node))(),
-        <.button(^.`type` := "submit")(
+        <.button(^.`type`.submit)(
           "Add Todo"
         )
       )

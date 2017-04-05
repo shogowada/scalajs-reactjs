@@ -30,7 +30,7 @@ class LetterCaseRadioBox extends StatelessReactClassSpec[LetterCaseRadioBox.Prop
   override def render(): ReactElement = {
     <.span()(
       <.input(
-        ^.`type` := "radio",
+        ^.`type`.radio,
         ^.name := "letter-case",
         ^.value := props.letterCase.name,
         ^.checked := props.checked,

@@ -156,7 +156,7 @@ class Form extends PropslessReactClassSpec[Form.State]
       "Confirm before leave",
       <.input(
         ^.id := "confirm-before-leave",
-        ^.`type` := "checkbox",
+        ^.`type`.checkbox,
         ^.checked := state.confirmBeforeLeave,
         ^.onChange := ((event: CheckBoxFormSyntheticEvent) => {
           val checked = event.target.checked

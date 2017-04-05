@@ -58,9 +58,9 @@ class App extends PropslessReactClassSpec[App.State] {
   override def render(): ReactElement = {
     <.div()(
       <.label(^.`for` := "component-did-mount")("Component Did Mount: "),
-      <.input(^.id := "component-did-mount", ^.`type` := "checkbox", ^.checked := state.componentDidMountCalled)(),
+      <.input(^.id := "component-did-mount", ^.`type`.checkbox, ^.checked := state.componentDidMountCalled)(),
       <.label(^.`for` := "component-did-update")("Component Did Update: "),
-      <.input(^.id := "component-did-update", ^.`type` := "checkbox", ^.checked := state.componentDidUpdateCalled)()
+      <.input(^.id := "component-did-update", ^.`type`.checkbox, ^.checked := state.componentDidUpdateCalled)()
     ).asReactElement
   }
 }
