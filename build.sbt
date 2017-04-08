@@ -1,3 +1,4 @@
+val CreateReactClassVersion = "^15.5.1"
 val FbJsVersion = "^0.8.9" // Match the version with the one as React's dependency
 val ReactVersion = "^15.4.2"
 val ReactReduxVersion = "^5.0.3"
@@ -57,6 +58,7 @@ lazy val core = project.in(file("core"))
         "io.github.shogowada" %%% "statictags" % StaticTagsVersion
       ),
       npmDependencies in Compile ++= Seq(
+        "create-react-class" -> CreateReactClassVersion,
         "fbjs" -> FbJsVersion,
         "react" -> ReactVersion,
         "react-dom" -> ReactVersion

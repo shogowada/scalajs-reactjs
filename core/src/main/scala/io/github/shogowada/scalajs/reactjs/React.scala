@@ -12,7 +12,7 @@ object React {
 
   /** Returns [[ReactClass]] created by given [[ReactClassSpec]] */
   def createClass[Props, State](spec: ReactClassSpec[Props, State]): ReactClass =
-    NativeReact.createClass(spec.asNative)
+    NativeCreateReactClass(spec.asNative)
 
   /** Returns [[ReactElement]] created by given tag name, attributes, and children */
   def createElement(tagName: String, attributes: js.Any, children: js.Any*): ReactElement =
@@ -48,8 +48,6 @@ object React {
 @js.native
 @JSImport("react", JSImport.Default)
 object NativeReact extends js.Object {
-  def createClass(spec: js.Any): ReactClass = js.native
-
   def createElement(tagName: String, attributes: js.Any, children: js.Any*): ReactElement = js.native
 
   def createElement(reactClass: ReactClass): ReactElement = js.native
@@ -57,4 +55,10 @@ object NativeReact extends js.Object {
   def createElement(reactClass: ReactClass, attributes: js.Any): ReactElement = js.native
 
   def createElement(reactClass: ReactClass, props: js.Any, children: js.Any*): ReactElement = js.native
+}
+
+@js.native
+@JSImport("create-react-class", JSImport.Default)
+object NativeCreateReactClass extends js.Object {
+  def apply(spec: js.Any): ReactClass = js.native
 }
