@@ -31,39 +31,43 @@ object ContainerComponents {
   case class LinkContainerComponentProps(filter: String)
 
   implicit class RichVirtualDOMElements(virtualDOMElements: VirtualDOMElements) {
-    def LinkContainerComponent = ReactRedux.connect(
-      (dispatch: Dispatch, state: State, ownProps: LinkContainerComponentProps) => {
-        Link.Props(
-          active = ownProps.filter == state.visibilityFilter,
-          onClick = () => {
-            dispatch(SetVisibilityFilter(filter = ownProps.filter))
-          }
-        )
+    def LinkContainerComponent = ReactRedux.connectAdvanced(
+      (dispatch: Dispatch) => {
+        var ownProps: LinkContainerComponentProps = null
+        val onClick: () => Unit = () => dispatch(SetVisibilityFilter(filter = ownProps.filter))
+        (state: State, nextOwnProps: LinkContainerComponentProps) => {
+          ownProps = nextOwnProps
+          Link.Props(
+            active = ownProps.filter == state.visibilityFilter,
+            onClick = onClick
+          )
+        }
       }
     )(Link(_, _)) // (Props, ReactElement) => ReactElement
 
-    def TodoListContainerComponent = ReactRedux.connect(
-      (dispatch: Dispatch, state: State) => {
-        TodoList.Props(
-          todos = state.visibilityFilter match {
-            case VisibilityFilters.ShowAll => state.todos
-            case VisibilityFilters.ShowActive => state.todos.filter(todo => !todo.completed)
-            case VisibilityFilters.ShowCompleted => state.todos.filter(todo => todo.completed)
-          },
-          onTodoClick = (id: Int) => {
-            dispatch(ToggleTodo(id = id))
-          }
-        )
+    def TodoListContainerComponent = ReactRedux.connectAdvanced(
+      (dispatch: Dispatch) => {
+        val onTodoClick: (Int) => Unit = (id: Int) => dispatch(ToggleTodo(id = id))
+        (state: State, ownProps: Unit) => {
+          TodoList.Props(
+            todos = state.visibilityFilter match {
+              case VisibilityFilters.ShowAll => state.todos
+              case VisibilityFilters.ShowActive => state.todos.filter(todo => !todo.completed)
+              case VisibilityFilters.ShowCompleted => state.todos.filter(todo => todo.completed)
+            },
+            onTodoClick = onTodoClick
+          )
+        }
       }
     )(TodoList(_)) // (Props) => ReactElement
 
-    def AddTodoContainerComponent = ReactRedux.connect(
+    def AddTodoContainerComponent = ReactRedux.connectAdvanced(
       (dispatch: Dispatch) => {
-        AddTodoComponent.Props(
-          onAddTodo = (text: String) => {
-            dispatch(AddTodo(text = text))
-          }
-        )
+        val onAddTodo: (String) => Unit = (text: String) => dispatch(AddTodo(text = text))
+        (state: State, ownProps: Unit) =>
+          AddTodoComponent.Props(
+            onAddTodo = onAddTodo
+          )
       }
     )(new AddTodoComponent()) // ReactClassSpec
   }
