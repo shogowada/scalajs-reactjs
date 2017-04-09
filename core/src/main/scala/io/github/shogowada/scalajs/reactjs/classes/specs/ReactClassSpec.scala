@@ -2,7 +2,7 @@ package io.github.shogowada.scalajs.reactjs.classes.specs
 
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
-import io.github.shogowada.scalajs.reactjs.utils.FbJsShallowEqual
+import io.github.shogowada.scalajs.reactjs.utils.Utils
 
 import scala.scalajs.js
 
@@ -71,26 +71,12 @@ trait ReactClassSpec[Props, State] {
     if (shouldComponentUpdate(propsFromNative(nextProps), stateFromNative(nextState))) {
       true
     } else {
-      def shallowEqualWithoutWrapped(lhs: js.Dynamic, rhs: js.Dynamic): Boolean = {
-        def temporarilyUndefineWrapped(value: js.Dynamic, onUndefined: () => Boolean): Boolean = {
-          val wrapped = value.wrapped
-          if (!js.isUndefined(wrapped)) {
-            value.wrapped = js.undefined
-          }
-          val result = onUndefined()
-          if (!js.isUndefined(wrapped)) {
-            value.wrapped = wrapped
-          }
-          result
-        }
-
-        temporarilyUndefineWrapped(lhs, () => temporarilyUndefineWrapped(rhs, () => FbJsShallowEqual(lhs, rhs)))
-      }
-
+      import ReactClassSpec._
       val props = nativeThis.props
       val state = nativeThis.state
 
-      !shallowEqualWithoutWrapped(props, nextProps) || !shallowEqualWithoutWrapped(state, nextState)
+      !Utils.shallowEqual(props, nextProps, WrappedProperty) ||
+          !Utils.shallowEqual(state, nextState, WrappedProperty)
     }
   }
 
@@ -189,9 +175,13 @@ object ReactClassSpec {
 
   def stateFromNative[State](nativeState: js.Dynamic): State = unwrap[State](nativeState)
 
-  private def wrap[Wrapped](wrapped: Wrapped): js.Dynamic = js.Dynamic.literal("wrapped" -> wrapped.asInstanceOf[js.Any])
+  val WrappedProperty = "wrapped"
 
-  private def unwrap[Wrapped](nativeWrapped: js.Dynamic): Wrapped = nativeWrapped.wrapped.asInstanceOf[Wrapped]
+  private def wrap[Wrapped](wrapped: Wrapped): js.Dynamic =
+    js.Dynamic.literal(WrappedProperty -> wrapped.asInstanceOf[js.Any])
+
+  private def unwrap[Wrapped](nativeWrapped: js.Dynamic): Wrapped =
+    nativeWrapped.selectDynamic(WrappedProperty).asInstanceOf[Wrapped]
 }
 
 /** [[ReactClassSpec]] without state */

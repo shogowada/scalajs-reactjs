@@ -16,7 +16,7 @@ object Main extends JSApp {
 
   def apply(): ReactElement = <.div()(
     <.div(^.id := "green-text", ^.className := Seq("green"))("Green text!"),
-    <.div(^.id := "blue-big-text", ^.className := Seq("blue", "big"))("Blue big text!"),
+    <.div(^.id := "big-blue-text", ^.className := Seq("big", "blue"))(" Big blue text !"),
     <.div(^.id := "red-text", ^.style := Map("color" -> "red"))("Red text!")
   )
 }

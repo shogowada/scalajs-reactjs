@@ -1,5 +1,4 @@
 val CreateReactClassVersion = "^15.5.1"
-val FbJsVersion = "^0.8.12" // Match the version with the one as React's dependency
 val ReactVersion = "^15.5.3"
 val ReactReduxVersion = "^5.0.3"
 val ReactRouterVersion = "^3.0.0"
@@ -60,7 +59,6 @@ lazy val core = project.in(file("core"))
       ),
       npmDependencies in Compile ++= Seq(
         "create-react-class" -> CreateReactClassVersion,
-        "fbjs" -> FbJsVersion,
         "react" -> ReactVersion,
         "react-dom" -> ReactVersion
       ),

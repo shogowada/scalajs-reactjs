@@ -19,8 +19,8 @@ class StyleTest extends path.FreeSpec
       find(id("green-text")).flatMap(_.attribute("class")) should equal(Option("green"))
     }
 
-    "then it should show blue big text" in {
-      find(id("blue-big-text")).flatMap(_.attribute("class")) should equal(Option("blue big"))
+    "then it should show big blue text" in {
+      find(id("big-blue-text")).flatMap(_.attribute("class")) should equal(Option("big blue"))
     }
 
     "then it should show red text" in {
