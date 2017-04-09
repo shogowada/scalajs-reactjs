@@ -11,9 +11,11 @@ before_script:
   - "export DISPLAY=:99"
   - "sh -e /etc/init.d/xvfb start"
   - sleep 3 # give xvfb some time to start
-  - . $HOME/.nvm/nvm.sh
-  - nvm install stable
-  - nvm use stable
+  - ". $HOME/.nvm/nvm.sh"
+  - "nvm install --lts"
+  - "nvm use --lts"
+  - "node --version"
+  - "npm --version"
 
 script:
   - sbt ++$TRAVIS_SCALA_VERSION fastOptJS::webpack
