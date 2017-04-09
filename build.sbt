@@ -4,6 +4,7 @@ val ReactVersion = "^15.5.3"
 val ReactReduxVersion = "^5.0.3"
 val ReactRouterVersion = "^3.0.0"
 val ReduxVersion = "^3.6.0"
+val WebpackVersion = "^2.3.2"
 
 val StaticTagsVersion = "[2.3.0,3.0.0["
 
@@ -63,6 +64,7 @@ lazy val core = project.in(file("core"))
         "react" -> ReactVersion,
         "react-dom" -> ReactVersion
       ),
+      (version in webpack) := WebpackVersion,
       (webpack in(Compile, fastOptJS)) := Seq(),
       (webpack in(Compile, fullOptJS)) := Seq(),
       publishArtifact := true
