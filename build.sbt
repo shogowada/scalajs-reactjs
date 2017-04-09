@@ -1,6 +1,6 @@
 val CreateReactClassVersion = "^15.5.1"
-val FbJsVersion = "^0.8.9" // Match the version with the one as React's dependency
-val ReactVersion = "^15.4.2"
+val FbJsVersion = "^0.8.12" // Match the version with the one as React's dependency
+val ReactVersion = "^15.5.3"
 val ReactReduxVersion = "^5.0.3"
 val ReactRouterVersion = "^3.0.0"
 val ReduxVersion = "^3.6.0"
