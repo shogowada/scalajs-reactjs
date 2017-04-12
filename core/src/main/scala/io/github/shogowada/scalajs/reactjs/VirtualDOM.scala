@@ -1,8 +1,11 @@
 package io.github.shogowada.scalajs.reactjs
 
+import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMAttributes.Type.AS_IS
+import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
 import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLElement}
 import io.github.shogowada.scalajs.reactjs.events._
+import io.github.shogowada.statictags.AttributeValueType.AttributeValueType
 import io.github.shogowada.statictags._
 
 import scala.language.implicitConversions
@@ -33,11 +36,11 @@ trait EventVirtualDOMAttributes {
     val name: String
 
     def :=(callback: js.Function0[_]): Attribute[js.Function0[_]] = {
-      Attribute(name = name, value = callback)
+      Attribute(name, callback, AS_IS)
     }
 
     def :=(callback: js.Function1[Event, _]): Attribute[js.Function1[Event, _]] = {
-      Attribute(name = name, value = callback)
+      Attribute(name, callback, AS_IS)
     }
   }
 
@@ -178,12 +181,39 @@ trait VirtualDOM extends StaticTags {
 
   class VirtualDOMElements extends Elements
 
+  object VirtualDOMElements {
+    case class ReactClassElementSpec(
+        reactClass: ReactClass
+    ) {
+      def apply(attributes: Any*)(contents: Any*): ReactElement = {
+        val element = Element("", attributes, contents)
+        React.createElement(
+          reactClass,
+          VirtualDOMAttributes.toReactAttributes(element.flattenedAttributes),
+          toReactElements(element.flattenedContents): _*
+        )
+      }
+
+      def empty = apply()()
+    }
+
+    def toReactElements(contents: Seq[Any]): Seq[js.Any] =
+      contents.map(elementToReactElement)
+
+    private def elementToReactElement(content: Any): js.Any =
+      content match {
+        case element@Element(_, _, _, _) => elementsToVirtualDOMs(element)
+        case spec: ReactClassSpec[_, _] => React.createElement(spec)
+        case _ => content.asInstanceOf[js.Any]
+      }
+  }
+
   class VirtualDOMAttributes extends Attributes
       with EventVirtualDOMAttributes {
 
     case class RefAttributeSpec(name: String) extends AttributeSpec {
       def :=[T <: ReactHTMLElement](callback: js.Function1[T, _]): Attribute[js.Function1[T, _]] = {
-        Attribute(name = name, value = callback)
+        Attribute(name, callback, AS_IS)
       }
     }
 
@@ -195,6 +225,10 @@ trait VirtualDOM extends StaticTags {
   }
 
   object VirtualDOMAttributes {
+    object Type {
+      case object AS_IS extends AttributeValueType
+    }
+
     private lazy val htmlNameToReactNameMap = Map(
       "accept-charset" -> "acceptCharset",
       "accesskey" -> "accessKey",
@@ -231,9 +265,26 @@ trait VirtualDOM extends StaticTags {
       "usemap" -> "useMap"
     )
 
-    def toReactAttributeName(name: String): String = {
+    private def toReactAttributeName(name: String): String = {
       htmlNameToReactNameMap.getOrElse(name, name)
     }
+
+    def toReactAttributes(attributes: Iterable[Attribute[_]]): js.Dictionary[js.Any] =
+      attributes
+          .map(attributeToReactAttribute)
+          .toMap
+          .toJSDictionary
+
+    private def attributeToReactAttribute(attribute: Attribute[_]): (String, js.Any) =
+      toReactAttributeName(attribute.name) -> attributeValueToReactAttributeValue(attribute)
+
+    private def attributeValueToReactAttributeValue(attribute: Attribute[_]): js.Any =
+      attribute match {
+        case Attribute(_, value, AttributeValueType.CSS) => value.asInstanceOf[Map[String, _]].toJSDictionary
+        case Attribute(_, value: ReactClassSpec[_, _], AS_IS) => React.createClass(value)
+        case Attribute(_, value, AS_IS) => value.asInstanceOf[js.Any]
+        case _ => attribute.valueToString
+      }
   }
 
   override val < = new VirtualDOMElements()
@@ -241,41 +292,14 @@ trait VirtualDOM extends StaticTags {
 
   implicit class RichElement(element: Element) {
     def asReactElement: ReactElement = {
-      elementsToVirtualDoms(element)
+      elementsToVirtualDOMs(element)
     }
   }
 
-  implicit def elementsToVirtualDoms(element: Element): ReactElement =
+  implicit def elementsToVirtualDOMs(element: Element): ReactElement =
     React.createElement(
       element.name,
-      attributesToReactAttributes(element.flattenedAttributes),
-      elementsToReactElements(element.flattenedContents): _*
+      VirtualDOMAttributes.toReactAttributes(element.flattenedAttributes),
+      VirtualDOMElements.toReactElements(element.flattenedContents): _*
     )
-
-  private def attributesToReactAttributes(attributes: Iterable[Attribute[_]]): js.Dictionary[js.Any] =
-    attributes
-        .map(attributeToReactAttribute)
-        .toMap
-        .toJSDictionary
-
-  private def attributeToReactAttribute(attribute: Attribute[_]): (String, js.Any) =
-    VirtualDOMAttributes.toReactAttributeName(attribute.name) -> attributeValueToReactAttributeValue(attribute)
-
-  private def attributeValueToReactAttributeValue(attribute: Attribute[_]): js.Any =
-    attribute match {
-      case Attribute(_, value, AttributeValueType.CSS) => value.asInstanceOf[Map[String, _]].toJSDictionary
-      case Attribute(_, value, _) if js.typeOf(value.asInstanceOf[js.Any]) == "function" => value.asInstanceOf[js.Any]
-        value.asInstanceOf[js.Any]
-      case _ => attribute.valueToString
-    }
-
-  def elementsToReactElements(contents: Seq[Any]): Seq[js.Any] =
-    contents.map(elementToReactElement)
-
-  private def elementToReactElement(content: Any): js.Any =
-    content match {
-      case element@Element(_, _, _, _) => elementsToVirtualDoms(element)
-      case spec: ReactClassSpec[_, _] => React.createElement(spec)
-      case _ => content.asInstanceOf[js.Any]
-    }
 }

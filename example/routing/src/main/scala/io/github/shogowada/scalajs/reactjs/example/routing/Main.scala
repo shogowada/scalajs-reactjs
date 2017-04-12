@@ -22,13 +22,13 @@ object Main extends JSApp {
      * */
     val mountNode = dom.document.getElementById("mount-node")
     ReactDOM.render(
-      <.Router(history = HashHistory)(
-        <.Route(path = "/", component = new App())(
-          <.Route(path = "about", component = new About())(),
-          <.Route(path = "repos", component = new Repos())(
-            <.Route(path = ":id", component = new Repo())()
+      <.Router(^.history := HashHistory)(
+        <.Route(^.path := "/", ^.component := new App())(
+          <.Route(^.path := "about", ^.component := new About())(),
+          <.Route(^.path := "repos", ^.component := new Repos())(
+            <.Route(^.path := ":id", ^.component := new Repo())()
           ),
-          <.Route(path = "form", component = new Form())()
+          <.Route(^.path := "form", ^.component := new Form())()
         )
       ),
       mountNode
@@ -48,8 +48,8 @@ class App extends StaticReactClassSpec {
 
 object Links {
   def apply(): ReactElement = <.nav()(
-    <.li()(<.Link(to = "about")("About")),
-    <.li()(<.Link(to = "repos")("Repos"))
+    <.li()(<.Link(^.to := "about")("About")),
+    <.li()(<.Link(^.to := "repos")("Repos"))
   )
 }
 

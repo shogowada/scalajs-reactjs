@@ -1,10 +1,13 @@
 package io.github.shogowada.scalajs.reactjs.router
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements
+import io.github.shogowada.scalajs.reactjs.VirtualDOM
+import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMAttributes.Type.AS_IS
+import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements.ReactClassElementSpec
+import io.github.shogowada.scalajs.reactjs.VirtualDOM.{VirtualDOMAttributes, VirtualDOMElements}
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
-import io.github.shogowada.scalajs.reactjs.{React, VirtualDOM}
+import io.github.shogowada.statictags.{Attribute, AttributeSpec, StringAttributeSpec}
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
@@ -34,54 +37,38 @@ object Router {
     * import io.github.shogowada.scalajs.reactjs.VirtualDOM._
     * import io.github.shogowada.scalajs.reactjs.router.Router._
     *
-    * <.Router(history = HashHistory)(
-    *   <.Route(path = "/", component = new App())(
-    *     <.Route(path = "about", component = new About())(),
-    *     <.Route(path = "repos", component = new Repos())(
-    *       <.Route(path = ":id", component = new Repo())()
+    * <.Router(^.history := HashHistory)(
+    *   <.Route(^.path := "/", ^.component := new App())(
+    *     <.Route(^.path := "about", ^.component := new About())(),
+    *     <.Route(^.path := "repos", ^.component := new Repos())(
+    *       <.Route(^.path := ":id", ^.component := new Repo())()
     *     )
     *   )
     * )
     * }}}
     * */
   implicit class RichVirtualDOMElements(elements: VirtualDOMElements) {
-    def Router(history: History)(routes: ReactElement*): ReactElement = {
-      val props = js.Dynamic.literal(
-        "history" -> history
-      )
-      React.createElement(NativeRouter, props, routes: _*)
+    lazy val Router = ReactClassElementSpec(NativeRouter)
+    lazy val Route = ReactClassElementSpec(NativeRoute)
+    lazy val IndexRoute = ReactClassElementSpec(NativeIndexRoute)
+    lazy val Link = ReactClassElementSpec(NativeLink)
+  }
+
+  implicit class RichVirtualDOMAttributes(attribute: VirtualDOMAttributes) {
+    case class ReactClassAttributeSpec(name: String) extends AttributeSpec {
+      def :=[Props, State](value: ReactClassSpec[Props, State]): Attribute[ReactClassSpec[Props, State]] =
+        Attribute(name, value, AS_IS)
+      def :=(value: ReactClass): Attribute[ReactClass] = Attribute(name, value, AS_IS)
     }
 
-    def Route[Props, State](path: String, component: ReactClassSpec[Props, State])(childRoutes: ReactElement*): ReactElement = {
-      val realComponent = React.createClass(component)
-      Route(path = path, component = realComponent)(childRoutes: _*)
+    case class HistoryAttributeSpec(name: String) extends AttributeSpec {
+      def :=(value: History): Attribute[History] = Attribute(name, value, AS_IS)
     }
 
-    def Route(path: String, component: ReactClass)(childRoutes: ReactElement*): ReactElement = {
-      val props = js.Dynamic.literal(
-        "path" -> path,
-        "component" -> component
-      )
-      React.createElement(NativeRoute, props, childRoutes: _*)
-    }
-
-    def IndexRoute[Props, State](component: ReactClassSpec[Props, State]): ReactElement = {
-      IndexRoute(React.createClass(component))
-    }
-
-    def IndexRoute(component: ReactClass): ReactElement = {
-      val props = js.Dynamic.literal(
-        "component" -> component
-      )
-      React.createElement(NativeIndexRoute, props)
-    }
-
-    def Link(to: String)(contents: Any*): ReactElement = {
-      val props = js.Dynamic.literal(
-        "to" -> to
-      )
-      React.createElement(NativeLink, props, VirtualDOM.elementsToReactElements(contents): _*)
-    }
+    lazy val component = ReactClassAttributeSpec("component")
+    lazy val history = HistoryAttributeSpec("history")
+    lazy val path = StringAttributeSpec("path")
+    lazy val to = StringAttributeSpec("to")
   }
 }
 
