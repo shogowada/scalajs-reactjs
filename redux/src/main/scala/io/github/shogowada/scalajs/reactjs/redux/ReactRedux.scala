@@ -31,8 +31,11 @@ class ContainerComponent[OwnProps](wrappedClass: ReactClass) {
 }
 
 class ContainerComponentFactory[OwnProps, Props](nativeFactory: js.Function1[js.Any, ReactClass]) {
-  def apply[State](classSpec: ReactClassSpec[Props, State]): ContainerComponent[OwnProps] = {
-    val nativeContainerComponent: ReactClass = nativeFactory(React.createClass(classSpec))
+  def apply[State](classSpec: ReactClassSpec[Props, State]): ContainerComponent[OwnProps] =
+    this.apply(React.createClass(classSpec))
+
+  def apply[State](reactClass: ReactClass): ContainerComponent[OwnProps] = {
+    val nativeContainerComponent: ReactClass = nativeFactory(reactClass)
     new ContainerComponent[OwnProps](nativeContainerComponent)
   }
 
