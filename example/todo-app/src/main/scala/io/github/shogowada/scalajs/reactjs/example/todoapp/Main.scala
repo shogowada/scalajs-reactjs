@@ -59,6 +59,6 @@ object Main extends JSApp {
     }
 
     val mountNode = dom.document.getElementById("mount-node")
-    ReactDOM.render(TodoApp(), mountNode)
+    ReactDOM.render(<(TodoApp()).empty, mountNode)
   }
 }

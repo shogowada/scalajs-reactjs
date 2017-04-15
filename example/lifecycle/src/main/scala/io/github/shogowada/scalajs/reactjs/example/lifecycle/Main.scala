@@ -2,7 +2,7 @@ package io.github.shogowada.scalajs.reactjs.example.lifecycle
 
 import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.specs.PropslessReactClassSpec
+import io.github.shogowada.scalajs.reactjs.classes.specs.{Props, PropslessReactClassSpec}
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import org.scalajs.dom
 
@@ -28,20 +28,20 @@ class App extends PropslessReactClassSpec[App.State] {
     setState(_.copy(componentDidMountCalled = true))
   }
 
-  override def shouldComponentUpdate(nextProps: Unit, nextState: State): Boolean = {
+  override def shouldComponentUpdate(nextProps: Props[Unit], nextState: State): Boolean = {
     println(s"shouldComponentUpdate($nextProps, $nextState)")
     nextState != state
   }
 
-  override def componentWillReceiveProps(nextProps: Unit): Unit = {
+  override def componentWillReceiveProps(nextProps: Props[Unit]): Unit = {
     println(s"componentWillReceiveProps($nextProps)")
   }
 
-  override def componentWillUpdate(nextProps: Unit, nextState: State): Unit = {
+  override def componentWillUpdate(nextProps: Props[Unit], nextState: State): Unit = {
     println(s"componentWillUpdate($nextProps, $nextState)")
   }
 
-  override def componentDidUpdate(prevProps: Unit, prevState: State): Unit = {
+  override def componentDidUpdate(prevProps: Props[Unit], prevState: State): Unit = {
     println(s"componentDidUpdate($prevProps, $prevState)")
     setState(_.copy(componentDidUpdateCalled = true))
   }
@@ -68,6 +68,6 @@ class App extends PropslessReactClassSpec[App.State] {
 object Main extends JSApp {
   override def main(): Unit = {
     val mountNode = dom.document.getElementById("mount-node")
-    ReactDOM.render(new App(), mountNode)
+    ReactDOM.render(<(new App()).empty, mountNode)
   }
 }

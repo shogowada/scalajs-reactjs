@@ -73,19 +73,19 @@ class RouterApiButtons extends StaticReactClassSpec
     <.button(
       ^.id := "push-about",
       ^.onClick := (() => {
-        router.push("/about")
+        props.router.push("/about")
       })
     )("Push /about"),
     <.button(
       ^.id := "go-back",
       ^.onClick := (() => {
-        router.goBack()
+        props.router.goBack()
       })
     )("Go back"),
     <.button(
       ^.id := "go-forward",
       ^.onClick := (() => {
-        router.goForward()
+        props.router.goForward()
       })
     )("Go forward")
   )
@@ -111,7 +111,7 @@ object Repo {
 
 class Repo extends StaticReactClassSpec
     with RoutedReactClassSpec[Repo.Params] {
-  override def render() = <.div(^.id := s"repo-${params.id}")(s"Repo ${params.id}")
+  override def render() = <.div(^.id := s"repo-${props.params.id}")(s"Repo ${props.params.id}")
 }
 
 object Form {
@@ -142,7 +142,7 @@ class Form extends PropslessReactClassSpec[Form.State]
      *
      * It returns a function to unset the hook.
      * */
-    unsetRouteLeaveHook = router.setRouteLeaveHook(route, (nextLocation: Location) => {
+    unsetRouteLeaveHook = props.router.setRouteLeaveHook(props.route, (nextLocation: Location) => {
       if (state.confirmBeforeLeave) {
         "Are you sure you want to leave the page?"
       } else {

@@ -19,8 +19,7 @@ import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 *
 * You can pass either one of the following to create a real component:
 *
-* - Render function of type (props: Props, children: ReactElement) => ReactElement
-* - Render function of type (props: Props) => ReactElement
+* - Render function of type (props: Props[WrappedProps]) => ReactElement
 * - Presentational component of type ReactClassSpec
 *
 * It shows example for all of them.
@@ -28,28 +27,29 @@ import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 
 object ContainerComponents {
 
-  case class LinkContainerComponentProps(filter: String)
+  case class LinkContainerComponentOwnProps(filter: String)
 
   implicit class RichVirtualDOMElements(virtualDOMElements: VirtualDOMElements) {
     def LinkContainerComponent = ReactRedux.connectAdvanced(
       (dispatch: Dispatch) => {
-        var ownProps: LinkContainerComponentProps = null
+        var ownProps: LinkContainerComponentOwnProps = null
         val onClick: () => Unit = () => dispatch(SetVisibilityFilter(filter = ownProps.filter))
-        (state: State, nextOwnProps: LinkContainerComponentProps) => {
+
+        (state: State, nextOwnProps: LinkContainerComponentOwnProps) => {
           ownProps = nextOwnProps
-          Link.Props(
+          Link.WrappedProps(
             active = ownProps.filter == state.visibilityFilter,
             onClick = onClick
           )
         }
       }
-    )(Link(_, _)) // (Props, ReactElement) => ReactElement
+    )(Link(_)) // (Props[WrappedProps]) => ReactElement
 
     def TodoListContainerComponent = ReactRedux.connectAdvanced(
       (dispatch: Dispatch) => {
         val onTodoClick: (Int) => Unit = (id: Int) => dispatch(ToggleTodo(id = id))
         (state: State, ownProps: Unit) => {
-          TodoList.Props(
+          TodoList.WrappedProps(
             todos = state.visibilityFilter match {
               case VisibilityFilters.ShowAll => state.todos
               case VisibilityFilters.ShowActive => state.todos.filter(todo => !todo.completed)
@@ -59,13 +59,13 @@ object ContainerComponents {
           )
         }
       }
-    )(TodoList(_)) // (Props) => ReactElement
+    )(TodoList(_)) // (Props[WrappedProps]) => ReactElement
 
     def AddTodoContainerComponent = ReactRedux.connectAdvanced(
       (dispatch: Dispatch) => {
         val onAddTodo: (String) => Unit = (text: String) => dispatch(AddTodo(text = text))
         (state: State, ownProps: Unit) =>
-          AddTodoComponent.Props(
+          AddTodoComponent.WrappedProps(
             onAddTodo = onAddTodo
           )
       }
