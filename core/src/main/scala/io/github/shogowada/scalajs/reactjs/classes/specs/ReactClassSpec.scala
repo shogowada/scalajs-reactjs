@@ -59,9 +59,6 @@ trait ReactClassSpec[WrappedProps, State] {
 
   def state: State = stateFromNative(nativeState)
 
-  /** Returns props.children equivalent in native React */
-  def children: ReactElement = nativeProps.children.asInstanceOf[ReactElement]
-
   def componentWillMount(): Unit = {}
 
   def componentDidMount(): Unit = {}

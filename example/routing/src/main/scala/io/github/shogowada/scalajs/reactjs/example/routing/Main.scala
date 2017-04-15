@@ -42,7 +42,7 @@ class App extends StaticReactClassSpec {
       <.h1()("React Router Tutorial"),
       Links(),
       RouterApiButtons(),
-      children
+      props.children
     ).asReactElement
 }
 
@@ -98,7 +98,7 @@ class About extends StaticReactClassSpec {
 class Repos extends StaticReactClassSpec {
   override def render() = <.div(^.id := "repos")(
     "Repos",
-    children
+    props.children
   )
 }
 
