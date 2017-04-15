@@ -4,7 +4,7 @@
 
 Develop React applications with Scala. It is compatible with Scala 2.12 and Scala.js 0.6.14.
 
-Facade for react-router and react-redux are optionally available too.
+Optionally include react-router and react-redux facades, too.
 
 ## Quick Look
 
