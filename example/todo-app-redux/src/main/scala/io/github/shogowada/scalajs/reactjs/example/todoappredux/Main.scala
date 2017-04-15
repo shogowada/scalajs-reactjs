@@ -8,22 +8,26 @@ import org.scalajs.dom
 
 import scala.scalajs.js.JSApp
 
+/*
+ * If you are not familiar with react-redux yet, please check it out first:
+ *
+ * - http://redux.js.org/docs/basics/UsageWithReact.html
+ * */
+
 object Main extends JSApp {
   override def main(): Unit = {
     val mountNode = dom.document.getElementById("mount-node")
 
-    // Use Redux.createStore(reducer) to create a store.
     val store = Redux.createStore(Reducer.reduce)
 
     /*
-    * Use <.Provider(store)(children) to create a virtual DOM for your Redux containers.
-    * Note that you need to import the following to access the Provider:
-    *
-    * - import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-    * - import io.github.shogowada.scalajs.reactjs.redux.ReactRedux._
-    * */
+     * Import the following to access the Provider:
+     *
+     * - import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+     * - import io.github.shogowada.scalajs.reactjs.redux.ReactRedux._
+     * */
     ReactDOM.render(
-      <.Provider(store = store)(
+      <.Provider(^.store := store)(
         App()
       ),
       mountNode

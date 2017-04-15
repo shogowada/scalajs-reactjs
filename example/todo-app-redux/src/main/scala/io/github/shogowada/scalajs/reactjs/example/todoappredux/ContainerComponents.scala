@@ -5,51 +5,41 @@ import io.github.shogowada.scalajs.reactjs.redux.ReactRedux
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 
 /*
-* You can create container components by using ReactRedux.connect method.
-* The method has three signatures:
+* You can create container components by using ReactRedux.connectAdvanced method.
 *
-* - ReactRedux.connect(dispatch, state, ownProps)
-* - ReactRedux.connect(dispatch, state)
-* - ReactRedux.connect(dispatch)
+* You can pass either one of the following to create a component:
 *
-* It shows example for all of them.
-*
-* Container components are higher-order components.
-* This means you need to pass another component to it to create a real component.
-*
-* You can pass either one of the following to create a real component:
-*
-* - Render function of type (props: Props, children: ReactElement) => ReactElement
-* - Render function of type (props: Props) => ReactElement
+* - Render function of type (props: Props[WrappedProps]) => ReactElement
 * - Presentational component of type ReactClassSpec
 *
-* It shows example for all of them.
+* It shows example for both.
 * */
 
 object ContainerComponents {
 
-  case class LinkContainerComponentProps(filter: String)
+  case class LinkContainerComponentOwnProps(filter: String)
 
   implicit class RichVirtualDOMElements(virtualDOMElements: VirtualDOMElements) {
     def LinkContainerComponent = ReactRedux.connectAdvanced(
       (dispatch: Dispatch) => {
-        var ownProps: LinkContainerComponentProps = null
+        var ownProps: LinkContainerComponentOwnProps = null
         val onClick: () => Unit = () => dispatch(SetVisibilityFilter(filter = ownProps.filter))
-        (state: State, nextOwnProps: LinkContainerComponentProps) => {
+
+        (state: State, nextOwnProps: LinkContainerComponentOwnProps) => {
           ownProps = nextOwnProps
-          Link.Props(
+          Link.WrappedProps(
             active = ownProps.filter == state.visibilityFilter,
             onClick = onClick
           )
         }
       }
-    )(Link(_, _)) // (Props, ReactElement) => ReactElement
+    )(Link(_)) // (Props[WrappedProps]) => ReactElement
 
     def TodoListContainerComponent = ReactRedux.connectAdvanced(
       (dispatch: Dispatch) => {
         val onTodoClick: (Int) => Unit = (id: Int) => dispatch(ToggleTodo(id = id))
         (state: State, ownProps: Unit) => {
-          TodoList.Props(
+          TodoList.WrappedProps(
             todos = state.visibilityFilter match {
               case VisibilityFilters.ShowAll => state.todos
               case VisibilityFilters.ShowActive => state.todos.filter(todo => !todo.completed)
@@ -59,13 +49,13 @@ object ContainerComponents {
           )
         }
       }
-    )(TodoList(_)) // (Props) => ReactElement
+    )(TodoList(_)) // (Props[WrappedProps]) => ReactElement
 
     def AddTodoContainerComponent = ReactRedux.connectAdvanced(
       (dispatch: Dispatch) => {
         val onAddTodo: (String) => Unit = (text: String) => dispatch(AddTodo(text = text))
         (state: State, ownProps: Unit) =>
-          AddTodoComponent.Props(
+          AddTodoComponent.WrappedProps(
             onAddTodo = onAddTodo
           )
       }

@@ -1,8 +1,10 @@
 package io.github.shogowada.scalajs.reactjs
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMAttributes.Type.AS_IS
+import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements.ReactClassElementSpec
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
+import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec.Render
 import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLElement}
 import io.github.shogowada.scalajs.reactjs.events._
 import io.github.shogowada.statictags.AttributeValueType.AttributeValueType
@@ -12,22 +14,6 @@ import scala.language.implicitConversions
 import scala.scalajs.js
 import scala.scalajs.js.JSConverters._
 
-/** Factory for virtual DOMs
-  *
-  * Virtual DOMs have type of [[Element]], which are implicitly converted to [[ReactElement]].
-  *
-  * Import VirtualDOM._ and access factory methods for DOMs with {{{<}}} and attributes with {{{^}}}.
-  * {{{
-  * import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-  *
-  * object Foo {
-  *   def render(): ReactElement = <.div(^.id := "main")(
-  *     <.div()("first child"),
-  *     <.div()("second child")
-  *   )
-  * }
-  * }}}
-  * */
 object VirtualDOM extends VirtualDOM
 
 trait EventVirtualDOMAttributes {
@@ -179,18 +165,23 @@ trait EventVirtualDOMAttributes {
 
 trait VirtualDOM extends StaticTags {
 
-  class VirtualDOMElements extends Elements
+  class VirtualDOMElements extends Elements {
+    def apply[Props, State](reactClassSpec: ReactClassSpec[Props, State]): ReactClassElementSpec =
+      this.apply(React.createClass(reactClassSpec))
+
+    def apply(reactClass: ReactClass): ReactClassElementSpec =
+      ReactClassElementSpec(reactClass)
+  }
 
   object VirtualDOMElements {
     case class ReactClassElementSpec(
         reactClass: ReactClass
     ) {
       def apply(attributes: Any*)(contents: Any*): ReactElement = {
-        val element = Element("", attributes, contents)
         React.createElement(
           reactClass,
-          VirtualDOMAttributes.toReactAttributes(element.flattenedAttributes),
-          toReactElements(element.flattenedContents): _*
+          VirtualDOMAttributes.toReactAttributes(Element.flattenAttributes(attributes)),
+          toReactElements(Element.flattenContents(contents)): _*
         )
       }
 
@@ -203,7 +194,6 @@ trait VirtualDOM extends StaticTags {
     private def elementToReactElement(content: Any): js.Any =
       content match {
         case element@Element(_, _, _, _) => elementsToVirtualDOMs(element)
-        case spec: ReactClassSpec[_, _] => React.createElement(spec)
         case _ => content.asInstanceOf[js.Any]
       }
   }
@@ -211,20 +201,40 @@ trait VirtualDOM extends StaticTags {
   class VirtualDOMAttributes extends Attributes
       with EventVirtualDOMAttributes {
 
+    import VirtualDOMAttributes._
+
+    lazy val className = SpaceSeparatedStringAttributeSpec("className")
+    override lazy val `for`: ForAttributeSpec = htmlFor
+    lazy val htmlFor = ForAttributeSpec("htmlFor")
+    lazy val key = StringAttributeSpec("key")
+    lazy val ref = RefAttributeSpec("ref")
+    lazy val wrapped = WrappedPropsAttributeSpec("wrapped")
+  }
+
+  object VirtualDOMAttributes {
+    case class WrappedPropsAttributeSpec(name: String) extends AttributeSpec {
+      def :=[T](wrappedProps: T): Attribute[js.Any] =
+        Attribute(name, wrappedProps.asInstanceOf[js.Any], AS_IS)
+    }
+
+    case class ReactClassAttributeSpec(name: String) extends AttributeSpec {
+      def :=[Props, State](value: ReactClassSpec[Props, State]): Attribute[ReactClass] = this := React.createClass(value)
+      def :=(value: ReactClass): Attribute[ReactClass] = Attribute(name, value, AS_IS)
+    }
+
     case class RefAttributeSpec(name: String) extends AttributeSpec {
       def :=[T <: ReactHTMLElement](callback: js.Function1[T, _]): Attribute[js.Function1[T, _]] = {
         Attribute(name, callback, AS_IS)
       }
     }
 
-    lazy val className = SpaceSeparatedStringAttributeSpec(name = "className")
-    override lazy val `for`: ForAttributeSpec = htmlFor
-    lazy val htmlFor = ForAttributeSpec("htmlFor")
-    lazy val key = StringAttributeSpec("key")
-    lazy val ref = RefAttributeSpec("ref")
-  }
+    case class RenderAttributeSpec(name: String) extends AttributeSpec {
+      def :=[WrappedProps](render: Render[WrappedProps]) = {
+        val nativeRender = ReactClassSpec.renderToNative(render)
+        Attribute(name, nativeRender, AS_IS)
+      }
+    }
 
-  object VirtualDOMAttributes {
     object Type {
       case object AS_IS extends AttributeValueType
     }
@@ -281,7 +291,7 @@ trait VirtualDOM extends StaticTags {
     private def attributeValueToReactAttributeValue(attribute: Attribute[_]): js.Any =
       attribute match {
         case Attribute(_, value, AttributeValueType.CSS) => value.asInstanceOf[Map[String, _]].toJSDictionary
-        case Attribute(_, value: ReactClassSpec[_, _], AS_IS) => React.createClass(value)
+        case Attribute(_, value: Boolean, AttributeValueType.DEFAULT) => value.asInstanceOf[js.Any]
         case Attribute(_, value, AS_IS) => value.asInstanceOf[js.Any]
         case _ => attribute.valueToString
       }

@@ -1,7 +1,7 @@
 package io.github.shogowada.scalajs.reactjs.example.todoappredux
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.specs.StatelessReactClassSpec
+import io.github.shogowada.scalajs.reactjs.classes.specs.{Props, StatelessReactClassSpec}
 import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLInputElement}
 import io.github.shogowada.scalajs.reactjs.events.{InputFormSyntheticEvent, SyntheticEvent}
 import io.github.shogowada.scalajs.reactjs.example.todoappredux.ContainerComponents._
@@ -20,34 +20,34 @@ object Todo {
 }
 
 object TodoList {
-  case class Props(todos: Seq[TodoItem], onTodoClick: (Int) => Unit)
+  case class WrappedProps(todos: Seq[TodoItem], onTodoClick: (Int) => Unit)
 
-  def apply(props: Props): ReactElement =
+  def apply(props: Props[WrappedProps]): ReactElement =
     <.ul()(
-      props.todos.map(todo => {
+      props.wrapped.todos.map(todo => {
         Todo(Todo.Props(
           todoItem = todo,
-          onClick = () => props.onTodoClick(todo.id)
+          onClick = () => props.wrapped.onTodoClick(todo.id)
         ))
       })
     )
 }
 
 object Link {
-  case class Props(active: Boolean, onClick: () => Unit)
+  case class WrappedProps(active: Boolean, onClick: () => Unit)
 
-  def apply(props: Props, children: ReactElement): ReactElement =
-    if (props.active) {
-      <.span()(children)
+  def apply(props: Props[WrappedProps]): ReactElement =
+    if (props.wrapped.active) {
+      <.span()(props.children)
     } else {
       <.a(
         ^.href := "#",
         ^.onClick := ((e: SyntheticEvent) => {
           e.preventDefault()
-          props.onClick()
+          props.wrapped.onClick()
         })
       )(
-        children
+        props.children
       )
     }
 }
@@ -56,21 +56,28 @@ object Footer {
   def apply(): ReactElement =
     <.p()(
       "Show: ",
-      <.LinkContainerComponent(LinkContainerComponentProps("SHOW_ALL"))(
+      <.LinkContainerComponent(
+        // Make sure to wrap own props with "wrapped" property
+        ^.wrapped := LinkContainerComponentOwnProps("SHOW_ALL")
+      )(
         "All"
       ),
       ", ",
-      <.LinkContainerComponent(LinkContainerComponentProps("SHOW_ACTIVE"))(
+      <.LinkContainerComponent(
+        ^.wrapped := LinkContainerComponentOwnProps("SHOW_ACTIVE")
+      )(
         "Active"
       ),
       ", ",
-      <.LinkContainerComponent(LinkContainerComponentProps("SHOW_COMPLETED"))(
+      <.LinkContainerComponent(
+        ^.wrapped := LinkContainerComponentOwnProps("SHOW_COMPLETED")
+      )(
         "Completed"
       )
     )
 }
 
-class AddTodoComponent extends StatelessReactClassSpec[AddTodoComponent.Props] {
+class AddTodoComponent extends StatelessReactClassSpec[AddTodoComponent.WrappedProps] {
 
   private var input: ReactHTMLInputElement = _
 
@@ -80,7 +87,7 @@ class AddTodoComponent extends StatelessReactClassSpec[AddTodoComponent.Props] {
         ^.onSubmit := ((event: InputFormSyntheticEvent) => {
           event.preventDefault()
           if (!input.value.trim.isEmpty) {
-            props.onAddTodo(input.value)
+            props.wrapped.onAddTodo(input.value)
             input.value = ""
           }
         })
@@ -94,14 +101,14 @@ class AddTodoComponent extends StatelessReactClassSpec[AddTodoComponent.Props] {
 }
 
 object AddTodoComponent {
-  case class Props(onAddTodo: (String) => Unit)
+  case class WrappedProps(onAddTodo: (String) => Unit)
 }
 
 object App {
   def apply(): ReactElement =
     <.div()(
-      <.AddTodoContainerComponent(),
-      <.TodoListContainerComponent(),
+      <.AddTodoContainerComponent.empty,
+      <.TodoListContainerComponent.empty,
       Footer()
     )
 }

@@ -8,11 +8,7 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
 object WithRouter {
-  def apply[Props, State](reactClassSpec: ReactClassSpec[Props, State]): ReactClass = {
-    val reactClass = React.createClass(reactClassSpec)
-    NativeWithRouter(reactClass)
-  }
-
+  def apply[WrappedProps, State](reactClassSpec: ReactClassSpec[WrappedProps, State]): ReactClass = this.apply(React.createClass(reactClassSpec))
   def apply(reactClass: ReactClass): ReactClass = NativeWithRouter(reactClass)
 }
 

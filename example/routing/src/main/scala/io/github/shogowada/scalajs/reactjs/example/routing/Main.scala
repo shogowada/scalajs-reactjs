@@ -1,39 +1,44 @@
 package io.github.shogowada.scalajs.reactjs.example.routing
 
+import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.specs.{PropslessReactClassSpec, StaticReactClassSpec}
+import io.github.shogowada.scalajs.reactjs.classes.specs.{Props, PropslessReactClassSpec, StaticReactClassSpec}
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events.CheckBoxFormSyntheticEvent
-import io.github.shogowada.scalajs.reactjs.router.Router._
-import io.github.shogowada.scalajs.reactjs.router.{HashHistory, Location, RoutedReactClassSpec, WithRouter}
-import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
+import io.github.shogowada.scalajs.reactjs.router.dom.RouterDOM._
+import io.github.shogowada.scalajs.reactjs.router.{RouterProps, WithRouter}
 import org.scalajs.dom
 
-import scala.scalajs.js
 import scala.scalajs.js.JSApp
+
+/*
+ * If you are not yet familiar with react-router, check it our first:
+ *
+ * - https://reacttraining.com/react-router/web/guides/quick-start
+ *
+ * This is just a facade for the react-router, so if you know how to use it already,
+ * you will be able to more easily understand how to use this facade.
+ *
+ * Import the following to access router components (e.g. Route):
+ *
+ * - import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+ * - import io.github.shogowada.scalajs.reactjs.router.dom.RouterDOM._
+ * */
 
 object Main extends JSApp {
   override def main(): Unit = {
-    /* Import the following to access router components:
-     *
-     * - import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-     * - import io.github.shogowada.scalajs.reactjs.router.Router._
-     *
-     * */
     val mountNode = dom.document.getElementById("mount-node")
     ReactDOM.render(
-      <.Router(^.history := HashHistory)(
-        <.Route(^.path := "/", ^.component := new App())(
-          <.Route(^.path := "about", ^.component := new About())(),
-          <.Route(^.path := "repos", ^.component := new Repos())(
-            <.Route(^.path := ":id", ^.component := new Repo())()
-          ),
-          <.Route(^.path := "form", ^.component := new Form())()
-        )
+      <.HashRouter()(
+        <(App()).empty
       ),
       mountNode
     )
   }
+}
+
+object App {
+  def apply() = WithRouter(new App())
 }
 
 class App extends StaticReactClassSpec {
@@ -41,135 +46,105 @@ class App extends StaticReactClassSpec {
     <.div()(
       <.h1()("React Router Tutorial"),
       Links(),
-      RouterApiButtons(),
-      children
+      RouterApiButtons(props),
+      <.Switch()(
+        <.Route(^.path := "/about", ^.render := (About(_: Props[_])))(),
+        <.Route(^.path := "/repos", ^.render := (Repos(_: Props[_])))(),
+        <.Route(^.path := "/form", ^.component := Form())()
+      )
     ).asReactElement
 }
 
 object Links {
   def apply(): ReactElement = <.nav()(
-    <.li()(<.Link(^.to := "about")("About")),
-    <.li()(<.Link(^.to := "repos")("Repos"))
+    <.li()(<.Link(^.to := "/about")("About")),
+    <.li()(<.Link(^.to := "/repos")("Repos"))
   )
 }
 
-object RouterApiButtons {
-  /* Wrap your component with WithRouter if
-   *
-   * - You want to use router API
-   * - The component is not a direct child of the routing components
-   *
-   * */
-  def apply(): ReactElement = React.createElement(WithRouter(new RouterApiButtons()))
-}
-
-/* Extend RoutedReactClassSpec to access router API.
- * If you don't have params, just use js.Object as Params type parameter.
- * */
-class RouterApiButtons extends StaticReactClassSpec
-    with RoutedReactClassSpec[js.Object] {
-
-  override def render(): ReactElement = <.div()(
+// Extend RouterProps or import RouterProps._ to access router specific props like props.match or props.history.
+object RouterApiButtons extends RouterProps {
+  def apply(props: Props[_]): ReactElement = <.div()(
     <.button(
       ^.id := "push-about",
       ^.onClick := (() => {
-        router.push("/about")
+        props.history.push("/about")
       })
     )("Push /about"),
     <.button(
       ^.id := "go-back",
       ^.onClick := (() => {
-        router.goBack()
+        props.history.goBack()
       })
     )("Go back"),
     <.button(
       ^.id := "go-forward",
       ^.onClick := (() => {
-        router.goForward()
+        props.history.goForward()
       })
     )("Go forward")
   )
 }
 
-class About extends StaticReactClassSpec {
-  override def render() = <.div(^.id := "about")("About")
+object About {
+  def apply(props: Props[_]): ReactElement =
+    <.div(^.id := "about")("About")
 }
 
-class Repos extends StaticReactClassSpec {
-  override def render() = <.div(^.id := "repos")(
-    "Repos",
-    children
-  )
+object Repos extends RouterProps {
+  def apply(props: Props[_]): ReactElement =
+    <.div(^.id := "repos")(
+      "Repos",
+      <.Route(
+        ^.path := s"${props.`match`.path}/:id",
+        ^.component := Repo()
+      )()
+    )
 }
 
 object Repo {
-  @js.native
-  trait Params extends js.Object {
-    val id: String = js.native
-  }
+  def apply() = new Repo()
 }
 
 class Repo extends StaticReactClassSpec
-    with RoutedReactClassSpec[Repo.Params] {
-  override def render() = <.div(^.id := s"repo-${params.id}")(s"Repo ${params.id}")
+    with RouterProps {
+  // Params has type of js.Dictionary[String].
+  private def id: String = props.`match`.params("id")
+
+  override def render() = <.div(^.id := s"repo-${id}")(s"Repo ${id}")
 }
 
 object Form {
   case class State(confirmBeforeLeave: Boolean)
+
+  def apply() = new Form()
 }
 
-class Form extends PropslessReactClassSpec[Form.State]
-    with RoutedReactClassSpec[js.Object] {
+class Form extends PropslessReactClassSpec[Form.State] {
 
   import Form._
 
-  private var unsetRouteLeaveHook: () => Unit = _
+  override def getInitialState() = State(confirmBeforeLeave = true)
 
-  override def getInitialState() = State(
-    confirmBeforeLeave = true
-  )
-
-  override def componentDidMount(): Unit = {
-    /* Confirm user before leaving the route.
-     *
-     * First argument must be route.
-     *
-     * Second argument is a hook. The hook can return one of the three:
-     *
-     * - true if you want to allow leaving without confirmation
-     * - false if you want to deny leaving without confirmation
-     * - confirmation text if you want to confirm user before leaving
-     *
-     * It returns a function to unset the hook.
-     * */
-    unsetRouteLeaveHook = router.setRouteLeaveHook(route, (nextLocation: Location) => {
-      if (state.confirmBeforeLeave) {
-        "Are you sure you want to leave the page?"
-      } else {
-        true
-      }
-    })
-  }
-
-  override def render(): ReactElement = <.div(^.id := "form")(
-    <.label()(
-      "Confirm before leave",
-      <.input(
-        ^.id := "confirm-before-leave",
-        ^.`type`.checkbox,
-        ^.checked := state.confirmBeforeLeave,
-        ^.onChange := ((event: CheckBoxFormSyntheticEvent) => {
-          val checked = event.target.checked
-          setState(State(confirmBeforeLeave = checked))
-        })
-      )()
-    ),
-    <.button(
-      ^.id := "unset-route-leave-hook",
-      ^.onClick := (() => {
-        unsetRouteLeaveHook()
-        unsetRouteLeaveHook = null
-      })
-    )("Unset route leave hook")
-  )
+  override def render(): ReactElement =
+    <.div()(
+      <.Prompt(
+        ^.when := state.confirmBeforeLeave,
+        ^.message := "Are you sure you want to leave the page?"
+      )(),
+      <.div(^.id := "form")(
+        <.label()(
+          "Confirm before leave",
+          <.input(
+            ^.id := "confirm-before-leave",
+            ^.`type`.checkbox,
+            ^.checked := state.confirmBeforeLeave,
+            ^.onChange := ((event: CheckBoxFormSyntheticEvent) => {
+              val checked = event.target.checked
+              setState(State(confirmBeforeLeave = checked))
+            })
+          )()
+        )
+      )
+    )
 }

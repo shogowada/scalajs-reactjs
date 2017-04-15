@@ -4,10 +4,8 @@ import io.github.shogowada.scalajs.reactjs.elements._
 
 import scala.scalajs.js
 
-/** [[SyntheticEvent]] for forms */
 @js.native
 trait FormSyntheticEvent[Element <: ReactHTMLElement] extends SyntheticEvent {
-  /** Reference to corresponding [[ReactHTMLElement]] */
   val target: Element = js.native
 }
 

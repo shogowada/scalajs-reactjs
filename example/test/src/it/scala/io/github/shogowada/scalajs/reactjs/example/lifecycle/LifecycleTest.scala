@@ -1,14 +1,8 @@
 package io.github.shogowada.scalajs.reactjs.example.lifecycle
 
-import io.github.shogowada.scalajs.reactjs.example.TestTargetServers
-import org.scalatest.concurrent.Eventually
-import org.scalatest.selenium.Firefox
-import org.scalatest.{Matchers, path}
+import io.github.shogowada.scalajs.reactjs.example.{BaseTest, TestTargetServers}
 
-class LifecycleTest extends path.FreeSpec
-    with Firefox
-    with Eventually
-    with Matchers {
+class LifecycleTest extends BaseTest {
 
   val target = TestTargetServers.lifecycle
 
@@ -27,6 +21,4 @@ class LifecycleTest extends path.FreeSpec
       }
     }
   }
-
-  close()
 }

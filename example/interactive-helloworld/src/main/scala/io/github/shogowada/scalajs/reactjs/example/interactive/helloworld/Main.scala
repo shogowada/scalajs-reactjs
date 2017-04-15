@@ -21,28 +21,28 @@ object LetterCase {
 }
 
 object LetterCaseRadioBox {
-  case class Props(letterCase: LetterCase, checked: Boolean, onChecked: () => Unit)
+  case class WrappedProps(letterCase: LetterCase, checked: Boolean, onChecked: () => Unit)
 
-  def apply(props: Props): ReactElement = (new LetterCaseRadioBox) (props)()
+  def apply() = new LetterCaseRadioBox()
 }
 
-class LetterCaseRadioBox extends StatelessReactClassSpec[LetterCaseRadioBox.Props] {
+class LetterCaseRadioBox extends StatelessReactClassSpec[LetterCaseRadioBox.WrappedProps] {
   override def render(): ReactElement = {
     <.span()(
       <.input(
         ^.`type`.radio,
         ^.name := "letter-case",
-        ^.value := props.letterCase.name,
-        ^.checked := props.checked,
+        ^.value := props.wrapped.letterCase.name,
+        ^.checked := props.wrapped.checked,
         ^.onChange := onChange
       )(),
-      props.letterCase.name
+      props.wrapped.letterCase.name
     )
   }
 
   val onChange = (event: RadioFormSyntheticEvent) => {
     if (event.target.checked) {
-      props.onChecked()
+      props.wrapped.onChecked()
     }
   }
 }
@@ -81,13 +81,15 @@ class InteractiveHelloWorld extends PropslessReactClassSpec[InteractiveHelloWorl
     )
 
   def createLetterCaseRadioBox(thisLetterCase: LetterCase): ReactElement = {
-    LetterCaseRadioBox(LetterCaseRadioBox.Props(
-      letterCase = thisLetterCase,
-      checked = thisLetterCase == state.letterCase,
-      onChecked = () => {
-        setState(_.copy(letterCase = thisLetterCase))
-      }
-    ))
+    <(LetterCaseRadioBox())(
+      ^.wrapped := LetterCaseRadioBox.WrappedProps(
+        letterCase = thisLetterCase,
+        checked = thisLetterCase == state.letterCase,
+        onChecked = () => {
+          setState(_.copy(letterCase = thisLetterCase))
+        }
+      )
+    )()
   }
 
   val onChange = (event: InputFormSyntheticEvent) => {
@@ -107,6 +109,6 @@ class InteractiveHelloWorld extends PropslessReactClassSpec[InteractiveHelloWorl
 object Main extends JSApp {
   def main(): Unit = {
     val mountNode = dom.document.getElementById("mount-node")
-    ReactDOM.render(new InteractiveHelloWorld(), mountNode)
+    ReactDOM.render(<(new InteractiveHelloWorld()).empty, mountNode)
   }
 }

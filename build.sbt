@@ -1,13 +1,16 @@
 val CreateReactClassVersion = "^15.5.1"
 val ReactVersion = "^15.5.3"
 val ReactReduxVersion = "^5.0.3"
-val ReactRouterVersion = "^3.0.0"
+val ReactRouterVersion = "^4.0.0"
 val ReduxVersion = "^3.6.0"
 val WebpackVersion = "^2.3.2"
 
 val StaticTagsVersion = "[2.4.0,3.0.0["
 
-crossScalaVersions := Seq("2.11.8", "2.12.1")
+val SeleniumVersion = "[3.0.0,4.0.0["
+val ScalaTestVersion = "[3.1.0,4.0.0["
+
+crossScalaVersions := Seq("2.12.1")
 
 publishTo := {
   val nexus = "https://oss.sonatype.org/"
@@ -21,7 +24,7 @@ publishArtifact := false
 val commonSettings = Seq(
   organization := "io.github.shogowada",
   name := "scalajs-reactjs",
-  version := "0.7.2-SNAPSHOT",
+  version := "0.8.0",
   licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT")),
   homepage := Some(url("https://github.com/shogowada/scalajs-reactjs")),
   scalaVersion := "2.12.1",
@@ -83,6 +86,20 @@ lazy val router = project.in(file("router"))
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core)
 
+lazy val routerDom = project.in(file("router-dom"))
+    .settings(commonSettings: _*)
+    .settings(
+      name += "-router-dom",
+      npmDependencies in Compile ++= Seq(
+        "react-router-dom" -> ReactRouterVersion
+      ),
+      (webpack in(Compile, fastOptJS)) := Seq(),
+      (webpack in(Compile, fullOptJS)) := Seq(),
+      publishArtifact := true
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core, router)
+
 lazy val redux = project.in(file("redux"))
     .settings(commonSettings: _*)
     .settings(
@@ -141,7 +158,7 @@ lazy val exampleRouting = project.in(file("example") / "routing")
       name += "-routing"
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
-    .dependsOn(core, router)
+    .dependsOn(core, routerDom)
 
 lazy val exampleStyle = project.in(file("example") / "style")
     .settings(exampleCommonSettings: _*)
@@ -182,10 +199,10 @@ lazy val exampleTest = project.in(file("example") / "test")
     .settings(
       name += "-example-test",
       libraryDependencies ++= Seq(
-        "org.eclipse.jetty" % "jetty-server" % "9.3+",
-        "org.seleniumhq.selenium" % "selenium-java" % "2.+",
+        "org.eclipse.jetty" % "jetty-server" % "9.3.+",
+        "org.seleniumhq.selenium" % "selenium-java" % SeleniumVersion,
 
-        "org.scalatest" %% "scalatest" % "3.+"
+        "org.scalatest" %% "scalatest" % ScalaTestVersion
       ),
       javaOptions ++= Seq(
         s"-Dtarget.path.custom-virtual-dom=${(crossTarget in exampleCustomVirtualDOM).value}",
@@ -197,6 +214,7 @@ lazy val exampleTest = project.in(file("example") / "test")
         s"-Dtarget.path.style=${(crossTarget in exampleStyle).value}",
         s"-Dtarget.path.todo-app=${(crossTarget in exampleTodoApp).value}",
         s"-Dtarget.path.todo-app-redux=${(crossTarget in exampleTodoAppRedux).value}",
+        // Just to build them
         s"-Ddummy.custom-virtual-dom=${(webpack in fastOptJS in Compile in exampleCustomVirtualDOM).value}",
         s"-Ddummy.helloworld=${(webpack in fastOptJS in Compile in exampleHelloWorld).value}",
         s"-Ddummy.helloworld-function=${(webpack in fastOptJS in Compile in exampleHelloWorldFunction).value}",

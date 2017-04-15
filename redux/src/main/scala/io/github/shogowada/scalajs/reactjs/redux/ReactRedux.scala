@@ -1,111 +1,46 @@
 package io.github.shogowada.scalajs.reactjs.redux
 
-import io.github.shogowada.scalajs.reactjs.React
-import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements
+import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMAttributes.Type.AS_IS
+import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements.ReactClassElementSpec
+import io.github.shogowada.scalajs.reactjs.VirtualDOM.{VirtualDOMAttributes, VirtualDOMElements}
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
-import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec.{Renderer, RendererWithChildren}
-import io.github.shogowada.scalajs.reactjs.elements.ReactElement
+import io.github.shogowada.scalajs.reactjs.redux.ReactRedux.ReactReduxVirtualDOMAttributes.StoreAttributeSpec
 import io.github.shogowada.scalajs.reactjs.redux.Redux.NativeDispatch
+import io.github.shogowada.statictags.{Attribute, AttributeSpec}
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
-object ContainerComponent {
-  def ownPropsFromNative[OwnProps](nativeOwnProps: js.Dynamic): OwnProps = nativeOwnProps.wrapped.asInstanceOf[OwnProps]
-
-  def ownPropsToNative[OwnProps](ownProps: OwnProps): js.Dynamic = js.Dynamic.literal(
-    "wrapped" -> ownProps.asInstanceOf[js.Any]
-  )
-}
-
-class ContainerComponent[OwnProps](wrappedClass: ReactClass) {
-  def apply(children: js.Any*): ReactElement = {
-    React.createElement(wrappedClass, (), children: _*)
-  }
-
-  def apply(ownProps: OwnProps)(children: js.Any*): ReactElement = {
-    val nativeOwnProps = ContainerComponent.ownPropsToNative(ownProps)
-    React.createElement(wrappedClass, nativeOwnProps, children: _*)
-  }
-}
-
-class ContainerComponentFactory[OwnProps, Props](nativeFactory: js.Function1[js.Any, ReactClass]) {
-  def apply[State](classSpec: ReactClassSpec[Props, State]): ContainerComponent[OwnProps] =
-    this.apply(React.createClass(classSpec))
-
-  def apply[State](reactClass: ReactClass): ContainerComponent[OwnProps] = {
-    val nativeContainerComponent: ReactClass = nativeFactory(reactClass)
-    new ContainerComponent[OwnProps](nativeContainerComponent)
-  }
-
-  def apply(renderer: Renderer[Props]): ContainerComponent[OwnProps] = {
-    apply((props: Props, children: ReactElement) => renderer(props))
-  }
-
-  def apply(renderer: RendererWithChildren[Props]): ContainerComponent[OwnProps] = {
-    val nativeRenderer: js.Function1[js.Dynamic, ReactElement] = (nativeProps: js.Dynamic) => {
-      val props = ReactClassSpec.propsFromNative[Props](nativeProps)
-      val nativeChildren: js.Dynamic = nativeProps.children
-      val children: ReactElement = if (js.isUndefined(nativeChildren)) {
-        null
-      } else {
-        nativeChildren.asInstanceOf[ReactElement]
-      }
-      renderer(props, children)
-    }
-    val nativeContainerComponent: ReactClass = nativeFactory(nativeRenderer)
-    new ContainerComponent[OwnProps](nativeContainerComponent)
-  }
-}
-
-/** Facade for react-redux */
 object ReactRedux {
 
   import Redux.Dispatch
 
-  /** [[io.github.shogowada.scalajs.reactjs.VirtualDOM]] extension for react-redux components */
-  implicit class RichVirtualDOMElements(elements: VirtualDOMElements) {
-    def Provider(store: Store)(child: ReactElement): ReactElement = {
-      val props = js.Dynamic.literal(
-        "store" -> store
-      )
-      React.createElement(NativeReactReduxProvider, props, child)
+  implicit class ReactReduxVirtualDOMElements(elements: VirtualDOMElements) {
+    lazy val Provider = ReactClassElementSpec(NativeReactReduxProvider)
+  }
+
+  object ReactReduxVirtualDOMAttributes {
+    case class StoreAttributeSpec(name: String) extends AttributeSpec {
+      def :=(store: Store) = Attribute(name, store, AS_IS)
     }
   }
 
-  def connect[Props](
-      selector: (Dispatch) => Props
-  ): ContainerComponentFactory[Unit, Props] = {
-    connect((dispatch: Dispatch, _: js.Any) => selector(dispatch))
+  implicit class ReactReduxVirtualDOMAttributes(attributes: VirtualDOMAttributes) {
+    lazy val store = StoreAttributeSpec("store")
   }
 
-  def connect[ReduxState, Props, State](
-      selector: (Dispatch, ReduxState) => Props
-  ): ContainerComponentFactory[Unit, Props] = {
-    connect((dispatch: Dispatch, state: ReduxState, ownProps: Unit) => selector(dispatch, state))
-  }
-
-  def connect[ReduxState, OwnProps, Props, State](
-      selector: (Dispatch, ReduxState, OwnProps) => Props
-  ): ContainerComponentFactory[OwnProps, Props] = {
-    connectAdvanced(
-      (dispatch: Dispatch) => (state: ReduxState, ownProps: OwnProps) =>
-        selector(dispatch, state, ownProps)
-    )
-  }
-
-  def connectAdvanced[ReduxState, OwnProps, Props](
-      selectorFactory: Dispatch => (ReduxState, OwnProps) => Props
-  ): ContainerComponentFactory[OwnProps, Props] = {
+  def connectAdvanced[ReduxState, OwnProps, WrappedProps](
+      selectorFactory: Dispatch => (ReduxState, OwnProps) => WrappedProps
+  ): ContainerComponentFactory[WrappedProps] = {
     val nativeSelectorFactory = selectorFactoryToNative(selectorFactory)
 
     val nativeFactory = NativeReactRedux.connectAdvanced(nativeSelectorFactory)
-    new ContainerComponentFactory[OwnProps, Props](nativeFactory)
+    new ContainerComponentFactory[WrappedProps](nativeFactory)
   }
 
-  private def selectorFactoryToNative[ReduxState, OwnProps, Props](
-      selectorFactory: Dispatch => (ReduxState, OwnProps) => Props
+  private def selectorFactoryToNative[ReduxState, OwnProps, WrappedProps](
+      selectorFactory: Dispatch => (ReduxState, OwnProps) => WrappedProps
   ): js.Function1[NativeDispatch, js.Function2[ReduxState, js.Dynamic, js.Any]] =
     (nativeDispatch: NativeDispatch) => {
       val dispatch: Dispatch = dispatchFromNative(nativeDispatch)
@@ -113,31 +48,29 @@ object ReactRedux {
       selectorToNative(selector)
     }
 
-  private def selectorToNative[ReduxState, OwnProps, Props](
-      selector: (ReduxState, OwnProps) => Props
+  private def selectorToNative[ReduxState, OwnProps, WrappedProps](
+      selector: (ReduxState, OwnProps) => WrappedProps
   ): js.Function2[ReduxState, js.Dynamic, js.Any] =
     (state: ReduxState, nativeOwnProps: js.Dynamic) => {
       val ownProps: OwnProps = ContainerComponent.ownPropsFromNative(nativeOwnProps)
-      val props: Props = selector(state, ownProps)
-      propsToNative(props, nativeOwnProps)
+      val wrappedProps: WrappedProps = selector(state, ownProps)
+      val nativeProps = clone(nativeOwnProps)
+      nativeProps.updateDynamic(ReactClassSpec.WrappedProperty)(wrappedProps.asInstanceOf[js.Any])
+      nativeProps
     }
+
+  private def clone(plainObject: js.Dynamic): js.Dynamic = {
+    val clonedPlainObject = js.Dynamic.literal()
+    val keys = js.Object.keys(plainObject.asInstanceOf[js.Object])
+    keys.foreach(key => clonedPlainObject.updateDynamic(key)(plainObject.selectDynamic(key)))
+    clonedPlainObject
+  }
 
   private def dispatchFromNative(nativeDispatch: NativeDispatch): Dispatch =
     (action: Action) => {
       val nativeAction = Action.actionToNative(action)
       Action.actionFromNative(nativeDispatch(nativeAction))
     }
-
-  private def propsToNative[Props](
-      props: Props,
-      nativeOwnProps: js.Dynamic
-  ): js.Any = {
-    val nativeProps = ReactClassSpec.propsToNative(props)
-    nativeProps.children = nativeOwnProps.children
-    nativeProps.params = nativeOwnProps.params
-    nativeProps
-  }
-
 }
 
 @js.native
