@@ -12,11 +12,3 @@ trait History extends js.Object {
   def goBack(): Unit = js.native
   def goForward(): Unit = js.native
 }
-
-@js.native
-@JSImport("react-router", "browserHistory")
-object BrowserHistory extends History
-
-@js.native
-@JSImport("react-router", "hashHistory")
-object HashHistory extends History

@@ -1,7 +1,7 @@
 val CreateReactClassVersion = "^15.5.1"
 val ReactVersion = "^15.5.3"
 val ReactReduxVersion = "^5.0.3"
-val ReactRouterVersion = "^3.0.0"
+val ReactRouterVersion = "^4.0.0"
 val ReduxVersion = "^3.6.0"
 val WebpackVersion = "^2.3.2"
 
@@ -83,6 +83,20 @@ lazy val router = project.in(file("router"))
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core)
 
+lazy val routerDom = project.in(file("router-dom"))
+    .settings(commonSettings: _*)
+    .settings(
+      name += "-router-dom",
+      npmDependencies in Compile ++= Seq(
+        "react-router-dom" -> ReactRouterVersion
+      ),
+      (webpack in(Compile, fastOptJS)) := Seq(),
+      (webpack in(Compile, fullOptJS)) := Seq(),
+      publishArtifact := true
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core, router)
+
 lazy val redux = project.in(file("redux"))
     .settings(commonSettings: _*)
     .settings(
@@ -141,7 +155,7 @@ lazy val exampleRouting = project.in(file("example") / "routing")
       name += "-routing"
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
-    .dependsOn(core, router)
+    .dependsOn(core, routerDom)
 
 lazy val exampleStyle = project.in(file("example") / "style")
     .settings(exampleCommonSettings: _*)

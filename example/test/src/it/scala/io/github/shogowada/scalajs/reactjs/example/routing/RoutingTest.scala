@@ -111,16 +111,6 @@ class RoutingTest extends BaseTest {
           itShouldDisplayAbout()
         }
       }
-
-      "and I unset route leave hook" - {
-        clickOn(id("unset-route-leave-hook"))
-
-        "when I try to got to about page" - {
-          goToAbout()
-
-          itShouldDisplayAbout()
-        }
-      }
     }
   }
 

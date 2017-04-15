@@ -3,8 +3,8 @@ package io.github.shogowada.scalajs.reactjs.redux
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.{VirtualDOMAttributes, VirtualDOMElements}
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec.Renderer
-import io.github.shogowada.scalajs.reactjs.classes.specs.{Props, ReactClassSpec}
+import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
+import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec.Render
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.redux.Redux.NativeDispatch
 import io.github.shogowada.statictags.Element
@@ -41,12 +41,9 @@ class ContainerComponentFactory[WrappedProps](nativeFactory: js.Function1[js.Any
     new ContainerComponent(nativeContainerComponent)
   }
 
-  def apply(renderer: Renderer[WrappedProps]): ContainerComponent = {
-    val nativeRenderer: js.Function1[js.Dynamic, ReactElement] = (nativeProps: js.Dynamic) => {
-      val props: Props[WrappedProps] = ReactClassSpec.propsFromNative[WrappedProps](nativeProps)
-      renderer(props)
-    }
-    val nativeContainerComponent: ReactClass = nativeFactory(nativeRenderer)
+  def apply(render: Render[WrappedProps]): ContainerComponent = {
+    val nativeRender = ReactClassSpec.renderToNative(render)
+    val nativeContainerComponent: ReactClass = nativeFactory(nativeRender)
     new ContainerComponent(nativeContainerComponent)
   }
 }

@@ -4,6 +4,7 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMAttributes.Type.
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements.ReactClassElementSpec
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
+import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec.Render
 import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLElement}
 import io.github.shogowada.scalajs.reactjs.events._
 import io.github.shogowada.statictags.AttributeValueType.AttributeValueType
@@ -218,7 +219,7 @@ trait VirtualDOM extends StaticTags {
 
     import VirtualDOMAttributes._
 
-    lazy val className = SpaceSeparatedStringAttributeSpec(name = "className")
+    lazy val className = SpaceSeparatedStringAttributeSpec("className")
     override lazy val `for`: ForAttributeSpec = htmlFor
     lazy val htmlFor = ForAttributeSpec("htmlFor")
     lazy val key = StringAttributeSpec("key")
@@ -232,9 +233,21 @@ trait VirtualDOM extends StaticTags {
         Attribute(name, wrappedProps.asInstanceOf[js.Any], AS_IS)
     }
 
+    case class ReactClassAttributeSpec(name: String) extends AttributeSpec {
+      def :=[Props, State](value: ReactClassSpec[Props, State]): Attribute[ReactClass] = this := React.createClass(value)
+      def :=(value: ReactClass): Attribute[ReactClass] = Attribute(name, value, AS_IS)
+    }
+
     case class RefAttributeSpec(name: String) extends AttributeSpec {
       def :=[T <: ReactHTMLElement](callback: js.Function1[T, _]): Attribute[js.Function1[T, _]] = {
         Attribute(name, callback, AS_IS)
+      }
+    }
+
+    case class RenderAttributeSpec(name: String) extends AttributeSpec {
+      def :=[WrappedProps](render: Render[WrappedProps]) = {
+        val nativeRender = ReactClassSpec.renderToNative(render)
+        Attribute(name, nativeRender, AS_IS)
       }
     }
 
@@ -294,7 +307,7 @@ trait VirtualDOM extends StaticTags {
     private def attributeValueToReactAttributeValue(attribute: Attribute[_]): js.Any =
       attribute match {
         case Attribute(_, value, AttributeValueType.CSS) => value.asInstanceOf[Map[String, _]].toJSDictionary
-        case Attribute(_, value: ReactClassSpec[_, _], AS_IS) => React.createClass(value)
+        case Attribute(_, value: Boolean, AttributeValueType.DEFAULT) => value.asInstanceOf[js.Any]
         case Attribute(_, value, AS_IS) => value.asInstanceOf[js.Any]
         case _ => attribute.valueToString
       }

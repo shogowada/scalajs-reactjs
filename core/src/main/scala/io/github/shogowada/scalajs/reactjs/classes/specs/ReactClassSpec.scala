@@ -122,6 +122,7 @@ trait ReactClassSpec[WrappedProps, State] {
   def nativeThis: js.Dynamic = _nativeThis
 
   def asNative: js.Dynamic = js.Dynamic.literal(
+    "displayName" -> getClass.getName,
     "componentWillMount" -> js.ThisFunction.fromFunction1((newNativeThis: js.Dynamic) => {
       _nativeThis = newNativeThis
       componentWillMount()
@@ -163,9 +164,12 @@ trait ReactClassSpec[WrappedProps, State] {
 
 object ReactClassSpec {
 
-  type Renderer[WrappedProps] = Props[WrappedProps] => ReactElement
+  type Render[WrappedProps] = Props[WrappedProps] => ReactElement
 
-  def propsToNative[WrappedProps](props: Props[WrappedProps]): js.Dynamic = props.asInstanceOf[js.Dynamic]
+  def renderToNative[WrappedProps](render: Render[WrappedProps]): js.Function1[js.Dynamic, ReactElement] =
+    (nativeProps: js.Dynamic) => render(propsFromNative(nativeProps))
+
+  def propsToNative[WrappedProps](props: Props[WrappedProps]): js.Dynamic = props.native
 
   def propsFromNative[WrappedProps](nativeProps: js.Dynamic): Props[WrappedProps] = Props(nativeProps)
 
