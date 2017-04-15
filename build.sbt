@@ -7,7 +7,7 @@ val WebpackVersion = "^2.3.2"
 
 val StaticTagsVersion = "[2.4.0,3.0.0["
 
-val SeleniumVersion = "[3.3.1,4.0.0["
+val SeleniumVersion = "[3.0.0,4.0.0["
 val ScalaTestVersion = "[3.1.0,4.0.0["
 
 crossScalaVersions := Seq("2.12.1")
