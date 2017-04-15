@@ -75,15 +75,17 @@ ReactDOM.render(
 Props looks like the following:
 
 ```scala
-case class Props[WrappedProps](native: js.Dynamic) {
-  def wrapped: WrappedProps = // ...
-  def children: ReactElement = // ...
+case class Props[Wrapped](native: js.Dynamic) {
+  def wrapped: Wrapped = native.wrapped.asInstanceOf[Wrapped]
+  def children: ReactElement = native.children.asInstanceOf[ReactElement]
 }
 ```
 
+You can extend it as you see needs. See [`RouterProps`](/router/src/main/scala/io/github/shogowada/scalajs/reactjs/router/RouterProps) for an example.
+
 ### How about states?
 
-States are wrapped and unwrapped automatically, so you don't need to do `state.wrapped`.
+States are wrapped and unwrapped automatically, so you don't need to do `state.wrapped`. We can wrap and unwrap states automatically because nobody extends states.
 
 ```scala
 case class State(text: String)

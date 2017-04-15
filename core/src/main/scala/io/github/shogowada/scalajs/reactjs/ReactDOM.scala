@@ -6,16 +6,8 @@ import org.scalajs.dom
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
-/** Facade for react-dom */
-object ReactDOM {
-  /** Mounts [[ReactElement]] to given node */
-  def render(element: ReactElement, node: dom.Node): Unit = {
-    NativeReactDOM.render(element, node)
-  }
-}
-
 @js.native
 @JSImport("react-dom", JSImport.Namespace)
-object NativeReactDOM extends js.Object {
-  def render(element: ReactElement, node: dom.Node): Unit = js.native
+object ReactDOM extends js.Object {
+  def render(element: ReactElement, node: dom.Node): js.Any = js.native
 }

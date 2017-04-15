@@ -1,6 +1,5 @@
 package io.github.shogowada.scalajs.reactjs.router
 
-import io.github.shogowada.scalajs.reactjs.VirtualDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMAttributes.Type.AS_IS
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMAttributes.{ReactClassAttributeSpec, RenderAttributeSpec}
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements.ReactClassElementSpec
@@ -31,24 +30,7 @@ object NativeRouter extends ReactClass
 @JSImport("react-router", "Switch")
 object NativeSwitch extends ReactClass
 
-/** Facade for react-router */
 trait Router {
-  /** [[VirtualDOM]] extension for router components
-    *
-    * {{{
-    * import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-    * import io.github.shogowada.scalajs.reactjs.router.Router._
-    *
-    * <.Router(^.history := HashHistory)(
-    *   <.Route(^.path := "/", ^.component := new App())(
-    *     <.Route(^.path := "about", ^.component := new About())(),
-    *     <.Route(^.path := "repos", ^.component := new Repos())(
-    *       <.Route(^.path := ":id", ^.component := new Repo())()
-    *     )
-    *   )
-    * )
-    * }}}
-    * */
   implicit class RouterVirtualDOMElements(elements: VirtualDOMElements) {
     lazy val Prompt = ReactClassElementSpec(NativePrompt)
     lazy val Redirect = ReactClassElementSpec(NativeRedirect)

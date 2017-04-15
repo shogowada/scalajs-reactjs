@@ -17,7 +17,6 @@ trait Action
 @js.native
 trait Store extends js.Object
 
-/** Facade for redux */
 object Redux {
   type NativeDispatch = js.Function1[js.Dynamic, js.Dynamic]
   type Dispatch = Action => Action
