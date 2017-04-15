@@ -17,7 +17,7 @@ import scala.scalajs.js.JSApp
  * - https://reacttraining.com/react-router/web/guides/quick-start
  *
  * This is just a facade for the react-router, so if you know how to use it already,
- * you should be able to understand how to use this facade.
+ * you will be able to more easily understand how to use this facade.
  *
  * Import the following to access router components (e.g. Route):
  *
