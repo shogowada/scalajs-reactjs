@@ -1,14 +1,8 @@
 package io.github.shogowada.scalajs.reactjs.example.customvirtualdom
 
-import io.github.shogowada.scalajs.reactjs.example.TestTargetServers
-import org.scalatest.concurrent.Eventually
-import org.scalatest.selenium.Firefox
-import org.scalatest.{Matchers, path}
+import io.github.shogowada.scalajs.reactjs.example.{BaseTest, TestTargetServers}
 
-class CustomVirtualDOMTest extends path.FreeSpec
-    with Matchers
-    with Eventually
-    with Firefox {
+class CustomVirtualDOMTest extends BaseTest {
 
   val server = TestTargetServers.customVirtualDOM
 
@@ -20,5 +14,5 @@ class CustomVirtualDOMTest extends path.FreeSpec
     }
   }
 
-  close()
+  quit()
 }

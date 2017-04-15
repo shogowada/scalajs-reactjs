@@ -1,50 +1,44 @@
 package io.github.shogowada.scalajs.reactjs.example.routing
 
-import io.github.shogowada.scalajs.reactjs.example.TestTargetServers
+import io.github.shogowada.scalajs.reactjs.example.{BaseTest, TestTargetServers}
 import org.openqa.selenium.Alert
-import org.scalatest.concurrent.Eventually
-import org.scalatest.selenium.Firefox
-import org.scalatest.{Matchers, path}
 
-class RoutingTest extends path.FunSpec
-    with Matchers
-    with Eventually
-    with Firefox {
+class RoutingTest extends BaseTest {
 
   val server = TestTargetServers.routing
 
-  describe("given I am at home page") {
+  "given I am at home page" - {
     go to server.host
 
-    it("then it should not display about") {
+    "then it should not display about" in {
       find("about") should equal(None)
     }
 
-    it("then it should not display repos") {
+    "then it should not display repos" in {
       find("repos") should equal(None)
     }
 
-    describe("when I click on about link") {
+    "when I click on about link" - {
       clickOn(linkText("About"))
 
       itShouldDisplayAbout()
 
-      describe("when I jump to repos via URL") {
+      "when I jump to repos via URL" - {
         goToRepos()
 
         itShouldDisplayRepos()
 
-        describe("when I push /about via history API") {
+        "when I push /about via history API" - {
           clickOn(id("push-about"))
 
           itShouldDisplayAbout()
 
-          describe("when I go back via history API") {
+          "when I go back via history API" - {
             clickOn(id("go-back"))
 
             itShouldDisplayRepos()
 
-            describe("when I go forward via history API") {
+            "when I go forward via history API" - {
               clickOn(id("go-forward"))
 
               itShouldDisplayAbout()
@@ -54,39 +48,39 @@ class RoutingTest extends path.FunSpec
       }
     }
 
-    describe("when I click on repos link") {
+    "when I click on repos link" - {
       clickOn(linkText("Repos"))
 
       itShouldDisplayRepos()
 
-      describe("when I jump to specific repo") {
+      "when I jump to specific repo" - {
         val repoId = 123
         goToRepo(repoId)
 
-        it("then it should display the repo") {
+        "then it should display the repo" in {
           find(s"repo-$repoId").isDefined should equal(true)
         }
       }
 
-      describe("when I jump to about via URL") {
+      "when I jump to about via URL" - {
         goToAbout()
 
         itShouldDisplayAbout()
       }
     }
 
-    describe("when I go to form route") {
+    "when I go to form route" - {
       goToForm()
 
       itShouldDisplayForm()
 
-      describe("and it is to confirm before leave") {
+      "and it is to confirm before leave" - {
         confirmBeforeLeave()
 
-        describe("when I try to go to about page") {
+        "when I try to go to about page" - {
           goToAbout()
 
-          it("then it should show confirmation box") {
+          "then it should show confirmation box" in {
             eventually {
               val alert: Alert = webDriver.switchTo().alert()
               alert.getText should equal("Are you sure you want to leave the page?")
@@ -94,13 +88,13 @@ class RoutingTest extends path.FunSpec
             }
           }
 
-          describe("when I accept the confirmation") {
+          "when I accept the confirmation" - {
             webDriver.switchTo().alert().accept()
 
             itShouldDisplayAbout()
           }
 
-          describe("when I dismiss the confirmation") {
+          "when I dismiss the confirmation" - {
             webDriver.switchTo().alert().dismiss()
 
             itShouldDisplayForm()
@@ -108,20 +102,20 @@ class RoutingTest extends path.FunSpec
         }
       }
 
-      describe("and it is not to confirm before leave") {
+      "and it is not to confirm before leave" - {
         doNotConfirmBeforeLeave()
 
-        describe("when I try to go to about page") {
+        "when I try to go to about page" - {
           goToAbout()
 
           itShouldDisplayAbout()
         }
       }
 
-      describe("and I unset route leave hook") {
+      "and I unset route leave hook" - {
         clickOn(id("unset-route-leave-hook"))
 
-        describe("when I try to got to about page") {
+        "when I try to got to about page" - {
           goToAbout()
 
           itShouldDisplayAbout()
@@ -140,7 +134,7 @@ class RoutingTest extends path.FunSpec
   def itShouldDisplayForm(): Unit = itShouldDisplay("form")
 
   def itShouldDisplay(elementId: String): Unit =
-    it(s"then it should display $elementId") {
+    s"then it should display $elementId" in {
       eventually {
         find(id(elementId)).isDefined should equal(true)
       }
@@ -156,5 +150,5 @@ class RoutingTest extends path.FunSpec
     }
   }
 
-  close()
+  quit()
 }

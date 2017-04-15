@@ -1,14 +1,8 @@
 package io.github.shogowada.scalajs.reactjs.example.todoappredux
 
-import io.github.shogowada.scalajs.reactjs.example.TestTargetServers
-import org.scalatest.concurrent.Eventually
-import org.scalatest.selenium.Firefox
-import org.scalatest.{Matchers, path}
+import io.github.shogowada.scalajs.reactjs.example.{BaseTest, TestTargetServers}
 
-class TodoAppReduxTest extends path.FreeSpec
-    with Matchers
-    with Eventually
-    with Firefox {
+class TodoAppReduxTest extends BaseTest {
 
   val server = TestTargetServers.todoAppRedux
 
@@ -34,13 +28,13 @@ class TodoAppReduxTest extends path.FreeSpec
           completeTodoItem(secondTodoItem)
 
           "then it should complete the second todo" in eventually {
-            findTodoItem(secondTodoItem)
-                .map(_.underlying.getCssValue("text-decoration")) should equal(Some("line-through"))
+            findTodoItemOrFail(secondTodoItem)
+                .underlying.getCssValue("text-decoration") should startWith("line-through")
           }
 
           "but it should not complete the first todo" in eventually {
-            findTodoItem(firstTodoItem)
-                .map(_.underlying.getCssValue("text-decoration")) should equal(Some("none"))
+            findTodoItemOrFail(firstTodoItem)
+                .underlying.getCssValue("text-decoration") should startWith("none")
           }
 
 
@@ -72,9 +66,14 @@ class TodoAppReduxTest extends path.FreeSpec
   def findTodoItem(text: String): Option[Element] =
     findAll(tagName("li")).find(_.text == text)
 
+  def findTodoItemOrFail(text: String): Element =
+    findTodoItem(text).getOrElse {
+      throw new AssertionError(s"Expected todo item '${text}' to be present")
+    }
+
   def verifyTodoItems(texts: Seq[String]): Unit = eventually {
     findAll(tagName("li")).map(_.text).toSeq should equal(texts)
   }
 
-  close()
+  quit()
 }
