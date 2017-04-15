@@ -7,7 +7,10 @@ val WebpackVersion = "^2.3.2"
 
 val StaticTagsVersion = "[2.4.0,3.0.0["
 
-crossScalaVersions := Seq("2.11.8", "2.12.1")
+val SeleniumVersion = "[3.3.1,4.0.0["
+val ScalaTestVersion = "[3.1.0,4.0.0["
+
+crossScalaVersions := Seq("2.12.1")
 
 publishTo := {
   val nexus = "https://oss.sonatype.org/"
@@ -196,10 +199,10 @@ lazy val exampleTest = project.in(file("example") / "test")
     .settings(
       name += "-example-test",
       libraryDependencies ++= Seq(
-        "org.eclipse.jetty" % "jetty-server" % "9.3+",
-        "org.seleniumhq.selenium" % "selenium-java" % "3.+",
+        "org.eclipse.jetty" % "jetty-server" % "9.3.+",
+        "org.seleniumhq.selenium" % "selenium-java" % SeleniumVersion,
 
-        "org.scalatest" %% "scalatest" % "3.+"
+        "org.scalatest" %% "scalatest" % ScalaTestVersion
       ),
       javaOptions ++= Seq(
         s"-Dtarget.path.custom-virtual-dom=${(crossTarget in exampleCustomVirtualDOM).value}",
@@ -211,6 +214,7 @@ lazy val exampleTest = project.in(file("example") / "test")
         s"-Dtarget.path.style=${(crossTarget in exampleStyle).value}",
         s"-Dtarget.path.todo-app=${(crossTarget in exampleTodoApp).value}",
         s"-Dtarget.path.todo-app-redux=${(crossTarget in exampleTodoAppRedux).value}",
+        // Just to build them
         s"-Ddummy.custom-virtual-dom=${(webpack in fastOptJS in Compile in exampleCustomVirtualDOM).value}",
         s"-Ddummy.helloworld=${(webpack in fastOptJS in Compile in exampleHelloWorld).value}",
         s"-Ddummy.helloworld-function=${(webpack in fastOptJS in Compile in exampleHelloWorldFunction).value}",
