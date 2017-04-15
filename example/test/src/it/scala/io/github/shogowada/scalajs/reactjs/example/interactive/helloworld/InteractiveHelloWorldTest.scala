@@ -55,6 +55,4 @@ class InteractiveHelloWorldTest extends BaseTest {
       }
     }
   }
-
-  quit()
 }

@@ -74,6 +74,4 @@ class TodoAppReduxTest extends BaseTest {
   def verifyTodoItems(texts: Seq[String]): Unit = eventually {
     findAll(tagName("li")).map(_.text).toSeq should equal(texts)
   }
-
-  quit()
 }

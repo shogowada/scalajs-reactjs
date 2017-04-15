@@ -13,6 +13,4 @@ class CustomVirtualDOMTest extends BaseTest {
       find(id("hello-world")).map(_.text) should equal(Some("Hello, World!"))
     }
   }
-
-  quit()
 }

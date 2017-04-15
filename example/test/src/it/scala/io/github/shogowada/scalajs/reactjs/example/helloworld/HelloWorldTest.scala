@@ -15,6 +15,4 @@ class HelloWorldTest extends BaseTest {
       }
     }
   }
-
-  quit()
 }

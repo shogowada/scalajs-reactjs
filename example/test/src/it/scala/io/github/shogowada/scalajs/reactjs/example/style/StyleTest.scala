@@ -21,6 +21,4 @@ class StyleTest extends BaseTest {
       find(id("red-text")).flatMap(_.attribute("style")) should equal(Option("color: red;"))
     }
   }
-
-  quit()
 }

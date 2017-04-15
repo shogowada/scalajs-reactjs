@@ -139,6 +139,4 @@ class RoutingTest extends BaseTest {
       clickOn(safeToLeaveCheckBox)
     }
   }
-
-  quit()
 }

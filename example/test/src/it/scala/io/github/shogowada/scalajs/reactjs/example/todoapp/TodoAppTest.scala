@@ -69,6 +69,4 @@ class TodoAppTest extends BaseTest {
     textField(tagName("input")).value = todoItem
     submit()
   }
-
-  quit()
 }
