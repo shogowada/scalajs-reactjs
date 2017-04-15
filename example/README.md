@@ -45,7 +45,13 @@ class MyComponent extends ReactClassSpec[WrappedProps, State] {
 }
 
 ReactDOM.render(
-  <(new MyComponent())(/* attributes (a.k.a. props) */)(/* children */),
+  <(new MyComponent())(
+    // attributes (a.k.a. props)
+    ^.id := "my-component"
+  )(
+    // children
+    <.div()("I'm your component's child!")
+  ),
   mountNode
 )
 ```
@@ -81,7 +87,7 @@ case class Props[Wrapped](native: js.Dynamic) {
 }
 ```
 
-You can extend it as you see needs. See [`RouterProps`](/router/src/main/scala/io/github/shogowada/scalajs/reactjs/router/RouterProps) for an example.
+You can extend it as you see needs. See [`RouterProps`](/router/src/main/scala/io/github/shogowada/scalajs/reactjs/router/RouterProps.scala) for an example.
 
 ### How about states?
 
