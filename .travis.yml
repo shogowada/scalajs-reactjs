@@ -16,7 +16,7 @@ addons:
       - google-chrome-stable
 
 before_script:
-  - wget http://chromedriver.storage.googleapis.com/2.28/chromedriver_linux64.zip
+  - wget http://chromedriver.storage.googleapis.com/2.29/chromedriver_linux64.zip
   - unzip chromedriver_linux64.zip
   - sudo apt-get install libnss3
   - sudo cp chromedriver /usr/local/bin/.
