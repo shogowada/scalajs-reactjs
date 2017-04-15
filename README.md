@@ -4,6 +4,8 @@
 
 Develop React applications with Scala. It is compatible with Scala 2.12 and Scala.js 0.6.14.
 
+Facade for react-router and react-redux are optionally available too.
+
 ## Quick Look
 
 ```scala
@@ -50,15 +52,8 @@ ReactDOM.render(HelloWorld("World"), mountNode)
 
 ## Examples
 
-- [TODO App](./example/todo-app)
-- [Routing](./router)
-- [Redux](./redux)
+- [Basics](./example)
+- [TODO App](./example/todo-app/src/main/scala/io/github/shogowada/scalajs/reactjs/example/todoapp/Main.scala)
+- [Routing](./example/routing/src/main/scala/io/github/shogowada/scalajs/reactjs/example/routing/Main.scala)
+- [Redux](./example/todo-app-redux/src/main/scala/io/github/shogowada/scalajs/reactjs/example/todoappredux)
 - [I don't like `<` and `^`. How can I change them?](./example/custom-virtual-dom)
-- [All Examples](./example)
-
-## API References
-
-- [react facade](./core)
-- [react-router facade](./router)
-- [react-router-dom facade](./router-dom)
-- [react-redux facade](./redux)

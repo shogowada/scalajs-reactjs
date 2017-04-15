@@ -57,6 +57,7 @@ object Footer {
     <.p()(
       "Show: ",
       <.LinkContainerComponent(
+        // Make sure to wrap own props with "wrapped" property
         ^.wrapped := LinkContainerComponentOwnProps("SHOW_ALL")
       )(
         "All"

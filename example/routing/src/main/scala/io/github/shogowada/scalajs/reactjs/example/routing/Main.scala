@@ -11,14 +11,22 @@ import org.scalajs.dom
 
 import scala.scalajs.js.JSApp
 
+/*
+ * If you are not yet familiar with react-router, check it our first:
+ *
+ * - https://reacttraining.com/react-router/web/guides/quick-start
+ *
+ * This is just a facade for the react-router, so if you know how to use it already,
+ * you should be able to understand how to use this facade.
+ *
+ * Import the following to access router components (e.g. Route):
+ *
+ * - import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+ * - import io.github.shogowada.scalajs.reactjs.router.dom.RouterDOM._
+ * */
+
 object Main extends JSApp {
   override def main(): Unit = {
-    /* Import the following to access router components:
-     *
-     * - import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-     * - import io.github.shogowada.scalajs.reactjs.router.dom.RouterDOM._
-     *
-     * */
     val mountNode = dom.document.getElementById("mount-node")
     ReactDOM.render(
       <.HashRouter()(
@@ -33,8 +41,7 @@ object App {
   def apply() = WithRouter(new App())
 }
 
-class App extends StaticReactClassSpec
-    with RouterProps {
+class App extends StaticReactClassSpec {
   override def render() =
     <.div()(
       <.h1()("React Router Tutorial"),
@@ -48,13 +55,14 @@ class App extends StaticReactClassSpec
     ).asReactElement
 }
 
-object Links extends RouterProps {
+object Links {
   def apply(): ReactElement = <.nav()(
     <.li()(<.Link(^.to := "/about")("About")),
     <.li()(<.Link(^.to := "/repos")("Repos"))
   )
 }
 
+// Extend RouterProps or import RouterProps._ to access router specific props like props.match or props.history.
 object RouterApiButtons extends RouterProps {
   def apply(props: Props[_]): ReactElement = <.div()(
     <.button(
@@ -100,6 +108,7 @@ object Repo {
 
 class Repo extends StaticReactClassSpec
     with RouterProps {
+  // Params has type of js.Dictionary[String].
   private def id: String = props.`match`.params("id")
 
   override def render() = <.div(^.id := s"repo-${id}")(s"Repo ${id}")

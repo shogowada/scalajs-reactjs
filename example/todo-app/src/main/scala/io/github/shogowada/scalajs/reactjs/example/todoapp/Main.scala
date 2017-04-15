@@ -13,7 +13,10 @@ import scala.scalajs.js.JSApp
 object Main extends JSApp {
   def main(): Unit = {
     val mountNode = dom.document.getElementById("mount-node")
-    ReactDOM.render(<(TodoApp()).empty, mountNode)
+    ReactDOM.render(
+      <(TodoApp()).empty,
+      mountNode
+    )
   }
 }
 
@@ -29,9 +32,9 @@ class TodoApp extends PropslessReactClassSpec[TodoApp.State] {
 
   import TodoApp._
 
-  override def getInitialState() = State(items = Seq(), text = "")
+  override def getInitialState() = State(items = Seq.empty, text = "")
 
-  override def render(): ReactElement = {
+  override def render(): ReactElement =
     <.div()(
       <.h3()("TODO"),
       TodoList(state.items),
@@ -40,10 +43,11 @@ class TodoApp extends PropslessReactClassSpec[TodoApp.State] {
         <.button()(s"Add #${state.items.size + 1}")
       )
     )
-  }
 
   private val handleChange = (e: InputFormSyntheticEvent) => {
+    // Cache the value because React reuses the event object.
     val newText = e.target.value
+    // It is a syntactic sugar for setState((prevState: State) => prevState.copy(text = newText))
     setState(_.copy(text = newText))
   }
 
@@ -58,6 +62,7 @@ class TodoApp extends PropslessReactClassSpec[TodoApp.State] {
 }
 
 object TodoList {
+  // Use a pure function to render
   def apply(items: Seq[Item]): ReactElement =
     <.ul()(items.map(item => <.li(^.key := item.id)(item.text)))
 }

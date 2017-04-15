@@ -1,13 +1,16 @@
 package io.github.shogowada.scalajs.reactjs.redux
 
 import io.github.shogowada.scalajs.reactjs.React
+import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMAttributes.Type.AS_IS
+import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements.ReactClassElementSpec
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.{VirtualDOMAttributes, VirtualDOMElements}
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
 import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec.Render
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
+import io.github.shogowada.scalajs.reactjs.redux.ReactRedux.ReactReduxVirtualDOMAttributes.StoreAttributeSpec
 import io.github.shogowada.scalajs.reactjs.redux.Redux.NativeDispatch
-import io.github.shogowada.statictags.Element
+import io.github.shogowada.statictags.{Attribute, AttributeSpec, Element}
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
@@ -54,13 +57,18 @@ object ReactRedux {
   import Redux.Dispatch
 
   /** [[io.github.shogowada.scalajs.reactjs.VirtualDOM]] extension for react-redux components */
-  implicit class RichVirtualDOMElements(elements: VirtualDOMElements) {
-    def Provider(store: Store)(child: ReactElement): ReactElement = {
-      val props = js.Dynamic.literal(
-        "store" -> store
-      )
-      React.createElement(NativeReactReduxProvider, props, child)
+  implicit class ReactReduxVirtualDOMElements(elements: VirtualDOMElements) {
+    lazy val Provider = ReactClassElementSpec(NativeReactReduxProvider)
+  }
+
+  object ReactReduxVirtualDOMAttributes {
+    case class StoreAttributeSpec(name: String) extends AttributeSpec {
+      def :=(store: Store) = Attribute(name, store, AS_IS)
     }
+  }
+
+  implicit class ReactReduxVirtualDOMAttributes(attributes: VirtualDOMAttributes) {
+    lazy val store = StoreAttributeSpec("store")
   }
 
   def connectAdvanced[ReduxState, OwnProps, WrappedProps](

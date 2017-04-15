@@ -5,24 +5,14 @@ import io.github.shogowada.scalajs.reactjs.redux.ReactRedux
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 
 /*
-* You can create container components by using ReactRedux.connect method.
-* The method has three signatures:
+* You can create container components by using ReactRedux.connectAdvanced method.
 *
-* - ReactRedux.connect(dispatch, state, ownProps)
-* - ReactRedux.connect(dispatch, state)
-* - ReactRedux.connect(dispatch)
-*
-* It shows example for all of them.
-*
-* Container components are higher-order components.
-* This means you need to pass another component to it to create a real component.
-*
-* You can pass either one of the following to create a real component:
+* You can pass either one of the following to create a component:
 *
 * - Render function of type (props: Props[WrappedProps]) => ReactElement
 * - Presentational component of type ReactClassSpec
 *
-* It shows example for all of them.
+* It shows example for both.
 * */
 
 object ContainerComponents {
