@@ -10,37 +10,6 @@ case class Props[Wrapped](native: js.Dynamic) {
   def children: ReactElement = native.children.asInstanceOf[ReactElement]
 }
 
-/** Specification for React components
-  *
-  * Example:
-  * {{{
-  * object Foo {
-  *   case class Props(foo: String)
-  *   case class State(bar: String)
-  * }
-  *
-  * class Foo extends ReactClassSpec[Foo.Props, Foo.State] {
-  *   import Foo._
-  *
-  *   override def getInitialState() = State("bar")
-  *
-  *   override def render(): ReactElement = <.div()(
-  *     s"foo = ${props.foo}",
-  *     s"bar = ${state.bar}",
-  *     children // equivalent of props.children in native React
-  *   )
-  * }
-  *
-  * val foo = new Foo()
-  * ReactDOM.render(
-  *   foo(Foo.Props("foo"))( // first parameter group of apply method takes props
-  *     <.div()("first child"), // second parameter group of apply method takes children
-  *     <.div()("second child")
-  *   ),
-  *   mountNode
-  * )
-  * }}}
-  * */
 trait ReactClassSpec[WrappedProps, State] {
 
   def propsToNative(props: Props[WrappedProps]) = ReactClassSpec.propsToNative(props)
@@ -186,15 +155,12 @@ object ReactClassSpec {
     nativeWrapped.selectDynamic(WrappedProperty).asInstanceOf[Wrapped]
 }
 
-/** [[ReactClassSpec]] without state */
 trait StatelessReactClassSpec[Props] extends ReactClassSpec[Props, Unit] {
   override def getInitialState(): Unit = ()
 }
 
-/** [[ReactClassSpec]] without props */
 trait PropslessReactClassSpec[State] extends ReactClassSpec[Unit, State]
 
-/** [[ReactClassSpec]] without props and state */
 trait StaticReactClassSpec extends ReactClassSpec[Unit, Unit] {
   override def getInitialState(): Unit = ()
 }
