@@ -46,7 +46,8 @@ ReactDOM.render(HelloWorld("World"), mountNode)
    libraryDependencies ++= Seq(
      "io.github.shogowada" %%% "scalajs-reactjs" % "0.9.0", // For react facade
      "io.github.shogowada" %%% "scalajs-reactjs-router-dom" % "0.9.0", // Optional. For react-router-dom facade
-     "io.github.shogowada" %%% "scalajs-reactjs-redux" % "0.9.0" // Optional. For react-redux facade
+     "io.github.shogowada" %%% "scalajs-reactjs-redux" % "0.9.0", // Optional. For react-redux facade
+     "io.github.shogowada" %%% "scalajs-reactjs-redux-devtools" % "0.9.0" // Optional. For redux-devtools facade
    )
    ```
 
