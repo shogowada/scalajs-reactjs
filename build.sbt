@@ -3,6 +3,7 @@ val ReactVersion = "^15.5.3"
 val ReactReduxVersion = "^5.0.3"
 val ReactRouterVersion = "^4.0.0"
 val ReduxVersion = "^3.6.0"
+val ReduxDevToolsVersion = "^2.13.0"
 val WebpackVersion = "^2.3.2"
 
 val StaticTagsVersion = "[2.4.0,3.0.0["
@@ -115,6 +116,20 @@ lazy val redux = project.in(file("redux"))
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core)
 
+lazy val reduxDevTools = project.in(file("redux-devtools"))
+    .settings(commonSettings: _*)
+    .settings(
+      name += "-redux-devtools",
+      npmDependencies in Compile ++= Seq(
+        "redux-devtools-extension" -> ReduxDevToolsVersion
+      ),
+      (webpack in(Compile, fastOptJS)) := Seq(),
+      (webpack in(Compile, fullOptJS)) := Seq(),
+      publishArtifact := true
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core, redux)
+
 val exampleCommonSettings = commonSettings ++ Seq(
   name += "-example",
   (unmanagedResourceDirectories in Compile) += baseDirectory.value / "src" / "main" / "webapp"
@@ -152,6 +167,22 @@ lazy val exampleInteractiveHelloWorld = project.in(file("example") / "interactiv
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core)
 
+lazy val exampleLifecycle = project.in(file("example") / "lifecycle")
+    .settings(exampleCommonSettings: _*)
+    .settings(
+      name += "-lifecycle"
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core)
+
+lazy val exampleReduxDevTools = project.in(file("example") / "redux-devtools")
+    .settings(exampleCommonSettings: _*)
+    .settings(
+      name += "-redux-devtools"
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core, redux, reduxDevTools)
+
 lazy val exampleRouting = project.in(file("example") / "routing")
     .settings(exampleCommonSettings: _*)
     .settings(
@@ -184,14 +215,6 @@ lazy val exampleTodoAppRedux = project.in(file("example") / "todo-app-redux")
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core, redux)
 
-lazy val exampleLifecycle = project.in(file("example") / "lifecycle")
-    .settings(exampleCommonSettings: _*)
-    .settings(
-      name += "-lifecycle"
-    )
-    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
-    .dependsOn(core)
-
 lazy val exampleTest = project.in(file("example") / "test")
     .configs(IntegrationTest)
     .settings(commonSettings: _*)
@@ -210,20 +233,23 @@ lazy val exampleTest = project.in(file("example") / "test")
         s"-Dtarget.path.helloworld-function=${(crossTarget in exampleHelloWorldFunction).value}",
         s"-Dtarget.path.interactive-helloworld=${(crossTarget in exampleInteractiveHelloWorld).value}",
         s"-Dtarget.path.lifecycle=${(crossTarget in exampleLifecycle).value}",
+        s"-Dtarget.path.redux-devtools=${(crossTarget in exampleReduxDevTools).value}",
         s"-Dtarget.path.routing=${(crossTarget in exampleRouting).value}",
         s"-Dtarget.path.style=${(crossTarget in exampleStyle).value}",
         s"-Dtarget.path.todo-app=${(crossTarget in exampleTodoApp).value}",
         s"-Dtarget.path.todo-app-redux=${(crossTarget in exampleTodoAppRedux).value}",
-        // Just to build them
-        s"-Ddummy.custom-virtual-dom=${(webpack in fastOptJS in Compile in exampleCustomVirtualDOM).value}",
-        s"-Ddummy.helloworld=${(webpack in fastOptJS in Compile in exampleHelloWorld).value}",
-        s"-Ddummy.helloworld-function=${(webpack in fastOptJS in Compile in exampleHelloWorldFunction).value}",
-        s"-Ddummy.interactive-helloworld=${(webpack in fastOptJS in Compile in exampleInteractiveHelloWorld).value}",
-        s"-Ddummy.lifecycle=${(webpack in fastOptJS in Compile in exampleLifecycle).value}",
-        s"-Ddummy.routing=${(webpack in fastOptJS in Compile in exampleRouting).value}",
-        s"-Ddummy.style=${(webpack in fastOptJS in Compile in exampleStyle).value}",
-        s"-Ddummy.todo-app=${(webpack in fastOptJS in Compile in exampleTodoApp).value}",
-        s"-Ddummy.todo-app-redux=${(webpack in fastOptJS in Compile in exampleTodoAppRedux).value}"
+        Seq(
+          (webpack in fastOptJS in Compile in exampleCustomVirtualDOM).value,
+          (webpack in fastOptJS in Compile in exampleHelloWorld).value,
+          (webpack in fastOptJS in Compile in exampleHelloWorldFunction).value,
+          (webpack in fastOptJS in Compile in exampleInteractiveHelloWorld).value,
+          (webpack in fastOptJS in Compile in exampleLifecycle).value,
+          (webpack in fastOptJS in Compile in exampleReduxDevTools).value,
+          (webpack in fastOptJS in Compile in exampleRouting).value,
+          (webpack in fastOptJS in Compile in exampleStyle).value,
+          (webpack in fastOptJS in Compile in exampleTodoApp).value,
+          (webpack in fastOptJS in Compile in exampleTodoAppRedux).value
+        ).foldRight("-Dexamples.built=true")((_, option) => option)
       ),
       fork := true
     )
