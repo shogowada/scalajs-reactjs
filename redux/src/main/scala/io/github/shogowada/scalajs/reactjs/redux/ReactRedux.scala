@@ -69,7 +69,10 @@ object ReactRedux {
   private def dispatchFromNative(nativeDispatch: NativeDispatch): Dispatch =
     (action: Action) => {
       val nativeAction = Action.actionToNative(action)
-      Action.actionFromNative(nativeDispatch(nativeAction))
+      val newNativeAction = nativeDispatch(nativeAction)
+      Action.actionFromNative(newNativeAction).getOrElse({
+        throw new IllegalStateException(s"Expected native action $newNativeAction to be wrapped")
+      })
     }
 }
 
