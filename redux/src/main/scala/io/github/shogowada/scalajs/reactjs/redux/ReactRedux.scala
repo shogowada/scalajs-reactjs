@@ -52,7 +52,7 @@ object ReactRedux {
       selector: (ReduxState, OwnProps) => WrappedProps
   ): js.Function2[ReduxState, js.Dynamic, js.Any] =
     (state: ReduxState, nativeOwnProps: js.Dynamic) => {
-      val ownProps: OwnProps = ContainerComponent.ownPropsFromNative(nativeOwnProps)
+      val ownProps: OwnProps = ReactClassSpec.propsFromNative[OwnProps](nativeOwnProps).wrapped
       val wrappedProps: WrappedProps = selector(state, ownProps)
       val nativeProps = clone(nativeOwnProps)
       nativeProps.updateDynamic(ReactClassSpec.WrappedProperty)(wrappedProps.asInstanceOf[js.Any])

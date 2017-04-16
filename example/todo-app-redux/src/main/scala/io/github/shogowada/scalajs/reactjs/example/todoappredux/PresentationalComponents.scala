@@ -56,20 +56,20 @@ object Footer {
   def apply(): ReactElement =
     <.p()(
       "Show: ",
-      <.LinkContainerComponent(
+      <(LinkContainerComponent)(
         // Make sure to wrap own props with "wrapped" property
         ^.wrapped := LinkContainerComponentOwnProps("SHOW_ALL")
       )(
         "All"
       ),
       ", ",
-      <.LinkContainerComponent(
+      <(LinkContainerComponent)(
         ^.wrapped := LinkContainerComponentOwnProps("SHOW_ACTIVE")
       )(
         "Active"
       ),
       ", ",
-      <.LinkContainerComponent(
+      <(LinkContainerComponent)(
         ^.wrapped := LinkContainerComponentOwnProps("SHOW_COMPLETED")
       )(
         "Completed"
@@ -107,8 +107,8 @@ object AddTodoComponent {
 object App {
   def apply(): ReactElement =
     <.div()(
-      <.AddTodoContainerComponent.empty,
-      <.TodoListContainerComponent.empty,
+      <(AddTodoContainerComponent).empty,
+      <(TodoListContainerComponent).empty,
       Footer()
     )
 }
