@@ -22,7 +22,7 @@ object LetterCase {
 object LetterCaseRadioBox {
   case class WrappedProps(letterCase: LetterCase, checked: Boolean, onChecked: () => Unit)
 
-  type Context = React.Context[WrappedProps, Unit]
+  type Self = React.Self[WrappedProps, Unit]
 
   def apply() = reactClass
 
@@ -40,10 +40,10 @@ object LetterCaseRadioBox {
       )
   )
 
-  private def onChange(context: Context) =
+  private def onChange(self: Self) =
     (event: RadioFormSyntheticEvent) => {
       if (event.target.checked) {
-        context.props.wrapped.onChecked()
+        self.props.wrapped.onChecked()
       }
     }
 }
@@ -51,53 +51,53 @@ object LetterCaseRadioBox {
 object InteractiveHelloWorld {
   case class State(name: String, letterCase: LetterCase)
 
-  type Context = React.Context[Unit, State]
+  type Self = React.Self[Unit, State]
 
   private val nameId = "name"
 
   def apply() = reactClass
 
   private lazy val reactClass = React.createClass[Unit, State](
-    getInitialState = (context) => State(
+    getInitialState = (self) => State(
       name = "whoever you are",
       letterCase = DEFAULT
     ),
 
-    render = (context) =>
+    render = (self) =>
       <.div()(
-        createNameInput(context),
-        LetterCase.ALL.map(createLetterCaseRadioBox(context, _)),
+        createNameInput(self),
+        LetterCase.ALL.map(createLetterCaseRadioBox(self, _)),
         <.br.empty,
-        <.div(^.id := "greet")(s"Hello, ${name(context.state)}!")
+        <.div(^.id := "greet")(s"Hello, ${name(self.state)}!")
       )
   )
 
-  private def createNameInput(context: Context) =
+  private def createNameInput(self: Self) =
     <.div()(
       <.label(^.`for` := nameId)("Name: "),
       <.input(
         ^.id := nameId,
-        ^.value := context.state.name,
-        ^.onChange := onChange(context)
+        ^.value := self.state.name,
+        ^.onChange := onChange(self)
       )()
     )
 
-  private def createLetterCaseRadioBox(context: Context, thisLetterCase: LetterCase): ReactElement = {
+  private def createLetterCaseRadioBox(self: Self, thisLetterCase: LetterCase): ReactElement = {
     <(LetterCaseRadioBox())(
       ^.wrapped := LetterCaseRadioBox.WrappedProps(
         letterCase = thisLetterCase,
-        checked = thisLetterCase == context.state.letterCase,
+        checked = thisLetterCase == self.state.letterCase,
         onChecked = () => {
-          context.setState(_.copy(letterCase = thisLetterCase))
+          self.setState(_.copy(letterCase = thisLetterCase))
         }
       )
     )()
   }
 
-  private def onChange(context: Context) =
+  private def onChange(self: Self) =
     (event: InputFormSyntheticEvent) => {
       val name = event.target.value
-      context.setState(_.copy(name = name))
+      self.setState(_.copy(name = name))
     }
 
   private def name(state: State): String =

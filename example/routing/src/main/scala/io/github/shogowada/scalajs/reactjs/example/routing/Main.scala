@@ -1,6 +1,6 @@
 package io.github.shogowada.scalajs.reactjs.example.routing
 
-import io.github.shogowada.scalajs.reactjs.React.{Context, Props}
+import io.github.shogowada.scalajs.reactjs.React.{Self, Props}
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events.CheckBoxFormSyntheticEvent
@@ -104,12 +104,12 @@ object Repos extends RouterProps {
 
 object Repo extends RouterProps {
   // Params has type of js.Dictionary[String].
-  private def id(context: Context[_, _]): String = context.props.`match`.params("id")
+  private def id(self: Self[_, _]): String = self.props.`match`.params("id")
 
   def apply() = reactClass
 
   private lazy val reactClass = React.createClass[Unit, Unit](
-    render = (context) => <.div(^.id := s"repo-${id(context)}")(s"Repo ${id(context)}")
+    render = (self) => <.div(^.id := s"repo-${id(self)}")(s"Repo ${id(self)}")
   )
 }
 

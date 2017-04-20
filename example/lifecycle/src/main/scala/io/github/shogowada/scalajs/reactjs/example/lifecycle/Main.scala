@@ -12,43 +12,43 @@ object App {
       componentDidUpdateCalled: Boolean
   )
 
-  type Context = React.Context[Unit, State]
+  type Self = React.Self[Unit, State]
 
   def apply() = reactClass
 
   private lazy val reactClass = React.createClass[Unit, State](
-    componentWillMount = (context) => println("componentWillMount()"),
-    componentDidMount = (context) => {
+    componentWillMount = (self) => println("componentWillMount()"),
+    componentDidMount = (self) => {
       println("componentDidMount()")
-      context.setState(_.copy(componentDidMountCalled = true))
+      self.setState(_.copy(componentDidMountCalled = true))
     },
-    shouldComponentUpdate = (context, nextProps, nextState) => {
+    shouldComponentUpdate = (self, nextProps, nextState) => {
       println(s"shouldComponentUpdate($nextProps, $nextState)")
-      nextState != context.state
+      nextState != self.state
     },
-    componentWillReceiveProps = (context, nextProps) => {
+    componentWillReceiveProps = (self, nextProps) => {
       println(s"componentWillReceiveProps($nextProps)")
     },
-    componentWillUpdate = (context, nextProps, nextState) => {
+    componentWillUpdate = (self, nextProps, nextState) => {
       println(s"componentWillUpdate($nextProps, $nextState)")
     },
-    componentDidUpdate = (context, prevProps, prevState) => {
+    componentDidUpdate = (self, prevProps, prevState) => {
       println(s"componentDidUpdate($prevProps, $prevState)")
-      context.setState(_.copy(componentDidUpdateCalled = true))
+      self.setState(_.copy(componentDidUpdateCalled = true))
     },
-    componentWillUnmount = (context) => {
+    componentWillUnmount = (self) => {
       println("componentWillUnmount()")
     },
-    getInitialState = (context) => State(
+    getInitialState = (self) => State(
       componentDidMountCalled = false,
       componentDidUpdateCalled = false
     ),
-    render = (context) =>
+    render = (self) =>
       <.div()(
         <.label(^.`for` := "component-did-mount")("Component Did Mount: "),
-        <.input(^.id := "component-did-mount", ^.`type`.checkbox, ^.checked := context.state.componentDidMountCalled)(),
+        <.input(^.id := "component-did-mount", ^.`type`.checkbox, ^.checked := self.state.componentDidMountCalled)(),
         <.label(^.`for` := "component-did-update")("Component Did Update: "),
-        <.input(^.id := "component-did-update", ^.`type`.checkbox, ^.checked := context.state.componentDidUpdateCalled)()
+        <.input(^.id := "component-did-update", ^.`type`.checkbox, ^.checked := self.state.componentDidUpdateCalled)()
       )
   )
 }

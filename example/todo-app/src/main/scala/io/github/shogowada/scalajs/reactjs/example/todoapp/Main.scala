@@ -24,36 +24,36 @@ case class Item(id: String, text: String)
 object TodoApp {
   case class State(items: Seq[Item], text: String)
 
-  type Context = React.Context[Unit, State]
+  type Self = React.Self[Unit, State]
 
   def apply() = reactClass
 
   private lazy val reactClass = React.createClass[Unit, State](
-    getInitialState = (context) => State(items = Seq.empty, text = ""),
-    render = (context) =>
+    getInitialState = (self) => State(items = Seq.empty, text = ""),
+    render = (self) =>
       <.div()(
         <.h3()("TODO"),
-        TodoList(context.state.items),
-        <.form(^.onSubmit := handleSubmit(context))(
-          <.input(^.onChange := handleChange(context), ^.value := context.state.text)(),
-          <.button()(s"Add #${context.state.items.size + 1}")
+        TodoList(self.state.items),
+        <.form(^.onSubmit := handleSubmit(self))(
+          <.input(^.onChange := handleChange(self), ^.value := self.state.text)(),
+          <.button()(s"Add #${self.state.items.size + 1}")
         )
       )
   )
 
-  private def handleChange(context: Context) =
+  private def handleChange(self: Self) =
     (e: InputFormSyntheticEvent) => {
       // Cache the value because React reuses the event object.
       val newText = e.target.value
       // It is a syntactic sugar for setState((prevState: State) => prevState.copy(text = newText))
-      context.setState(_.copy(text = newText))
+      self.setState(_.copy(text = newText))
     }
 
-  private def handleSubmit(context: Context) =
+  private def handleSubmit(self: Self) =
     (e: SyntheticEvent) => {
       e.preventDefault()
-      val newItem = Item(text = context.state.text, id = js.Date.now().toString)
-      context.setState((prevState: State) => State(
+      val newItem = Item(text = self.state.text, id = js.Date.now().toString)
+      self.setState((prevState: State) => State(
         items = prevState.items :+ newItem,
         text = ""
       ))
