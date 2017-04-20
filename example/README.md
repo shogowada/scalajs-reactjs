@@ -1,6 +1,13 @@
 # Basics
 
-## How to replace JSX in Scala?
+This is just a facade for React, so if you are not already familiar with React, I recommend [getting familiar with React first](https://facebook.github.io/react/tutorial/tutorial.html).
+
+- [How does it replace JSX in Scala?](#how-does-it-replace-jsx-in-scala)
+- [How to create React classes?](#how-to-create-react-classes)
+- [What's WrappedProps?](#whats-wrappedprops)
+- [How about states?](#how-about-states)
+
+## How does it replace JSX in Scala?
 
 To create elements in Scala, import `VirtualDOM._`. `VirtualDOM` is an extended [Static Tags](https://github.com/shogowada/statictags).
 
@@ -20,6 +27,12 @@ is equivalent of the following:
 
 You can use as many as attributes and children you want.
 
+If `<` and `^` look weird to you, you can [change it](/example/custom-virtual-dom), but otherwise think of `<` as opening a tag (`<` of `<div>`) and `^` as attaching an attribute to the tag.
+
+You can also get rid of the prefixes altogether by importing `<._` and `^._`, but it is not recommended because many HTML tag and attribute names are concise and tend to conflict with other variable names (e.g. `id` attribute, `map` tag).
+
+Visit [the Static Tags page](https://github.com/shogowada/statictags) for more techniques (e.g. using dynamic tags and attributes, flattening tags and attributes).
+
 ## How to create React classes?
 
 Use `React.createClass[WrappedProps, State]` to create React classes (we will explain about `WrappedProps` in next section).
@@ -32,11 +45,13 @@ val reactClass: ReactClass = React.createClass[Unit, Unit]( // If you don't have
 
 It supports [all the functions `React.Component` supports](https://facebook.github.io/react/docs/react-component.html) except `defaultProps`.
 
-Also, the first argument must be `Self[WrappedProps, State]`, props must have type `Props[WrappedProps]`, and states must have type `State`.
+The first argument of each React function must be `Self[WrappedProps, State]`, props must have type `Props[WrappedProps]`, and states must have type `State`.
 
 For example, [`componentWillUpdate(nextProps, nextState)`](https://facebook.github.io/react/docs/react-component.html#componentwillupdate) will be `componentWillUpdate(self: Self[WrappedProps, State], nextProps: Props[WrappedProps], nextState: State): Unit`.
 
-To render React classes, use `<(/* ReactClass */)` to make it an element. You can pass attributes and children like regular elements.
+`Self[WrappedProps, State]` is equivalent of `this` in React, so you can do things like `self.props.children` or `self.setState(State(foo = "bar"))`. Unlike React, we are just giving it as input of the functions rather than class members.
+
+To render React classes, use `<(/* ReactClass */)` to make it a virtual DOM. You can pass attributes and children like regular elements.
 
 ```scala
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
@@ -90,7 +105,7 @@ You can extend it as you see needs. See [`RouterProps`](/router/src/main/scala/i
 
 ### How about states?
 
-States are wrapped and unwrapped automatically, so you don't need to do `state.wrapped`. We can wrap and unwrap states automatically because nobody extends states.
+States are wrapped and unwrapped automatically, so you don't need to do `state.wrapped`. We can wrap and unwrap states automatically because nothing extends states; it is supposed to be local to each component.
 
 ```scala
 case class State(text: String)
@@ -107,9 +122,9 @@ val reactClass = React.createClass[Unit, State](
     )
 )
 
-def onChange(self: Self[Unit, State]): Unit = // Higher-order function
+def onChange(self: Self[Unit, State]): Unit = // Use a higher-order function (a function returning a function)
   (event: InputFormSyntheticEvent) => {
-    val newText = event.target.value
-    self.setState(_.copy(text = newText))
+    val newText = event.target.value // Cache the value because React reuses events
+    self.setState(_.copy(text = newText)) // Shortcut for self.setState((prevState: State) => prevState.copy(text = newText))
   }
 ```
