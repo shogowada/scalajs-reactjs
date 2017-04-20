@@ -123,7 +123,7 @@ val reactClass = React.createClass[Unit, State](
     )
 )
 
-def onChange(self: Self[Unit, State]): Unit = // Use a higher-order function (a function returning a function)
+def onChange(self: Self[Unit, State]) = // Use a higher-order function (a function returning a function)
   (event: InputFormSyntheticEvent) => {
     val newText = event.target.value // Cache the value because React reuses events
     self.setState(_.copy(text = newText)) // Shortcut for self.setState((prevState: State) => prevState.copy(text = newText))
