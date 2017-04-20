@@ -30,6 +30,12 @@ val reactClass: ReactClass = React.createClass[Unit, Unit]( // If you don't have
 )
 ```
 
+It supports [all the functions `React.Component` supports](https://facebook.github.io/react/docs/react-component.html) except `defaultProps`.
+
+Also, the first argument must be `Self[WrappedProps, State]`, props must have type `Props[WrappedProps]`, and states must have type `State`.
+
+For example, [`componentWillUpdate(nextProps, nextState)`](https://facebook.github.io/react/docs/react-component.html#componentwillupdate) will be `componentWillUpdate(self: Self[WrappedProps, State], nextProps: Props[WrappedProps], nextState: State): Unit`.
+
 To render React classes, use `<(/* ReactClass */)` to make it an element. You can pass attributes and children like regular elements.
 
 ```scala
