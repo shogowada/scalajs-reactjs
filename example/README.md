@@ -20,32 +20,25 @@ is equivalent of the following:
 
 You can use as many as attributes and children you want.
 
-## How to create React components?
+## How to create React classes?
 
-To create React components, extend `ReactClassSpec[WrappedProps, State]` or one of its sub classes.
+Use `React.createClass[WrappedProps, State]` to create React classes (we will explain about `WrappedProps` in next section).
 
-You have four options:
+```scala
+val reactClass: ReactClass = React.createClass[Unit, Unit]( // If you don't have props or state, use Unit.
+  render = (self) => <.div()("Hello, World!")
+)
+```
 
-- `ReactClassSpec[WrappedProps, State]`
-    - This is the parent of them all. You can have both custom props and state.
-- `StatelessReactClassSpec[WrappedProps]`
-    - You cannot have state.
-- `PropslessReactClassSpec[State]`
-    - You cannot have custom props.
-- `StaticReactClassSpec`
-    - You cannot have both custom props and state.
-
-To render React components, use `<(/* React component */)` to make it an element. You can pass attributes and children like regular elements.
+To render React classes, use `<(/* ReactClass */)` to make it an element. You can pass attributes and children like regular elements.
 
 ```scala
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 
-class MyComponent extends ReactClassSpec[WrappedProps, State] {
-  // ...
-}
+val reactClass = React.createClass(/* ... */)
 
 ReactDOM.render(
-  <(new MyComponent())(
+  <(reactClass)(
     // attributes (a.k.a. props)
     ^.id := "my-component"
   )(
@@ -58,22 +51,22 @@ ReactDOM.render(
 
 ### What's WrappedProps?
 
-While many want to use case classes as props, React requires props to be a plain JavaScript object. So, to use case classes, we need to wrap the case class in another property. In this facade, we wrap it in "wrapped" property.
+While many want to use case classes as props, React requires props to be a plain JavaScript object. So, to use case classes, we need to wrap them in another property. In this facade, we wrap them in "wrapped" property.
 
 ```scala
 case class WrappedProps(foo: String, bar: Int)
 
-class MyComponent extends StatelessReactClassSpec[WrappedProps] {
-  override def render(): ReactElement =
+val reactClass = React.createClass[WrappedProps, Unit](
+  render = (self) =>
     <.div()(
-      s"foo: ${props.wrapped.foo}",
+      s"foo: ${self.props.wrapped.foo}",
       <.br.empty,
-      s"bar: ${props.wrapped.bar}"
+      s"bar: ${self.props.wrapped.bar}"
     )
-}
+)
 
 ReactDOM.render(
-  <(new MyComponent())(^.wrapped := WrappedProps("foo", 123))(),
+  <(reactClass)(^.wrapped := WrappedProps("foo", 123))(),
   mountNode
 )
 ```
@@ -96,21 +89,21 @@ States are wrapped and unwrapped automatically, so you don't need to do `state.w
 ```scala
 case class State(text: String)
 
-class MyComponent extends PropslessReactClassSpec[State] {
-  override def getInitialState(): State = State(text = "")
-
-  override def render(): ReactElement =
+val reactClass = React.createClass[Unit, State](
+  getInitialState = (self) => State(text = ""),
+  render = (self) =>
     <.div()(
       <.input(
         ^.placeholder := "Type something here",
-        ^.value := state.text,
-        ^.onChange := onChange
+        ^.value := self.state.text,
+        ^.onChange := onChange(self)
       )()
     )
+)
 
-  val onChange = (event: InputFormSyntheticEvent) => {
+def onChange(self: Self[Unit, State]): Unit = // Higher-order function
+  (event: InputFormSyntheticEvent) => {
     val newText = event.target.value
-    setState(_.copy(text = newText))
+    self.setState(_.copy(text = newText))
   }
-}
 ```
