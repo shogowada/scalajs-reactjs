@@ -27,7 +27,7 @@ val mountNode = dom.document.getElementById("mount-node")
 ReactDOM.render(<(HelloWorld())(^.wrapped := HelloWorld.WrappedProps("World"))(), mountNode)
 ```
 
-You can also use a pure function to render:
+You can also render with just a function:
 
 ```scala
 import io.github.shogowada.scalajs.reactjs.ReactDOM
