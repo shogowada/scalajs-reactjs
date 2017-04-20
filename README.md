@@ -10,15 +10,17 @@ Optionally include react-router and react-redux facades, too.
 
 ```scala
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-
-class HelloWorld extends StatelessReactClassSpec[HelloWorld.WrappedProps] {
-  override def render() = <.div(^.id := "hello-world")(s"Hello, ${props.wrapped.name}!")
-}
+import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
+import org.scalajs.dom
 
 object HelloWorld {
   case class WrappedProps(name: String)
 
-  def apply() = new HelloWorld()
+  private lazy val reactClass = React.createClass[WrappedProps, Unit](
+    render = (self) => <.div(^.id := "hello-world")(s"Hello, ${self.props.wrapped.name}!")
+  )
+
+  def apply() = reactClass
 }
 
 val mountNode = dom.document.getElementById("mount-node")
@@ -28,10 +30,12 @@ ReactDOM.render(<(HelloWorld())(^.wrapped := HelloWorld.WrappedProps("World"))()
 You can also use a pure function to render:
 
 ```scala
+import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
+import org.scalajs.dom
 
 object HelloWorld {
-  def apply(name: String): ReactElement = <.div(^.id := "hello-world")(s"Hello, ${name}!")
+  def apply(name: String) = <.div(^.id := "hello-world")(s"Hello, ${name}!")
 }
 
 val mountNode = dom.document.getElementById("mount-node")
@@ -44,10 +48,10 @@ ReactDOM.render(HelloWorld("World"), mountNode)
 2. Depend on the libraries.
    ```
    libraryDependencies ++= Seq(
-     "io.github.shogowada" %%% "scalajs-reactjs" % "0.9.1", // For react facade
-     "io.github.shogowada" %%% "scalajs-reactjs-router-dom" % "0.9.1", // Optional. For react-router-dom facade
-     "io.github.shogowada" %%% "scalajs-reactjs-redux" % "0.9.1", // Optional. For react-redux facade
-     "io.github.shogowada" %%% "scalajs-reactjs-redux-devtools" % "0.9.1" // Optional. For redux-devtools facade
+     "io.github.shogowada" %%% "scalajs-reactjs" % "0.10.0", // For react facade
+     "io.github.shogowada" %%% "scalajs-reactjs-router-dom" % "0.10.0", // Optional. For react-router-dom facade
+     "io.github.shogowada" %%% "scalajs-reactjs-redux" % "0.10.0", // Optional. For react-redux facade
+     "io.github.shogowada" %%% "scalajs-reactjs-redux-devtools" % "0.10.0" // Optional. For redux-devtools facade
    )
    ```
 
