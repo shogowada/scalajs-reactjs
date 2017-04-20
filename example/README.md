@@ -6,6 +6,7 @@ This is just a facade for React, so if you are not already familiar with React, 
 - [How to create React classes?](#how-to-create-react-classes)
 - [What's WrappedProps?](#whats-wrappedprops)
 - [How about states?](#how-about-states)
+- [Can I see fully working examples?](#can-i-see-fully-working-examples)
 
 ## How does it replace JSX in Scala?
 
@@ -128,3 +129,12 @@ def onChange(self: Self[Unit, State]): Unit = // Use a higher-order function (a 
     self.setState(_.copy(text = newText)) // Shortcut for self.setState((prevState: State) => prevState.copy(text = newText))
   }
 ```
+
+## Can I see fully working examples?
+
+Sure, you can! All the projects in this folder are fully working examples, but here are some top picks:
+
+- [TODO App](/example/todo-app/src/main/scala/io/github/shogowada/scalajs/reactjs/example/todoapp/Main.scala)
+- [Routing](/example/routing/src/main/scala/io/github/shogowada/scalajs/reactjs/example/routing/Main.scala)
+- [Redux](/example/todo-app-redux/src/main/scala/io/github/shogowada/scalajs/reactjs/example/todoappredux)
+- [Redux DevTools](/example/redux-devtools/src/main/scala/io/github/shogowada/scalajs/reactjs/example/redux/devtools/Main.scala)
