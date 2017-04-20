@@ -27,16 +27,16 @@ object LetterCaseRadioBox {
   def apply() = reactClass
 
   private lazy val reactClass = React.createClass[WrappedProps, Unit](
-    render = (context) =>
+    render = (self) =>
       <.span()(
         <.input(
           ^.`type`.radio,
           ^.name := "letter-case",
-          ^.value := context.props.wrapped.letterCase.name,
-          ^.checked := context.props.wrapped.checked,
-          ^.onChange := onChange(context)
+          ^.value := self.props.wrapped.letterCase.name,
+          ^.checked := self.props.wrapped.checked,
+          ^.onChange := onChange(self)
         )(),
-        context.props.wrapped.letterCase.name
+        self.props.wrapped.letterCase.name
       )
   )
 

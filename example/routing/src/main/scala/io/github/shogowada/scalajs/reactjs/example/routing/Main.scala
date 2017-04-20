@@ -41,11 +41,11 @@ object App {
   def apply() = WithRouter(reactClass)
 
   private lazy val reactClass = React.createClass[Unit, Unit](
-    render = (context) =>
+    render = (self) =>
       <.div()(
         <.h1()("React Router Tutorial"),
         Links(),
-        RouterApiButtons(context.props),
+        RouterApiButtons(self.props),
         <.Switch()(
           <.Route(^.path := "/about", ^.render := (About(_: Props[_])))(),
           <.Route(^.path := "/repos", ^.render := (Repos(_: Props[_])))(),
@@ -119,11 +119,11 @@ object Form {
   def apply() = reactClass
 
   private lazy val reactClass = React.createClass[Unit, State](
-    getInitialState = (context) => State(confirmBeforeLeave = true),
-    render = (context) =>
+    getInitialState = (self) => State(confirmBeforeLeave = true),
+    render = (self) =>
       <.div()(
         <.Prompt(
-          ^.when := context.state.confirmBeforeLeave,
+          ^.when := self.state.confirmBeforeLeave,
           ^.message := "Are you sure you want to leave the page?"
         )(),
         <.div(^.id := "form")(
@@ -132,10 +132,10 @@ object Form {
             <.input(
               ^.id := "confirm-before-leave",
               ^.`type`.checkbox,
-              ^.checked := context.state.confirmBeforeLeave,
+              ^.checked := self.state.confirmBeforeLeave,
               ^.onChange := ((event: CheckBoxFormSyntheticEvent) => {
                 val checked = event.target.checked
-                context.setState(State(confirmBeforeLeave = checked))
+                self.setState(State(confirmBeforeLeave = checked))
               })
             )()
           )

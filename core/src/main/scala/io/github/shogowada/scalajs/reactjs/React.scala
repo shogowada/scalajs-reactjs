@@ -76,8 +76,6 @@ object React {
       componentWillUnmount: Self[WrappedProps, State] => Unit = null,
       getInitialState: Self[WrappedProps, State] => State = null
   ): ReactClass = {
-    type Context = React.Self[WrappedProps, State]
-
     val spec = js.Dynamic.literal(
       "shouldComponentUpdate" -> js.ThisFunction.fromFunction3((native: js.Dynamic, nextProps: js.Dynamic, nextState: js.Dynamic) => {
         shouldComponentUpdate(Self(native), Props(nextProps), stateFromNative(nextState))

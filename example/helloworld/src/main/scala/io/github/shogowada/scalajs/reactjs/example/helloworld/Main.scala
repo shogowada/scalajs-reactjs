@@ -12,7 +12,7 @@ object Main extends JSApp {
       case class WrappedProps(name: String)
 
       private lazy val reactClass = React.createClass[WrappedProps, Unit](
-        render = (context) => <.div(^.id := "hello-world")(s"Hello, ${context.props.wrapped.name}!")
+        render = (self) => <.div(^.id := "hello-world")(s"Hello, ${self.props.wrapped.name}!")
       )
 
       def apply() = reactClass

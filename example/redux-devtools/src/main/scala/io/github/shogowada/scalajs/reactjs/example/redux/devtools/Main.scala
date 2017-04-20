@@ -64,12 +64,12 @@ object TextComponent {
   def apply() = reactClass
 
   private lazy val reactClass = React.createClass[WrappedProps, Unit](
-    render = (context) =>
+    render = (self) =>
       <.div()(
         <.input(
-          ^.value := context.props.wrapped.text,
+          ^.value := self.props.wrapped.text,
           ^.onChange := ((event: InputFormSyntheticEvent) => {
-            context.props.wrapped.onTextChange(event.target.value)
+            self.props.wrapped.onTextChange(event.target.value)
           })
         )()
       )

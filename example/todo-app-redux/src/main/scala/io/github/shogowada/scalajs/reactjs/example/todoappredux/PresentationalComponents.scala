@@ -84,14 +84,14 @@ object AddTodoComponent {
   def apply() = reactClass
 
   private lazy val reactClass = React.createClass[WrappedProps, Unit](
-    render = (context) => {
+    render = (self) => {
       var input: ReactHTMLInputElement = null
       <.div()(
         <.form(
           ^.onSubmit := ((event: InputFormSyntheticEvent) => {
             event.preventDefault()
             if (!input.value.trim.isEmpty) {
-              context.props.wrapped.onAddTodo(input.value)
+              self.props.wrapped.onAddTodo(input.value)
               input.value = ""
             }
           })
