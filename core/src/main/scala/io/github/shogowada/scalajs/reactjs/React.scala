@@ -120,7 +120,7 @@ object React {
         if (getInitialState != null) {
           stateToNative(getInitialState(Context(native)))
         } else {
-          null
+          stateToNative(())
         }
       }),
       "render" -> js.ThisFunction.fromFunction1((native: js.Dynamic) => {
