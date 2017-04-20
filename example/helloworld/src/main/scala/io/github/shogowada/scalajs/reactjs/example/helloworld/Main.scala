@@ -1,22 +1,21 @@
 package io.github.shogowada.scalajs.reactjs.example.helloworld
 
-import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.specs.StatelessReactClassSpec
+import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
 
 import scala.scalajs.js.JSApp
 
 object Main extends JSApp {
   def main(): Unit = {
-    class HelloWorld extends StatelessReactClassSpec[HelloWorld.WrappedProps] {
-      override def render() = <.div(^.id := "hello-world")(s"Hello, ${props.wrapped.name}!")
-    }
-
     object HelloWorld {
       case class WrappedProps(name: String)
 
-      def apply() = new HelloWorld()
+      private lazy val reactClass = React.createClass[WrappedProps, Unit](
+        render = (self) => <.div(^.id := "hello-world")(s"Hello, ${self.props.wrapped.name}!")
+      )
+
+      def apply() = reactClass
     }
 
     val mountNode = dom.document.getElementById("mount-node")

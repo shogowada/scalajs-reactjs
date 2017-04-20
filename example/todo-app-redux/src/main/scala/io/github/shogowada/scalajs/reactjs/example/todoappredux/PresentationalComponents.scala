@@ -1,7 +1,8 @@
 package io.github.shogowada.scalajs.reactjs.example.todoappredux
 
+import io.github.shogowada.scalajs.reactjs.React
+import io.github.shogowada.scalajs.reactjs.React.Props
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.specs.{Props, StatelessReactClassSpec}
 import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLInputElement}
 import io.github.shogowada.scalajs.reactjs.events.{InputFormSyntheticEvent, SyntheticEvent}
 import io.github.shogowada.scalajs.reactjs.example.todoappredux.ContainerComponents._
@@ -77,31 +78,32 @@ object Footer {
     )
 }
 
-class AddTodoComponent extends StatelessReactClassSpec[AddTodoComponent.WrappedProps] {
-
-  private var input: ReactHTMLInputElement = _
-
-  override def render() =
-    <.div()(
-      <.form(
-        ^.onSubmit := ((event: InputFormSyntheticEvent) => {
-          event.preventDefault()
-          if (!input.value.trim.isEmpty) {
-            props.wrapped.onAddTodo(input.value)
-            input.value = ""
-          }
-        })
-      )(
-        <.input(^.ref := ((node: ReactHTMLInputElement) => input = node))(),
-        <.button(^.`type`.submit)(
-          "Add Todo"
-        )
-      )
-    )
-}
-
 object AddTodoComponent {
   case class WrappedProps(onAddTodo: (String) => Unit)
+
+  def apply() = reactClass
+
+  private lazy val reactClass = React.createClass[WrappedProps, Unit](
+    render = (self) => {
+      var input: ReactHTMLInputElement = null
+      <.div()(
+        <.form(
+          ^.onSubmit := ((event: InputFormSyntheticEvent) => {
+            event.preventDefault()
+            if (!input.value.trim.isEmpty) {
+              self.props.wrapped.onAddTodo(input.value)
+              input.value = ""
+            }
+          })
+        )(
+          <.input(^.ref := ((node: ReactHTMLInputElement) => input = node))(),
+          <.button(^.`type`.submit)(
+            "Add Todo"
+          )
+        )
+      )
+    }
+  )
 }
 
 object App {

@@ -1,9 +1,7 @@
 package io.github.shogowada.scalajs.reactjs.example.lifecycle
 
-import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.specs.{Props, PropslessReactClassSpec}
-import io.github.shogowada.scalajs.reactjs.elements.ReactElement
+import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
 
 import scala.scalajs.js.JSApp
@@ -13,61 +11,51 @@ object App {
       componentDidMountCalled: Boolean,
       componentDidUpdateCalled: Boolean
   )
-}
 
-class App extends PropslessReactClassSpec[App.State] {
+  type Self = React.Self[Unit, State]
 
-  import App._
+  def apply() = reactClass
 
-  override def componentWillMount(): Unit = {
-    println("componentWillMount()")
-  }
-
-  override def componentDidMount(): Unit = {
-    println("componentDidMount()")
-    setState(_.copy(componentDidMountCalled = true))
-  }
-
-  override def shouldComponentUpdate(nextProps: Props[Unit], nextState: State): Boolean = {
-    println(s"shouldComponentUpdate($nextProps, $nextState)")
-    nextState != state
-  }
-
-  override def componentWillReceiveProps(nextProps: Props[Unit]): Unit = {
-    println(s"componentWillReceiveProps($nextProps)")
-  }
-
-  override def componentWillUpdate(nextProps: Props[Unit], nextState: State): Unit = {
-    println(s"componentWillUpdate($nextProps, $nextState)")
-  }
-
-  override def componentDidUpdate(prevProps: Props[Unit], prevState: State): Unit = {
-    println(s"componentDidUpdate($prevProps, $prevState)")
-    setState(_.copy(componentDidUpdateCalled = true))
-  }
-
-  override def componentWillUnmount(): Unit = {
-    println("componentWillUnmount()")
-  }
-
-  override def getInitialState() = State(
-    componentDidMountCalled = false,
-    componentDidUpdateCalled = false
+  private lazy val reactClass = React.createClass[Unit, State](
+    componentWillMount = (self) => println("componentWillMount()"),
+    componentDidMount = (self) => {
+      println("componentDidMount()")
+      self.setState(_.copy(componentDidMountCalled = true))
+    },
+    shouldComponentUpdate = (self, nextProps, nextState) => {
+      println(s"shouldComponentUpdate($nextProps, $nextState)")
+      nextState != self.state
+    },
+    componentWillReceiveProps = (self, nextProps) => {
+      println(s"componentWillReceiveProps($nextProps)")
+    },
+    componentWillUpdate = (self, nextProps, nextState) => {
+      println(s"componentWillUpdate($nextProps, $nextState)")
+    },
+    componentDidUpdate = (self, prevProps, prevState) => {
+      println(s"componentDidUpdate($prevProps, $prevState)")
+      self.setState(_.copy(componentDidUpdateCalled = true))
+    },
+    componentWillUnmount = (self) => {
+      println("componentWillUnmount()")
+    },
+    getInitialState = (self) => State(
+      componentDidMountCalled = false,
+      componentDidUpdateCalled = false
+    ),
+    render = (self) =>
+      <.div()(
+        <.label(^.`for` := "component-did-mount")("Component Did Mount: "),
+        <.input(^.id := "component-did-mount", ^.`type`.checkbox, ^.checked := self.state.componentDidMountCalled)(),
+        <.label(^.`for` := "component-did-update")("Component Did Update: "),
+        <.input(^.id := "component-did-update", ^.`type`.checkbox, ^.checked := self.state.componentDidUpdateCalled)()
+      )
   )
-
-  override def render(): ReactElement = {
-    <.div()(
-      <.label(^.`for` := "component-did-mount")("Component Did Mount: "),
-      <.input(^.id := "component-did-mount", ^.`type`.checkbox, ^.checked := state.componentDidMountCalled)(),
-      <.label(^.`for` := "component-did-update")("Component Did Update: "),
-      <.input(^.id := "component-did-update", ^.`type`.checkbox, ^.checked := state.componentDidUpdateCalled)()
-    ).asReactElement
-  }
 }
 
 object Main extends JSApp {
   override def main(): Unit = {
     val mountNode = dom.document.getElementById("mount-node")
-    ReactDOM.render(<(new App()).empty, mountNode)
+    ReactDOM.render(<(App()).empty, mountNode)
   }
 }

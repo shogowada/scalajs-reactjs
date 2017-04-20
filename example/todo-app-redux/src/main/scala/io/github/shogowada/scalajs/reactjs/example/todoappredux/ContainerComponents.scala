@@ -10,7 +10,7 @@ import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 * You can pass either one of the following to create a component:
 *
 * - Render function of type (props: Props[WrappedProps]) => ReactElement
-* - Presentational component of type ReactClassSpec
+* - Presentational component of type ReactClass
 *
 * It shows example for both.
 * */
@@ -58,5 +58,5 @@ object ContainerComponents {
           onAddTodo = onAddTodo
         )
     }
-  )(new AddTodoComponent()) // ReactClassSpec
+  )(AddTodoComponent()) // ReactClass
 }

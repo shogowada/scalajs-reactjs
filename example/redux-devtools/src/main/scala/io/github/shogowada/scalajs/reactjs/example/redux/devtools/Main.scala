@@ -1,15 +1,13 @@
 package io.github.shogowada.scalajs.reactjs.example.redux.devtools
 
-import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import io.github.shogowada.scalajs.reactjs.classes.specs.StatelessReactClassSpec
-import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events.InputFormSyntheticEvent
 import io.github.shogowada.scalajs.reactjs.redux.ReactRedux._
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import io.github.shogowada.scalajs.reactjs.redux.devtools.ReduxDevTools
 import io.github.shogowada.scalajs.reactjs.redux.{Action, ReactRedux, Redux}
+import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
 
 import scala.scalajs.js.JSApp
@@ -57,21 +55,23 @@ object TextContainerComponent {
         )
       }
     }
-  )(new TextComponent())
+  )(TextComponent())
 }
 
 object TextComponent {
   case class WrappedProps(text: String, onTextChange: (String) => _)
-}
 
-class TextComponent extends StatelessReactClassSpec[TextComponent.WrappedProps] {
-  override def render(): ReactElement =
-    <.div()(
-      <.input(
-        ^.value := props.wrapped.text,
-        ^.onChange := ((event: InputFormSyntheticEvent) => {
-          props.wrapped.onTextChange(event.target.value)
-        })
-      )()
-    )
+  def apply() = reactClass
+
+  private lazy val reactClass = React.createClass[WrappedProps, Unit](
+    render = (self) =>
+      <.div()(
+        <.input(
+          ^.value := self.props.wrapped.text,
+          ^.onChange := ((event: InputFormSyntheticEvent) => {
+            self.props.wrapped.onTextChange(event.target.value)
+          })
+        )()
+      )
+  )
 }

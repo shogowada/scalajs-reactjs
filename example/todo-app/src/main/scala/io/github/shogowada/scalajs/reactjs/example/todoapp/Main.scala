@@ -1,10 +1,9 @@
 package io.github.shogowada.scalajs.reactjs.example.todoapp
 
-import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.specs.PropslessReactClassSpec
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events.{InputFormSyntheticEvent, SyntheticEvent}
+import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
 
 import scala.scalajs.js
@@ -25,40 +24,40 @@ case class Item(id: String, text: String)
 object TodoApp {
   case class State(items: Seq[Item], text: String)
 
-  def apply() = new TodoApp()
-}
+  type Self = React.Self[Unit, State]
 
-class TodoApp extends PropslessReactClassSpec[TodoApp.State] {
+  def apply() = reactClass
 
-  import TodoApp._
-
-  override def getInitialState() = State(items = Seq.empty, text = "")
-
-  override def render(): ReactElement =
-    <.div()(
-      <.h3()("TODO"),
-      TodoList(state.items),
-      <.form(^.onSubmit := handleSubmit)(
-        <.input(^.onChange := handleChange, ^.value := state.text)(),
-        <.button()(s"Add #${state.items.size + 1}")
+  private lazy val reactClass = React.createClass[Unit, State](
+    getInitialState = (self) => State(items = Seq.empty, text = ""),
+    render = (self) =>
+      <.div()(
+        <.h3()("TODO"),
+        TodoList(self.state.items),
+        <.form(^.onSubmit := handleSubmit(self))(
+          <.input(^.onChange := handleChange(self), ^.value := self.state.text)(),
+          <.button()(s"Add #${self.state.items.size + 1}")
+        )
       )
-    )
+  )
 
-  private val handleChange = (e: InputFormSyntheticEvent) => {
-    // Cache the value because React reuses the event object.
-    val newText = e.target.value
-    // It is a syntactic sugar for setState((prevState: State) => prevState.copy(text = newText))
-    setState(_.copy(text = newText))
-  }
+  private def handleChange(self: Self) =
+    (e: InputFormSyntheticEvent) => {
+      // Cache the value because React reuses the event object.
+      val newText = e.target.value
+      // It is a syntactic sugar for setState((prevState: State) => prevState.copy(text = newText))
+      self.setState(_.copy(text = newText))
+    }
 
-  private val handleSubmit = (e: SyntheticEvent) => {
-    e.preventDefault()
-    val newItem = Item(text = state.text, id = js.Date.now().toString)
-    setState((prevState: State) => State(
-      items = prevState.items :+ newItem,
-      text = ""
-    ))
-  }
+  private def handleSubmit(self: Self) =
+    (e: SyntheticEvent) => {
+      e.preventDefault()
+      val newItem = Item(text = self.state.text, id = js.Date.now().toString)
+      self.setState((prevState: State) => State(
+        items = prevState.items :+ newItem,
+        text = ""
+      ))
+    }
 }
 
 object TodoList {

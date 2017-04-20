@@ -1,12 +1,12 @@
 package io.github.shogowada.scalajs.reactjs.example.routing
 
-import io.github.shogowada.scalajs.reactjs.ReactDOM
+import io.github.shogowada.scalajs.reactjs.React.{Self, Props}
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.specs.{Props, PropslessReactClassSpec, StaticReactClassSpec}
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events.CheckBoxFormSyntheticEvent
 import io.github.shogowada.scalajs.reactjs.router.dom.RouterDOM._
 import io.github.shogowada.scalajs.reactjs.router.{RouterProps, WithRouter}
+import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
 
 import scala.scalajs.js.JSApp
@@ -38,21 +38,21 @@ object Main extends JSApp {
 }
 
 object App {
-  def apply() = WithRouter(new App())
-}
+  def apply() = WithRouter(reactClass)
 
-class App extends StaticReactClassSpec {
-  override def render() =
-    <.div()(
-      <.h1()("React Router Tutorial"),
-      Links(),
-      RouterApiButtons(props),
-      <.Switch()(
-        <.Route(^.path := "/about", ^.render := (About(_: Props[_])))(),
-        <.Route(^.path := "/repos", ^.render := (Repos(_: Props[_])))(),
-        <.Route(^.path := "/form", ^.component := Form())()
+  private lazy val reactClass = React.createClass[Unit, Unit](
+    render = (self) =>
+      <.div()(
+        <.h1()("React Router Tutorial"),
+        Links(),
+        RouterApiButtons(self.props),
+        <.Switch()(
+          <.Route(^.path := "/about", ^.render := (About(_: Props[_])))(),
+          <.Route(^.path := "/repos", ^.render := (Repos(_: Props[_])))(),
+          <.Route(^.path := "/form", ^.component := Form())()
+        )
       )
-    ).asReactElement
+  )
 }
 
 object Links {
@@ -102,49 +102,44 @@ object Repos extends RouterProps {
     )
 }
 
-object Repo {
-  def apply() = new Repo()
-}
-
-class Repo extends StaticReactClassSpec
-    with RouterProps {
+object Repo extends RouterProps {
   // Params has type of js.Dictionary[String].
-  private def id: String = props.`match`.params("id")
+  private def id(self: Self[_, _]): String = self.props.`match`.params("id")
 
-  override def render() = <.div(^.id := s"repo-${id}")(s"Repo ${id}")
+  def apply() = reactClass
+
+  private lazy val reactClass = React.createClass[Unit, Unit](
+    render = (self) => <.div(^.id := s"repo-${id(self)}")(s"Repo ${id(self)}")
+  )
 }
 
 object Form {
   case class State(confirmBeforeLeave: Boolean)
 
-  def apply() = new Form()
-}
+  def apply() = reactClass
 
-class Form extends PropslessReactClassSpec[Form.State] {
-
-  import Form._
-
-  override def getInitialState() = State(confirmBeforeLeave = true)
-
-  override def render(): ReactElement =
-    <.div()(
-      <.Prompt(
-        ^.when := state.confirmBeforeLeave,
-        ^.message := "Are you sure you want to leave the page?"
-      )(),
-      <.div(^.id := "form")(
-        <.label()(
-          "Confirm before leave",
-          <.input(
-            ^.id := "confirm-before-leave",
-            ^.`type`.checkbox,
-            ^.checked := state.confirmBeforeLeave,
-            ^.onChange := ((event: CheckBoxFormSyntheticEvent) => {
-              val checked = event.target.checked
-              setState(State(confirmBeforeLeave = checked))
-            })
-          )()
+  private lazy val reactClass = React.createClass[Unit, State](
+    getInitialState = (self) => State(confirmBeforeLeave = true),
+    render = (self) =>
+      <.div()(
+        <.Prompt(
+          ^.when := self.state.confirmBeforeLeave,
+          ^.message := "Are you sure you want to leave the page?"
+        )(),
+        <.div(^.id := "form")(
+          <.label()(
+            "Confirm before leave",
+            <.input(
+              ^.id := "confirm-before-leave",
+              ^.`type`.checkbox,
+              ^.checked := self.state.confirmBeforeLeave,
+              ^.onChange := ((event: CheckBoxFormSyntheticEvent) => {
+                val checked = event.target.checked
+                self.setState(State(confirmBeforeLeave = checked))
+              })
+            )()
+          )
         )
       )
-    )
+  )
 }
