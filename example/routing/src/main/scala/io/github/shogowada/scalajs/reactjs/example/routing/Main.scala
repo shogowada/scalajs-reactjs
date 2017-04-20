@@ -40,7 +40,7 @@ object Main extends JSApp {
 object App {
   def apply() = WithRouter(reactClass)
 
-  lazy val reactClass = React.createClass[Unit, Unit](
+  private lazy val reactClass = React.createClass[Unit, Unit](
     render = (context) =>
       <.div()(
         <.h1()("React Router Tutorial"),
@@ -49,7 +49,7 @@ object App {
         <.Switch()(
           <.Route(^.path := "/about", ^.render := (About(_: Props[_])))(),
           <.Route(^.path := "/repos", ^.render := (Repos(_: Props[_])))(),
-          <.Route(^.path := "/form", ^.component := Form.reactClass)()
+          <.Route(^.path := "/form", ^.component := Form())()
         )
       )
   )
@@ -97,7 +97,7 @@ object Repos extends RouterProps {
       "Repos",
       <.Route(
         ^.path := s"${props.`match`.path}/:id",
-        ^.component := Repo.reactClass
+        ^.component := Repo()
       )()
     )
 }
@@ -106,7 +106,9 @@ object Repo extends RouterProps {
   // Params has type of js.Dictionary[String].
   private def id(context: Context[_, _]): String = context.props.`match`.params("id")
 
-  lazy val reactClass = React.createClass[Unit, Unit](
+  def apply() = reactClass
+
+  private lazy val reactClass = React.createClass[Unit, Unit](
     render = (context) => <.div(^.id := s"repo-${id(context)}")(s"Repo ${id(context)}")
   )
 }
@@ -114,7 +116,9 @@ object Repo extends RouterProps {
 object Form {
   case class State(confirmBeforeLeave: Boolean)
 
-  lazy val reactClass = React.createClass[Unit, State](
+  def apply() = reactClass
+
+  private lazy val reactClass = React.createClass[Unit, State](
     getInitialState = (context) => State(confirmBeforeLeave = true),
     render = (context) =>
       <.div()(

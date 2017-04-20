@@ -55,13 +55,15 @@ object TextContainerComponent {
         )
       }
     }
-  )(TextComponent.reactClass)
+  )(TextComponent())
 }
 
 object TextComponent {
   case class WrappedProps(text: String, onTextChange: (String) => _)
 
-  lazy val reactClass = React.createClass[WrappedProps, Unit](
+  def apply() = reactClass
+
+  private lazy val reactClass = React.createClass[WrappedProps, Unit](
     render = (context) =>
       <.div()(
         <.input(

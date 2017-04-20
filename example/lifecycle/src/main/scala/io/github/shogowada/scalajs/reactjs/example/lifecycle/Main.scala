@@ -14,7 +14,9 @@ object App {
 
   type Context = React.Context[Unit, State]
 
-  lazy val reactClass = React.createClass[Unit, State](
+  def apply() = reactClass
+
+  private lazy val reactClass = React.createClass[Unit, State](
     componentWillMount = (context) => println("componentWillMount()"),
     componentDidMount = (context) => {
       println("componentDidMount()")
@@ -54,6 +56,6 @@ object App {
 object Main extends JSApp {
   override def main(): Unit = {
     val mountNode = dom.document.getElementById("mount-node")
-    ReactDOM.render(<(App.reactClass).empty, mountNode)
+    ReactDOM.render(<(App()).empty, mountNode)
   }
 }

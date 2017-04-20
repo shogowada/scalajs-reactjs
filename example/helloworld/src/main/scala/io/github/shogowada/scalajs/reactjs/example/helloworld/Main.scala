@@ -11,12 +11,14 @@ object Main extends JSApp {
     object HelloWorld {
       case class WrappedProps(name: String)
 
-      lazy val reactClass = React.createClass[WrappedProps, Unit](
+      private lazy val reactClass = React.createClass[WrappedProps, Unit](
         render = (context) => <.div(^.id := "hello-world")(s"Hello, ${context.props.wrapped.name}!")
       )
+
+      def apply() = reactClass
     }
 
     val mountNode = dom.document.getElementById("mount-node")
-    ReactDOM.render(<(HelloWorld.reactClass)(^.wrapped := HelloWorld.WrappedProps("World"))(), mountNode)
+    ReactDOM.render(<(HelloWorld())(^.wrapped := HelloWorld.WrappedProps("World"))(), mountNode)
   }
 }

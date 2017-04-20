@@ -13,7 +13,7 @@ object Main extends JSApp {
   def main(): Unit = {
     val mountNode = dom.document.getElementById("mount-node")
     ReactDOM.render(
-      <(TodoApp.reactClass).empty,
+      <(TodoApp()).empty,
       mountNode
     )
   }
@@ -26,7 +26,9 @@ object TodoApp {
 
   type Context = React.Context[Unit, State]
 
-  lazy val reactClass = React.createClass[Unit, State](
+  def apply() = reactClass
+
+  private lazy val reactClass = React.createClass[Unit, State](
     getInitialState = (context) => State(items = Seq.empty, text = ""),
     render = (context) =>
       <.div()(

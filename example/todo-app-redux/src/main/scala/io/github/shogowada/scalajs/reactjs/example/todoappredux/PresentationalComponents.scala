@@ -81,7 +81,9 @@ object Footer {
 object AddTodoComponent {
   case class WrappedProps(onAddTodo: (String) => Unit)
 
-  lazy val reactClass = React.createClass[WrappedProps, Unit](
+  def apply() = reactClass
+
+  private lazy val reactClass = React.createClass[WrappedProps, Unit](
     render = (context) => {
       var input: ReactHTMLInputElement = null
       <.div()(

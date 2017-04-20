@@ -24,7 +24,9 @@ object LetterCaseRadioBox {
 
   type Context = React.Context[WrappedProps, Unit]
 
-  lazy val reactClass = React.createClass[WrappedProps, Unit](
+  def apply() = reactClass
+
+  private lazy val reactClass = React.createClass[WrappedProps, Unit](
     render = (context) =>
       <.span()(
         <.input(
@@ -53,7 +55,9 @@ object InteractiveHelloWorld {
 
   private val nameId = "name"
 
-  lazy val reactClass = React.createClass[Unit, State](
+  def apply() = reactClass
+
+  private lazy val reactClass = React.createClass[Unit, State](
     getInitialState = (context) => State(
       name = "whoever you are",
       letterCase = DEFAULT
@@ -79,7 +83,7 @@ object InteractiveHelloWorld {
     )
 
   private def createLetterCaseRadioBox(context: Context, thisLetterCase: LetterCase): ReactElement = {
-    <(LetterCaseRadioBox.reactClass)(
+    <(LetterCaseRadioBox())(
       ^.wrapped := LetterCaseRadioBox.WrappedProps(
         letterCase = thisLetterCase,
         checked = thisLetterCase == context.state.letterCase,
@@ -107,6 +111,6 @@ object InteractiveHelloWorld {
 object Main extends JSApp {
   def main(): Unit = {
     val mountNode = dom.document.getElementById("mount-node")
-    ReactDOM.render(<(InteractiveHelloWorld.reactClass).empty, mountNode)
+    ReactDOM.render(<(InteractiveHelloWorld()).empty, mountNode)
   }
 }
