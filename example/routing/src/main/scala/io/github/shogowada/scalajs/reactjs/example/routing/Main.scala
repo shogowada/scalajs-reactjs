@@ -1,12 +1,12 @@
 package io.github.shogowada.scalajs.reactjs.example.routing
 
-import io.github.shogowada.scalajs.reactjs.ReactDOM
+import io.github.shogowada.scalajs.reactjs.React.{Context, Props}
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.specs.{Props, PropslessReactClassSpec, StaticReactClassSpec}
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events.CheckBoxFormSyntheticEvent
 import io.github.shogowada.scalajs.reactjs.router.dom.RouterDOM._
 import io.github.shogowada.scalajs.reactjs.router.{RouterProps, WithRouter}
+import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
 
 import scala.scalajs.js.JSApp
@@ -38,21 +38,21 @@ object Main extends JSApp {
 }
 
 object App {
-  def apply() = WithRouter(new App())
-}
+  def apply() = WithRouter(reactClass)
 
-class App extends StaticReactClassSpec {
-  override def render() =
-    <.div()(
-      <.h1()("React Router Tutorial"),
-      Links(),
-      RouterApiButtons(props),
-      <.Switch()(
-        <.Route(^.path := "/about", ^.render := (About(_: Props[_])))(),
-        <.Route(^.path := "/repos", ^.render := (Repos(_: Props[_])))(),
-        <.Route(^.path := "/form", ^.component := Form())()
+  lazy val reactClass = React.createClass[Unit, Unit](
+    render = (context) =>
+      <.div()(
+        <.h1()("React Router Tutorial"),
+        Links(),
+        RouterApiButtons(context.props),
+        <.Switch()(
+          <.Route(^.path := "/about", ^.render := (About(_: Props[_])))(),
+          <.Route(^.path := "/repos", ^.render := (Repos(_: Props[_])))(),
+          <.Route(^.path := "/form", ^.component := Form.reactClass)()
+        )
       )
-    ).asReactElement
+  )
 }
 
 object Links {
@@ -97,54 +97,45 @@ object Repos extends RouterProps {
       "Repos",
       <.Route(
         ^.path := s"${props.`match`.path}/:id",
-        ^.component := Repo()
+        ^.component := Repo.reactClass
       )()
     )
 }
 
-object Repo {
-  def apply() = new Repo()
-}
-
-class Repo extends StaticReactClassSpec
-    with RouterProps {
+object Repo extends RouterProps {
   // Params has type of js.Dictionary[String].
-  private def id: String = props.`match`.params("id")
+  private def id(context: Context[_, _]): String = context.props.`match`.params("id")
 
-  override def render() = <.div(^.id := s"repo-${id}")(s"Repo ${id}")
+  lazy val reactClass = React.createClass[Unit, Unit](
+    render = (context) => <.div(^.id := s"repo-${id(context)}")(s"Repo ${id(context)}")
+  )
 }
 
 object Form {
   case class State(confirmBeforeLeave: Boolean)
 
-  def apply() = new Form()
-}
-
-class Form extends PropslessReactClassSpec[Form.State] {
-
-  import Form._
-
-  override def getInitialState() = State(confirmBeforeLeave = true)
-
-  override def render(): ReactElement =
-    <.div()(
-      <.Prompt(
-        ^.when := state.confirmBeforeLeave,
-        ^.message := "Are you sure you want to leave the page?"
-      )(),
-      <.div(^.id := "form")(
-        <.label()(
-          "Confirm before leave",
-          <.input(
-            ^.id := "confirm-before-leave",
-            ^.`type`.checkbox,
-            ^.checked := state.confirmBeforeLeave,
-            ^.onChange := ((event: CheckBoxFormSyntheticEvent) => {
-              val checked = event.target.checked
-              setState(State(confirmBeforeLeave = checked))
-            })
-          )()
+  lazy val reactClass = React.createClass[Unit, State](
+    getInitialState = (context) => State(confirmBeforeLeave = true),
+    render = (context) =>
+      <.div()(
+        <.Prompt(
+          ^.when := context.state.confirmBeforeLeave,
+          ^.message := "Are you sure you want to leave the page?"
+        )(),
+        <.div(^.id := "form")(
+          <.label()(
+            "Confirm before leave",
+            <.input(
+              ^.id := "confirm-before-leave",
+              ^.`type`.checkbox,
+              ^.checked := context.state.confirmBeforeLeave,
+              ^.onChange := ((event: CheckBoxFormSyntheticEvent) => {
+                val checked = event.target.checked
+                context.setState(State(confirmBeforeLeave = checked))
+              })
+            )()
+          )
         )
       )
-    )
+  )
 }

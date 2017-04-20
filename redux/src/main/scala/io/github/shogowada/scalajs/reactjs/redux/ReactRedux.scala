@@ -1,10 +1,11 @@
 package io.github.shogowada.scalajs.reactjs.redux
 
+import io.github.shogowada.scalajs.reactjs.React
+import io.github.shogowada.scalajs.reactjs.React.Props
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMAttributes.Type.AS_IS
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements.ReactClassElementSpec
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.{VirtualDOMAttributes, VirtualDOMElements}
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
 import io.github.shogowada.scalajs.reactjs.redux.ReactRedux.ReactReduxVirtualDOMAttributes.StoreAttributeSpec
 import io.github.shogowada.scalajs.reactjs.redux.Redux.NativeDispatch
 import io.github.shogowada.statictags.{Attribute, AttributeSpec}
@@ -52,10 +53,10 @@ object ReactRedux {
       selector: (ReduxState, OwnProps) => WrappedProps
   ): js.Function2[ReduxState, js.Dynamic, js.Any] =
     (state: ReduxState, nativeOwnProps: js.Dynamic) => {
-      val ownProps: OwnProps = ReactClassSpec.propsFromNative[OwnProps](nativeOwnProps).wrapped
+      val ownProps: OwnProps = Props(nativeOwnProps).wrapped
       val wrappedProps: WrappedProps = selector(state, ownProps)
       val nativeProps = clone(nativeOwnProps)
-      nativeProps.updateDynamic(ReactClassSpec.WrappedProperty)(wrappedProps.asInstanceOf[js.Any])
+      nativeProps.updateDynamic(React.WrappedProperty)(wrappedProps.asInstanceOf[js.Any])
       nativeProps
     }
 

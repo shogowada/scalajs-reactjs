@@ -10,12 +10,10 @@ import scala.scalajs.js.JSApp
 object Main extends JSApp {
   def main(): Unit = {
     object HelloWorld {
-      case class Props(name: String)
-
-      def apply(props: Props): ReactElement = <.div(^.id := "hello-world")(s"Hello, ${props.name}!")
+      def apply(name: String): ReactElement = <.div(^.id := "hello-world")(s"Hello, ${name}!")
     }
 
     val mountNode = dom.document.getElementById("mount-node")
-    ReactDOM.render(HelloWorld(HelloWorld.Props("World")), mountNode)
+    ReactDOM.render(HelloWorld("World"), mountNode)
   }
 }

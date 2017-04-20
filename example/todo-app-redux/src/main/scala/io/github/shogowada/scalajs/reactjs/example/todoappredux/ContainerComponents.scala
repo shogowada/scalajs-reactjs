@@ -58,5 +58,5 @@ object ContainerComponents {
           onAddTodo = onAddTodo
         )
     }
-  )(new AddTodoComponent()) // ReactClassSpec
+  )(AddTodoComponent.reactClass) // ReactClassSpec
 }

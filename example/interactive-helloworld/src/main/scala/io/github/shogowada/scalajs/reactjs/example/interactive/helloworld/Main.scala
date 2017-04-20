@@ -1,11 +1,10 @@
 package io.github.shogowada.scalajs.reactjs.example.interactive.helloworld
 
-import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.classes.specs.{PropslessReactClassSpec, StatelessReactClassSpec}
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events.{InputFormSyntheticEvent, RadioFormSyntheticEvent}
 import io.github.shogowada.scalajs.reactjs.example.interactive.helloworld.LetterCase.{DEFAULT, LOWER_CASE, LetterCase, UPPER_CASE}
+import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
 
 import scala.scalajs.js.JSApp
@@ -23,92 +22,91 @@ object LetterCase {
 object LetterCaseRadioBox {
   case class WrappedProps(letterCase: LetterCase, checked: Boolean, onChecked: () => Unit)
 
-  def apply() = new LetterCaseRadioBox()
-}
+  type Context = React.Context[WrappedProps, Unit]
 
-class LetterCaseRadioBox extends StatelessReactClassSpec[LetterCaseRadioBox.WrappedProps] {
-  override def render(): ReactElement = {
-    <.span()(
-      <.input(
-        ^.`type`.radio,
-        ^.name := "letter-case",
-        ^.value := props.wrapped.letterCase.name,
-        ^.checked := props.wrapped.checked,
-        ^.onChange := onChange
-      )(),
-      props.wrapped.letterCase.name
-    )
-  }
+  lazy val reactClass = React.createClass[WrappedProps, Unit](
+    render = (context) =>
+      <.span()(
+        <.input(
+          ^.`type`.radio,
+          ^.name := "letter-case",
+          ^.value := context.props.wrapped.letterCase.name,
+          ^.checked := context.props.wrapped.checked,
+          ^.onChange := onChange(context)
+        )(),
+        context.props.wrapped.letterCase.name
+      )
+  )
 
-  val onChange = (event: RadioFormSyntheticEvent) => {
-    if (event.target.checked) {
-      props.wrapped.onChecked()
+  private def onChange(context: Context) =
+    (event: RadioFormSyntheticEvent) => {
+      if (event.target.checked) {
+        context.props.wrapped.onChecked()
+      }
     }
-  }
 }
 
 object InteractiveHelloWorld {
   case class State(name: String, letterCase: LetterCase)
-}
 
-class InteractiveHelloWorld extends PropslessReactClassSpec[InteractiveHelloWorld.State] {
+  type Context = React.Context[Unit, State]
 
-  import InteractiveHelloWorld._
+  private val nameId = "name"
 
-  override def getInitialState(): State = State(
-    name = "whoever you are",
-    letterCase = DEFAULT
+  lazy val reactClass = React.createClass[Unit, State](
+    getInitialState = (context) => State(
+      name = "whoever you are",
+      letterCase = DEFAULT
+    ),
+
+    render = (context) =>
+      <.div()(
+        createNameInput(context),
+        LetterCase.ALL.map(createLetterCaseRadioBox(context, _)),
+        <.br.empty,
+        <.div(^.id := "greet")(s"Hello, ${name(context.state)}!")
+      )
   )
 
-  val nameId = "name"
-
-  override def render() =
-    <.div()(
-      createNameInput(),
-      LetterCase.ALL.map(createLetterCaseRadioBox),
-      <.br.empty,
-      <.div(^.id := "greet")(s"Hello, ${name(state)}!")
-    )
-
-  def createNameInput() =
+  private def createNameInput(context: Context) =
     <.div()(
       <.label(^.`for` := nameId)("Name: "),
       <.input(
         ^.id := nameId,
-        ^.value := state.name,
-        ^.onChange := onChange
+        ^.value := context.state.name,
+        ^.onChange := onChange(context)
       )()
     )
 
-  def createLetterCaseRadioBox(thisLetterCase: LetterCase): ReactElement = {
-    <(LetterCaseRadioBox())(
+  private def createLetterCaseRadioBox(context: Context, thisLetterCase: LetterCase): ReactElement = {
+    <(LetterCaseRadioBox.reactClass)(
       ^.wrapped := LetterCaseRadioBox.WrappedProps(
         letterCase = thisLetterCase,
-        checked = thisLetterCase == state.letterCase,
+        checked = thisLetterCase == context.state.letterCase,
         onChecked = () => {
-          setState(_.copy(letterCase = thisLetterCase))
+          context.setState(_.copy(letterCase = thisLetterCase))
         }
       )
     )()
   }
 
-  val onChange = (event: InputFormSyntheticEvent) => {
-    val name = event.target.value
-    setState(_.copy(name = name))
-  }
+  private def onChange(context: Context) =
+    (event: InputFormSyntheticEvent) => {
+      val name = event.target.value
+      context.setState(_.copy(name = name))
+    }
 
-  def name(state: State): String = {
+  private def name(state: State): String =
     state.letterCase match {
       case LOWER_CASE => state.name.toLowerCase
       case UPPER_CASE => state.name.toUpperCase
       case _ => state.name
     }
-  }
 }
 
 object Main extends JSApp {
   def main(): Unit = {
     val mountNode = dom.document.getElementById("mount-node")
-    ReactDOM.render(<(new InteractiveHelloWorld()).empty, mountNode)
+    ReactDOM.render(<(InteractiveHelloWorld.reactClass).empty, mountNode)
   }
 }

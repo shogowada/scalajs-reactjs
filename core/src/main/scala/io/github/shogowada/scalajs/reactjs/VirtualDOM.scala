@@ -1,10 +1,9 @@
 package io.github.shogowada.scalajs.reactjs
 
+import io.github.shogowada.scalajs.reactjs.React.Render
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMAttributes.Type.AS_IS
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements.ReactClassElementSpec
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec
-import io.github.shogowada.scalajs.reactjs.classes.specs.ReactClassSpec.Render
 import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLElement}
 import io.github.shogowada.scalajs.reactjs.events._
 import io.github.shogowada.statictags.AttributeValueType.AttributeValueType
@@ -166,9 +165,6 @@ trait EventVirtualDOMAttributes {
 trait VirtualDOM extends StaticTags {
 
   class VirtualDOMElements extends Elements {
-    def apply[Props, State](reactClassSpec: ReactClassSpec[Props, State]): ReactClassElementSpec =
-      this.apply(React.createClass(reactClassSpec))
-
     def apply(reactClass: ReactClass): ReactClassElementSpec =
       ReactClassElementSpec(reactClass)
   }
@@ -218,7 +214,6 @@ trait VirtualDOM extends StaticTags {
     }
 
     case class ReactClassAttributeSpec(name: String) extends AttributeSpec {
-      def :=[Props, State](value: ReactClassSpec[Props, State]): Attribute[ReactClass] = this := React.createClass(value)
       def :=(value: ReactClass): Attribute[ReactClass] = Attribute(name, value, AS_IS)
     }
 
@@ -230,7 +225,7 @@ trait VirtualDOM extends StaticTags {
 
     case class RenderAttributeSpec(name: String) extends AttributeSpec {
       def :=[WrappedProps](render: Render[WrappedProps]) = {
-        val nativeRender = ReactClassSpec.renderToNative(render)
+        val nativeRender = React.renderToNative(render)
         Attribute(name, nativeRender, AS_IS)
       }
     }
