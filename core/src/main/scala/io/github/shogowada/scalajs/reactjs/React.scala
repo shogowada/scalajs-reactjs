@@ -68,11 +68,8 @@ object React {
       componentWillReceiveProps: (Context[WrappedProps, State], Props[WrappedProps]) => Unit = null,
       shouldComponentUpdate: (Context[WrappedProps, State], Props[WrappedProps], State) => Boolean =
       (context: Context[WrappedProps, State], nextProps: Props[WrappedProps], nextState: State) => {
-        if (context.props.wrapped != nextProps.wrapped || context.state != nextState) {
-          true
-        } else {
-          !Utils.shallowEqual(context.props.native, nextProps.native, WrappedProperty)
-        }
+        context.props.wrapped != nextProps.wrapped || context.state != nextState ||
+            !Utils.shallowEqual(context.props.native, nextProps.native, WrappedProperty)
       },
       componentWillUpdate: (Context[WrappedProps, State], Props[WrappedProps], State) => Unit = null,
       componentDidUpdate: (Context[WrappedProps, State], Props[WrappedProps], State) => Unit = null,
@@ -81,40 +78,9 @@ object React {
   ): ReactClass = {
     type Context = React.Context[WrappedProps, State]
 
-    var spec = js.Dynamic.literal(
-      "displayName" -> getClass.getName,
-      "componentWillMount" -> js.ThisFunction.fromFunction1((native: js.Dynamic) => {
-        if (componentWillMount != null) {
-          componentWillMount(Context(native))
-        }
-      }),
-      "componentDidMount" -> js.ThisFunction.fromFunction1((native: js.Dynamic) => {
-        if (componentDidMount != null) {
-          componentDidMount(Context(native))
-        }
-      }),
-      "componentWillReceiveProps" -> js.ThisFunction.fromFunction2((native: js.Dynamic, nextProps: js.Dynamic) => {
-        if (componentWillReceiveProps != null) {
-          componentWillReceiveProps(Context(native), Props(nextProps))
-        }
-      }),
+    val spec = js.Dynamic.literal(
       "shouldComponentUpdate" -> js.ThisFunction.fromFunction3((native: js.Dynamic, nextProps: js.Dynamic, nextState: js.Dynamic) => {
         shouldComponentUpdate(Context(native), Props(nextProps), stateFromNative(nextState))
-      }),
-      "componentWillUpdate" -> js.ThisFunction.fromFunction3((native: js.Dynamic, nextProps: js.Dynamic, nextState: js.Dynamic) => {
-        if (componentWillUpdate != null) {
-          componentWillUpdate(Context(native), Props(nextProps), stateFromNative(nextState))
-        }
-      }),
-      "componentDidUpdate" -> js.ThisFunction.fromFunction3((native: js.Dynamic, prevProps: js.Dynamic, prevState: js.Dynamic) => {
-        if (componentDidUpdate != null) {
-          componentDidUpdate(Context(native), Props(prevProps), stateFromNative(prevState))
-        }
-      }),
-      "componentWillUnmount" -> js.ThisFunction.fromFunction1((native: js.Dynamic) => {
-        if (componentWillUnmount != null) {
-          componentWillUnmount(Context(native))
-        }
       }),
       "getInitialState" -> js.ThisFunction.fromFunction1((native: js.Dynamic) => {
         if (getInitialState != null) {
@@ -127,6 +93,46 @@ object React {
         render(Context(native))
       })
     )
+
+    if (displayName != null) {
+      spec.updateDynamic("displayName")(displayName)
+    }
+
+    if (componentWillMount != null) {
+      spec.updateDynamic("componentWillMount")(js.ThisFunction.fromFunction1((native: js.Dynamic) => {
+        componentWillMount(Context(native))
+      }))
+    }
+
+    if (componentDidMount != null) {
+      spec.updateDynamic("componentDidMount")(js.ThisFunction.fromFunction1((native: js.Dynamic) => {
+        componentDidMount(Context(native))
+      }))
+    }
+
+    if (componentWillReceiveProps != null) {
+      spec.updateDynamic("componentWillReceiveProps")(js.ThisFunction.fromFunction2((native: js.Dynamic, nextProps: js.Dynamic) => {
+        componentWillReceiveProps(Context(native), Props(nextProps))
+      }))
+    }
+
+    if (componentWillUpdate != null) {
+      spec.updateDynamic("componentWillUpdate")(js.ThisFunction.fromFunction3((native: js.Dynamic, nextProps: js.Dynamic, nextState: js.Dynamic) => {
+        componentWillUpdate(Context(native), Props(nextProps), stateFromNative(nextState))
+      }))
+    }
+
+    if (componentDidUpdate != null) {
+      spec.updateDynamic("componentDidUpdate")(js.ThisFunction.fromFunction3((native: js.Dynamic, prevProps: js.Dynamic, prevState: js.Dynamic) => {
+        componentDidUpdate(Context(native), Props(prevProps), stateFromNative(prevState))
+      }))
+    }
+
+    if (componentWillUnmount != null) {
+      spec.updateDynamic("componentWillUnmount")(js.ThisFunction.fromFunction1((native: js.Dynamic) => {
+        componentWillUnmount(Context(native))
+      }))
+    }
 
     NativeCreateReactClass(spec)
   }
