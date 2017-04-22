@@ -3,9 +3,10 @@ package io.github.shogowada.scalajs.reactjs.example.todoappredux
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.React.Props
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLInputElement}
-import io.github.shogowada.scalajs.reactjs.events.{InputFormSyntheticEvent, SyntheticEvent}
+import io.github.shogowada.scalajs.reactjs.elements.ReactElement
+import io.github.shogowada.scalajs.reactjs.events.{FormSyntheticEvent, SyntheticEvent}
 import io.github.shogowada.scalajs.reactjs.example.todoappredux.ContainerComponents._
+import org.scalajs.dom.raw.HTMLInputElement
 
 object Todo {
   case class Props(onClick: () => Unit, todoItem: TodoItem)
@@ -85,10 +86,10 @@ object AddTodoComponent {
 
   private lazy val reactClass = React.createClass[WrappedProps, Unit](
     render = (self) => {
-      var input: ReactHTMLInputElement = null
+      var input: HTMLInputElement = null
       <.div()(
         <.form(
-          ^.onSubmit := ((event: InputFormSyntheticEvent) => {
+          ^.onSubmit := ((event: FormSyntheticEvent[_]) => {
             event.preventDefault()
             if (!input.value.trim.isEmpty) {
               self.props.wrapped.onAddTodo(input.value)
@@ -96,7 +97,7 @@ object AddTodoComponent {
             }
           })
         )(
-          <.input(^.ref := ((node: ReactHTMLInputElement) => input = node))(),
+          <.input(^.ref := ((node: HTMLInputElement) => input = node))(),
           <.button(^.`type`.submit)(
             "Add Todo"
           )

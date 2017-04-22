@@ -2,13 +2,14 @@ package io.github.shogowada.scalajs.reactjs.example.redux.devtools
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import io.github.shogowada.scalajs.reactjs.events.InputFormSyntheticEvent
+import io.github.shogowada.scalajs.reactjs.events.FormSyntheticEvent
 import io.github.shogowada.scalajs.reactjs.redux.ReactRedux._
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import io.github.shogowada.scalajs.reactjs.redux.devtools.ReduxDevTools
 import io.github.shogowada.scalajs.reactjs.redux.{Action, ReactRedux, Redux}
 import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
+import org.scalajs.dom.raw.HTMLInputElement
 
 import scala.scalajs.js.JSApp
 
@@ -68,7 +69,7 @@ object TextComponent {
       <.div()(
         <.input(
           ^.value := self.props.wrapped.text,
-          ^.onChange := ((event: InputFormSyntheticEvent) => {
+          ^.onChange := ((event: FormSyntheticEvent[HTMLInputElement]) => {
             self.props.wrapped.onTextChange(event.target.value)
           })
         )()

@@ -1,5 +1,7 @@
 package io.github.shogowada.scalajs.reactjs.example.routing
 
+import java.util.regex.{Matcher, Pattern}
+
 import io.github.shogowada.scalajs.reactjs.example.{BaseTest, TestTargetServers}
 import org.openqa.selenium.Alert
 
@@ -114,10 +116,20 @@ class RoutingTest extends BaseTest {
     }
   }
 
-  def goToAbout(): Unit = goTo(s"${server.host}/#/about")
-  def goToRepos(): Unit = goTo(s"${server.host}/#/repos")
-  def goToRepo(id: Int): Unit = goTo(s"${server.host}/#/repos/$id")
-  def goToForm(): Unit = goTo(s"${server.host}/#/form")
+  def goToAbout(): Unit = goToRoute("/about")
+  def goToRepos(): Unit = goToRoute("/repos")
+  def goToRepo(id: Int): Unit = goToRoute(s"/repos/$id")
+  def goToForm(): Unit = goToRoute("/form")
+
+  def goToRoute(route: String): Unit = {
+    val matcher: Matcher = Pattern.compile("""^([^#]+#).*""").matcher(currentUrl)
+    val baseUrl = if (matcher.matches()) {
+      matcher.group(1)
+    } else {
+      server.host + "/#"
+    }
+    goTo(baseUrl + route)
+  }
 
   def itShouldDisplayAbout(): Unit = itShouldDisplay("about")
   def itShouldDisplayRepos(): Unit = itShouldDisplay("repos")

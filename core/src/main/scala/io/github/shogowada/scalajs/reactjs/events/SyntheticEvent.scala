@@ -1,5 +1,6 @@
 package io.github.shogowada.scalajs.reactjs.events
 
+import org.scalajs.dom.raw.HTMLElement
 import org.scalajs.dom.{DataTransfer, EventTarget, TouchList}
 
 import scala.scalajs.js
@@ -45,6 +46,11 @@ trait CompositionSyntheticEvent extends SyntheticEvent {
 @js.native
 trait FocusSyntheticEvent extends SyntheticEvent {
   val relatedTarget: EventTarget = js.native
+}
+
+@js.native
+trait FormSyntheticEvent[Element <: HTMLElement] extends SyntheticEvent {
+  val target: Element = js.native
 }
 
 @js.native
