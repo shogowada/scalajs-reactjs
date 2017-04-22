@@ -11,7 +11,7 @@ object BaseTest {
   val webDriver = {
     val capabilities = new DesiredCapabilities()
     capabilities.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.IGNORE)
-    new ChromeDriver()
+    new ChromeDriver(capabilities)
   }
 
   Runtime.getRuntime.addShutdownHook(new Thread(() => webDriver.quit()))
