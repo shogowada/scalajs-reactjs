@@ -4,9 +4,6 @@ import java.util.regex.{Matcher, Pattern}
 
 import io.github.shogowada.scalajs.reactjs.example.{BaseTest, TestTargetServers}
 import org.openqa.selenium.Alert
-import org.openqa.selenium.support.ui.WebDriverWait
-
-import scala.util.Try
 
 class RoutingTest extends BaseTest {
 
@@ -94,13 +91,13 @@ class RoutingTest extends BaseTest {
           }
 
           "when I accept the confirmation" - {
-            tryUntilSucceeds(webDriver.switchTo().alert().accept())
+            webDriver.switchTo().alert().accept()
 
             itShouldDisplayAbout()
           }
 
           "when I dismiss the confirmation" - {
-            tryUntilSucceeds(webDriver.switchTo().alert().dismiss())
+            webDriver.switchTo().alert().dismiss()
 
             itShouldDisplayForm()
           }
@@ -153,12 +150,5 @@ class RoutingTest extends BaseTest {
     if (safeToLeaveCheckBox.isSelected != confirm) {
       clickOn(safeToLeaveCheckBox)
     }
-    tryUntilSucceeds(safeToLeaveCheckBox.isSelected == confirm)
-  }
-
-  def tryUntilSucceeds(action: => Unit): Unit = {
-    new WebDriverWait(webDriver, 2).until((_) => {
-      Try(action).isSuccess
-    })
   }
 }
