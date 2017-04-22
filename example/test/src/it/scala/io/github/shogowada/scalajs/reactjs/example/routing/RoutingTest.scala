@@ -1,7 +1,12 @@
 package io.github.shogowada.scalajs.reactjs.example.routing
 
+import java.util.regex.{Matcher, Pattern}
+
 import io.github.shogowada.scalajs.reactjs.example.{BaseTest, TestTargetServers}
 import org.openqa.selenium.Alert
+import org.openqa.selenium.support.ui.WebDriverWait
+
+import scala.util.Try
 
 class RoutingTest extends BaseTest {
 
@@ -89,13 +94,13 @@ class RoutingTest extends BaseTest {
           }
 
           "when I accept the confirmation" - {
-            webDriver.switchTo().alert().accept()
+            tryUntilSucceeds(webDriver.switchTo().alert().accept())
 
             itShouldDisplayAbout()
           }
 
           "when I dismiss the confirmation" - {
-            webDriver.switchTo().alert().dismiss()
+            tryUntilSucceeds(webDriver.switchTo().alert().dismiss())
 
             itShouldDisplayForm()
           }
@@ -114,10 +119,21 @@ class RoutingTest extends BaseTest {
     }
   }
 
-  def goToAbout(): Unit = goTo(s"${server.host}/#/about")
-  def goToRepos(): Unit = goTo(s"${server.host}/#/repos")
-  def goToRepo(id: Int): Unit = goTo(s"${server.host}/#/repos/$id")
-  def goToForm(): Unit = goTo(s"${server.host}/#/form")
+  def goToAbout(): Unit = goToRoute("/about")
+  def goToRepos(): Unit = goToRoute("/repos")
+  def goToRepo(id: Int): Unit = goToRoute(s"/repos/$id")
+  def goToForm(): Unit = goToRoute("/form")
+
+  def goToRoute(route: String): Unit = {
+    var matcher: Matcher = Pattern.compile("""^([^#]+#).*""").matcher(currentUrl)
+    val baseUrl = if (matcher.matches()) {
+      matcher.group(1)
+    } else {
+      server.host + "/#"
+    }
+    println(baseUrl + route)
+    goTo(baseUrl + route)
+  }
 
   def itShouldDisplayAbout(): Unit = itShouldDisplay("about")
   def itShouldDisplayRepos(): Unit = itShouldDisplay("repos")
@@ -138,5 +154,12 @@ class RoutingTest extends BaseTest {
     if (safeToLeaveCheckBox.isSelected != confirm) {
       clickOn(safeToLeaveCheckBox)
     }
+    tryUntilSucceeds(safeToLeaveCheckBox.isSelected == confirm)
+  }
+
+  def tryUntilSucceeds(action: => Unit): Unit = {
+    new WebDriverWait(webDriver, 2).until((_) => {
+      Try(action).isSuccess
+    })
   }
 }
