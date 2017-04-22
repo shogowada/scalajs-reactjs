@@ -125,13 +125,12 @@ class RoutingTest extends BaseTest {
   def goToForm(): Unit = goToRoute("/form")
 
   def goToRoute(route: String): Unit = {
-    var matcher: Matcher = Pattern.compile("""^([^#]+#).*""").matcher(currentUrl)
+    val matcher: Matcher = Pattern.compile("""^([^#]+#).*""").matcher(currentUrl)
     val baseUrl = if (matcher.matches()) {
       matcher.group(1)
     } else {
       server.host + "/#"
     }
-    println(baseUrl + route)
     goTo(baseUrl + route)
   }
 
