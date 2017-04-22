@@ -4,10 +4,11 @@ import io.github.shogowada.scalajs.reactjs.React.Render
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMAttributes.Type.AS_IS
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements.ReactClassElementSpec
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
-import io.github.shogowada.scalajs.reactjs.elements.{ReactElement, ReactHTMLElement}
+import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import io.github.shogowada.scalajs.reactjs.events._
 import io.github.shogowada.statictags.AttributeValueType.AttributeValueType
 import io.github.shogowada.statictags._
+import org.scalajs.dom.raw.HTMLElement
 
 import scala.language.implicitConversions
 import scala.scalajs.js
@@ -218,7 +219,7 @@ trait VirtualDOM extends StaticTags {
     }
 
     case class RefAttributeSpec(name: String) extends AttributeSpec {
-      def :=[T <: ReactHTMLElement](callback: js.Function1[T, _]): Attribute[js.Function1[T, _]] = {
+      def :=[T <: HTMLElement](callback: js.Function1[T, _]): Attribute[js.Function1[T, _]] = {
         Attribute(name, callback, AS_IS)
       }
     }

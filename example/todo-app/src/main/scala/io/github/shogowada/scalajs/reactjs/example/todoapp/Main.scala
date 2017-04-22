@@ -2,9 +2,10 @@ package io.github.shogowada.scalajs.reactjs.example.todoapp
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
-import io.github.shogowada.scalajs.reactjs.events.{InputFormSyntheticEvent, SyntheticEvent}
+import io.github.shogowada.scalajs.reactjs.events.{FormSyntheticEvent, SyntheticEvent}
 import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
+import org.scalajs.dom.raw.HTMLInputElement
 
 import scala.scalajs.js
 import scala.scalajs.js.JSApp
@@ -96,7 +97,7 @@ object TodoApp {
   )
 
   private def handleChange(self: Self) =
-    (e: InputFormSyntheticEvent) => {
+    (e: FormSyntheticEvent[HTMLInputElement]) => {
       // Cache the value because React reuses the event object.
       val newText = e.target.value
       // It is a syntactic sugar for setState((prevState: State) => prevState.copy(text = newText))

@@ -2,10 +2,11 @@ package io.github.shogowada.scalajs.reactjs.example.interactive.helloworld
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
-import io.github.shogowada.scalajs.reactjs.events.{InputFormSyntheticEvent, RadioFormSyntheticEvent}
+import io.github.shogowada.scalajs.reactjs.events.FormSyntheticEvent
 import io.github.shogowada.scalajs.reactjs.example.interactive.helloworld.LetterCase.{DEFAULT, LOWER_CASE, LetterCase, UPPER_CASE}
 import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
+import org.scalajs.dom.raw.HTMLInputElement
 
 import scala.scalajs.js.JSApp
 
@@ -41,7 +42,7 @@ object LetterCaseRadioBox {
   )
 
   private def onChange(self: Self) =
-    (event: RadioFormSyntheticEvent) => {
+    (event: FormSyntheticEvent[HTMLInputElement]) => {
       if (event.target.checked) {
         self.props.wrapped.onChecked()
       }
@@ -95,7 +96,7 @@ object InteractiveHelloWorld {
   }
 
   private def onChange(self: Self) =
-    (event: InputFormSyntheticEvent) => {
+    (event: FormSyntheticEvent[HTMLInputElement]) => {
       val name = event.target.value
       self.setState(_.copy(name = name))
     }

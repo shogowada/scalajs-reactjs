@@ -1,13 +1,14 @@
 package io.github.shogowada.scalajs.reactjs.example.routing
 
-import io.github.shogowada.scalajs.reactjs.React.{Self, Props}
+import io.github.shogowada.scalajs.reactjs.React.{Props, Self}
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
-import io.github.shogowada.scalajs.reactjs.events.CheckBoxFormSyntheticEvent
+import io.github.shogowada.scalajs.reactjs.events.FormSyntheticEvent
 import io.github.shogowada.scalajs.reactjs.router.dom.RouterDOM._
 import io.github.shogowada.scalajs.reactjs.router.{RouterProps, WithRouter}
 import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
+import org.scalajs.dom.raw.HTMLInputElement
 
 import scala.scalajs.js.JSApp
 
@@ -133,7 +134,7 @@ object Form {
               ^.id := "confirm-before-leave",
               ^.`type`.checkbox,
               ^.checked := self.state.confirmBeforeLeave,
-              ^.onChange := ((event: CheckBoxFormSyntheticEvent) => {
+              ^.onChange := ((event: FormSyntheticEvent[HTMLInputElement]) => {
                 val checked = event.target.checked
                 self.setState(State(confirmBeforeLeave = checked))
               })
