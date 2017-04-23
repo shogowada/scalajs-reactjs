@@ -44,11 +44,11 @@ val reactClass: ReactClass = React.createClass[Unit, Unit]( // If you don't have
 )
 ```
 
-It supports [all the functions `React.Component` supports](https://facebook.github.io/react/docs/react-component.html) except `defaultProps`.
+In addition to `render` function, it also supports [all the functions `React.Component` supports](https://facebook.github.io/react/docs/react-component.html) except `defaultProps`.
 
-The first argument of each React function must be `Self[WrappedProps, State]`, props must have type `Props[WrappedProps]`, and states must have type `State`.
+The first argument of each function must be `Self[WrappedProps, State]`, props must have type `Props[WrappedProps]`, and states must have type `State`.
 
-For example, [`componentWillUpdate(nextProps, nextState)`](https://facebook.github.io/react/docs/react-component.html#componentwillupdate) will be `componentWillUpdate(self: Self[WrappedProps, State], nextProps: Props[WrappedProps], nextState: State): Unit`.
+For example, [`componentWillUpdate(nextProps, nextState)` function](https://facebook.github.io/react/docs/react-component.html#componentwillupdate) will be `componentWillUpdate(self: Self[WrappedProps, State], nextProps: Props[WrappedProps], nextState: State): Unit`:
 
 ```scala
 case class WrappedProps(/* ... */)
@@ -137,7 +137,7 @@ val reactClass = React.createClass[Unit, State](
 )
 
 def onChange(self: Self[Unit, State]) = // Use a higher-order function (a function returning a function)
-  (event: InputFormSyntheticEvent) => {
+  (event: FormSyntheticEvent[HTMLInputElement]) => {
     val newText = event.target.value // Cache the value because React reuses events
     self.setState(_.copy(text = newText)) // Shortcut for self.setState((prevState: State) => prevState.copy(text = newText))
   }
