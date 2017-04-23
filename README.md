@@ -31,7 +31,7 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import org.scalajs.dom
 
 val mountNode = dom.document.getElementById("mount-node")
-ReactDOM.render(<.div(^.id := "hello-world")(s"Hello, World!"), mountNode)
+ReactDOM.render(<.div(^.id := "hello-world")("Hello, World!"), mountNode)
 ```
 
 ## How to Use
