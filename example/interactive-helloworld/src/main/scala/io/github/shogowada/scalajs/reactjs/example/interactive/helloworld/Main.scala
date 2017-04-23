@@ -10,43 +10,11 @@ import org.scalajs.dom.raw.HTMLInputElement
 
 import scala.scalajs.js.JSApp
 
-object LetterCase {
-  sealed class LetterCase(val name: String)
-
-  case object DEFAULT extends LetterCase("Default")
-  case object LOWER_CASE extends LetterCase("Lower Case")
-  case object UPPER_CASE extends LetterCase("Upper Case")
-
-  val ALL = Seq(DEFAULT, LOWER_CASE, UPPER_CASE)
-}
-
-object LetterCaseRadioBox {
-  case class WrappedProps(letterCase: LetterCase, checked: Boolean, onChecked: () => Unit)
-
-  type Self = React.Self[WrappedProps, Unit]
-
-  def apply() = reactClass
-
-  private lazy val reactClass = React.createClass[WrappedProps, Unit](
-    render = (self) =>
-      <.span()(
-        <.input(
-          ^.`type`.radio,
-          ^.name := "letter-case",
-          ^.value := self.props.wrapped.letterCase.name,
-          ^.checked := self.props.wrapped.checked,
-          ^.onChange := onChange(self)
-        )(),
-        self.props.wrapped.letterCase.name
-      )
-  )
-
-  private def onChange(self: Self) =
-    (event: FormSyntheticEvent[HTMLInputElement]) => {
-      if (event.target.checked) {
-        self.props.wrapped.onChecked()
-      }
-    }
+object Main extends JSApp {
+  def main(): Unit = {
+    val mountNode = dom.document.getElementById("mount-node")
+    ReactDOM.render(<(InteractiveHelloWorld()).empty, mountNode)
+  }
 }
 
 object InteractiveHelloWorld {
@@ -63,7 +31,6 @@ object InteractiveHelloWorld {
       name = "whoever you are",
       letterCase = DEFAULT
     ),
-
     render = (self) =>
       <.div()(
         createNameInput(self),
@@ -109,9 +76,41 @@ object InteractiveHelloWorld {
     }
 }
 
-object Main extends JSApp {
-  def main(): Unit = {
-    val mountNode = dom.document.getElementById("mount-node")
-    ReactDOM.render(<(InteractiveHelloWorld()).empty, mountNode)
-  }
+object LetterCase {
+  sealed class LetterCase(val name: String)
+
+  case object DEFAULT extends LetterCase("Default")
+  case object LOWER_CASE extends LetterCase("Lower Case")
+  case object UPPER_CASE extends LetterCase("Upper Case")
+
+  val ALL = Seq(DEFAULT, LOWER_CASE, UPPER_CASE)
+}
+
+object LetterCaseRadioBox {
+  case class WrappedProps(letterCase: LetterCase, checked: Boolean, onChecked: () => Unit)
+
+  type Self = React.Self[WrappedProps, Unit]
+
+  def apply() = reactClass
+
+  private lazy val reactClass = React.createClass[WrappedProps, Unit](
+    (self) =>
+      <.span()(
+        <.input(
+          ^.`type`.radio,
+          ^.name := "letter-case",
+          ^.value := self.props.wrapped.letterCase.name,
+          ^.checked := self.props.wrapped.checked,
+          ^.onChange := onChange(self)
+        )(),
+        self.props.wrapped.letterCase.name
+      )
+  )
+
+  private def onChange(self: Self) =
+    (event: FormSyntheticEvent[HTMLInputElement]) => {
+      if (event.target.checked) {
+        self.props.wrapped.onChecked()
+      }
+    }
 }

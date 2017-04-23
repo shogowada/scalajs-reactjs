@@ -85,7 +85,7 @@ object AddTodoComponent {
   def apply() = reactClass
 
   private lazy val reactClass = React.createClass[WrappedProps, Unit](
-    render = (self) => {
+    (self) => {
       var input: HTMLInputElement = null
       <.div()(
         <.form(

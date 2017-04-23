@@ -65,7 +65,7 @@ object TextComponent {
   def apply() = reactClass
 
   private lazy val reactClass = React.createClass[WrappedProps, Unit](
-    render = (self) =>
+    (self) =>
       <.div()(
         <.input(
           ^.value := self.props.wrapped.text,

@@ -42,7 +42,7 @@ object App {
   def apply() = WithRouter(reactClass)
 
   private lazy val reactClass = React.createClass[Unit, Unit](
-    render = (self) =>
+    (self) =>
       <.div()(
         <.h1()("React Router Tutorial"),
         Links(),
@@ -110,7 +110,7 @@ object Repo extends RouterProps {
   def apply() = reactClass
 
   private lazy val reactClass = React.createClass[Unit, Unit](
-    render = (self) => <.div(^.id := s"repo-${id(self)}")(s"Repo ${id(self)}")
+    (self) => <.div(^.id := s"repo-${id(self)}")(s"Repo ${id(self)}")
   )
 }
 

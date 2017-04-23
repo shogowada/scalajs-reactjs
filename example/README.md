@@ -40,7 +40,7 @@ Use `React.createClass[WrappedProps, State]` to create React classes (we will ex
 
 ```scala
 val reactClass: ReactClass = React.createClass[Unit, Unit]( // If you don't have props or state, use Unit.
-  render = (self) => <.div()("Hello, World!")
+  (self) => <.div()("Hello, World!")
 )
 ```
 
@@ -49,6 +49,19 @@ It supports [all the functions `React.Component` supports](https://facebook.gith
 The first argument of each React function must be `Self[WrappedProps, State]`, props must have type `Props[WrappedProps]`, and states must have type `State`.
 
 For example, [`componentWillUpdate(nextProps, nextState)`](https://facebook.github.io/react/docs/react-component.html#componentwillupdate) will be `componentWillUpdate(self: Self[WrappedProps, State], nextProps: Props[WrappedProps], nextState: State): Unit`.
+
+```scala
+case class WrappedProps(/* ... */)
+case class State(/* ... */)
+
+type Self = React.Self[WrappedProps, State]
+type Props = React.Props[WrappedProps]
+
+val reactClass: ReactClass = React.createClass[WrappedProps, State](
+  componentWillUpdate = (self: Self, nextProps: Props, nextState: State) => {/* do something */},
+  render = (self: Self) => <.div()("Hello, World!")
+)
+```
 
 `Self[WrappedProps, State]` is equivalent of `this` in React, so you can do things like `self.props.children` or `self.setState(State(foo = "bar"))`. Unlike React, we are just giving it as input of the functions rather than class members.
 
@@ -79,7 +92,7 @@ While many want to use case classes as props, React requires props to be a plain
 case class WrappedProps(foo: String, bar: Int)
 
 val reactClass = React.createClass[WrappedProps, Unit](
-  render = (self) =>
+  (self) =>
     <.div()(
       s"foo: ${self.props.wrapped.foo}",
       <.br.empty,

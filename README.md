@@ -13,33 +13,25 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
 
-object HelloWorld {
-  case class WrappedProps(name: String)
+case class WrappedProps(name: String)
 
-  private lazy val reactClass = React.createClass[WrappedProps, Unit](
-    render = (self) => <.div(^.id := "hello-world")(s"Hello, ${self.props.wrapped.name}!")
-  )
-
-  def apply() = reactClass
-}
+val reactClass = React.createClass[WrappedProps, Unit](
+  (self) => <.div(^.id := "hello-world")(s"Hello, ${self.props.wrapped.name}!")
+)
 
 val mountNode = dom.document.getElementById("mount-node")
-ReactDOM.render(<(HelloWorld())(^.wrapped := HelloWorld.WrappedProps("World"))(), mountNode)
+ReactDOM.render(<(reactClass)(^.wrapped := WrappedProps("World"))(), mountNode)
 ```
 
-You can also render with just a function:
+You can also directly render without creating a React class:
 
 ```scala
 import io.github.shogowada.scalajs.reactjs.ReactDOM
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import org.scalajs.dom
 
-object HelloWorld {
-  def apply(name: String) = <.div(^.id := "hello-world")(s"Hello, ${name}!")
-}
-
 val mountNode = dom.document.getElementById("mount-node")
-ReactDOM.render(HelloWorld("World"), mountNode)
+ReactDOM.render(<.div(^.id := "hello-world")(s"Hello, World!"), mountNode)
 ```
 
 ## How to Use

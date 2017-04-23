@@ -12,7 +12,7 @@ val JettyVersion = "9.+"
 val SeleniumVersion = "[3.4.0,4.0.0["
 val ScalaTestVersion = "[3.1.0,4.0.0["
 
-crossScalaVersions := Seq("2.12.1")
+crossScalaVersions := Seq("2.12.2")
 
 publishTo := {
   val nexus = "https://oss.sonatype.org/"

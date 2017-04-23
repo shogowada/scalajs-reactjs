@@ -116,7 +116,7 @@ object TodoApp {
 }
 
 object TodoList {
-  // Use a pure function to render
+  // Use a function to render
   def apply(items: Seq[Item]): ReactElement =
     <.ul()(items.map(item => <.li(^.key := item.id)(item.text)))
 }
