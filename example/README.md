@@ -151,3 +151,4 @@ Sure, you can! All the projects in this folder are fully working examples, but h
 - [Routing](/example/routing/src/main/scala/io/github/shogowada/scalajs/reactjs/example/routing/Main.scala)
 - [Redux](/example/todo-app-redux/src/main/scala/io/github/shogowada/scalajs/reactjs/example/todoappredux)
 - [Redux DevTools](/example/redux-devtools/src/main/scala/io/github/shogowada/scalajs/reactjs/example/redux/devtools/Main.scala)
+- [Redux Middleware](./example/redux-middleware/src/main/scala/io/github/shogowada/scalajs/reactjs/example/redux/middleware/Main.scala)

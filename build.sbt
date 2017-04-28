@@ -26,7 +26,7 @@ publishArtifact := false
 val commonSettings = Seq(
   organization := "io.github.shogowada",
   name := "scalajs-reactjs",
-  version := "0.11.0",
+  version := "0.12.0",
   licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT")),
   homepage := Some(url("https://github.com/shogowada/scalajs-reactjs")),
   scalaVersion := "2.12.1",
@@ -184,6 +184,14 @@ lazy val exampleReduxDevTools = project.in(file("example") / "redux-devtools")
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core, redux, reduxDevTools)
 
+lazy val exampleReduxMiddleware = project.in(file("example") / "redux-middleware")
+    .settings(exampleCommonSettings: _*)
+    .settings(
+      name += "-redux-middleware"
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core, redux, reduxDevTools)
+
 lazy val exampleRouting = project.in(file("example") / "routing")
     .settings(exampleCommonSettings: _*)
     .settings(
@@ -235,6 +243,7 @@ lazy val exampleTest = project.in(file("example") / "test")
         s"-Dtarget.path.interactive-helloworld=${(crossTarget in exampleInteractiveHelloWorld).value}",
         s"-Dtarget.path.lifecycle=${(crossTarget in exampleLifecycle).value}",
         s"-Dtarget.path.redux-devtools=${(crossTarget in exampleReduxDevTools).value}",
+        s"-Dtarget.path.redux-middleware=${(crossTarget in exampleReduxMiddleware).value}",
         s"-Dtarget.path.routing=${(crossTarget in exampleRouting).value}",
         s"-Dtarget.path.style=${(crossTarget in exampleStyle).value}",
         s"-Dtarget.path.todo-app=${(crossTarget in exampleTodoApp).value}",
@@ -246,6 +255,7 @@ lazy val exampleTest = project.in(file("example") / "test")
           (webpack in fastOptJS in Compile in exampleInteractiveHelloWorld).value,
           (webpack in fastOptJS in Compile in exampleLifecycle).value,
           (webpack in fastOptJS in Compile in exampleReduxDevTools).value,
+          (webpack in fastOptJS in Compile in exampleReduxMiddleware).value,
           (webpack in fastOptJS in Compile in exampleRouting).value,
           (webpack in fastOptJS in Compile in exampleStyle).value,
           (webpack in fastOptJS in Compile in exampleTodoApp).value,
