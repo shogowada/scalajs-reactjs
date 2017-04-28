@@ -15,6 +15,11 @@ import scala.concurrent.Future
 import scala.scalajs.js.JSApp
 import scala.util.{Failure, Success}
 
+/*
+* This example shows how to use Redux middleware facade.
+* If you are not yet familiar with middlewares, take a look at http://redux.js.org/docs/advanced/Middleware.html.
+* */
+
 case class State(
     result: Int,
     snapshot: Option[Int],
@@ -59,6 +64,9 @@ object Reducer {
 }
 
 object Middleware {
+  /*
+  * This middleware doubles all the additions.
+  * */
   val doubleAddition = (store: Store[State]) => (next: Dispatch) => (action: Any) => {
     action match {
       case action: Add =>
@@ -68,6 +76,10 @@ object Middleware {
     }
   }
 
+  /*
+  * This middleware takes a snapshot before every subtraction.
+  * It shows how to get current state from the store.
+  * */
   val snapshotBeforeSubtraction = (store: Store[State]) => (next: Dispatch) => (action: Any) => {
     action match {
       case action: Subtract =>
@@ -77,6 +89,10 @@ object Middleware {
     }
   }
 
+  /*
+  * This middleware resolves futures and call the next dispatcher with the result.
+  * If it failed, it dispatches Error action.
+  * */
   val futureAction = (store: Store[State]) => (next: Dispatch) => (action: Any) => {
     action match {
       case futureAction: Future[Any] =>
@@ -91,6 +107,10 @@ object Middleware {
 
 object Main extends JSApp {
   def main(): Unit = {
+    /*
+    * Use Redux.applyMiddleware to create an enhancer for middlewares.
+    * You can also use them with ReduxDevTools.composeWithDevTools to enable React DevTools.
+    * */
     val store = Redux.createStore(
       Reducer.reduce,
       ReduxDevTools.composeWithDevTools(

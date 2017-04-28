@@ -40,10 +40,10 @@ ReactDOM.render(<.div(^.id := "hello-world")("Hello, World!"), mountNode)
 2. Depend on the libraries.
    ```
    libraryDependencies ++= Seq(
-     "io.github.shogowada" %%% "scalajs-reactjs" % "0.11.0", // For react facade
-     "io.github.shogowada" %%% "scalajs-reactjs-router-dom" % "0.11.0", // Optional. For react-router-dom facade
-     "io.github.shogowada" %%% "scalajs-reactjs-redux" % "0.11.0", // Optional. For react-redux facade
-     "io.github.shogowada" %%% "scalajs-reactjs-redux-devtools" % "0.11.0" // Optional. For redux-devtools facade
+     "io.github.shogowada" %%% "scalajs-reactjs" % "0.12.0", // For react facade
+     "io.github.shogowada" %%% "scalajs-reactjs-router-dom" % "0.12.0", // Optional. For react-router-dom facade
+     "io.github.shogowada" %%% "scalajs-reactjs-redux" % "0.12.0", // Optional. For react-redux facade
+     "io.github.shogowada" %%% "scalajs-reactjs-redux-devtools" % "0.12.0" // Optional. For redux-devtools facade
    )
    ```
 
@@ -54,4 +54,5 @@ ReactDOM.render(<.div(^.id := "hello-world")("Hello, World!"), mountNode)
 - [Routing](./example/routing/src/main/scala/io/github/shogowada/scalajs/reactjs/example/routing/Main.scala)
 - [Redux](./example/todo-app-redux/src/main/scala/io/github/shogowada/scalajs/reactjs/example/todoappredux)
 - [Redux DevTools](./example/redux-devtools/src/main/scala/io/github/shogowada/scalajs/reactjs/example/redux/devtools/Main.scala)
+- [Redux Middleware](./example/redux-devtools/src/main/scala/io/github/shogowada/scalajs/reactjs/example/redux/middleware/Main.scala)
 - [I don't like `<` and `^`. How can I change them?](./example/custom-virtual-dom)
