@@ -22,22 +22,28 @@ object Action {
 trait Action
 
 @js.native
-trait Store extends js.Object
+trait NativeStore extends js.Object {
+  def getState(): js.Object
+}
+
+case class Store[State](native: NativeStore) {
+  def getState: State = native.asInstanceOf[js.Dynamic].getState().asInstanceOf[State]
+}
 
 object Redux {
   type NativeReducer = js.Function2[js.Object, js.Dynamic, js.Object]
-  type NativeEnhancer = js.Function1[js.Function2[NativeReducer, js.Object, Store], js.Function2[NativeReducer, js.Object, Store]]
+  type NativeEnhancer = js.Function1[js.Function2[NativeReducer, js.Object, NativeStore], js.Function2[NativeReducer, js.Object, NativeStore]]
   type NativeDispatch = js.Function1[js.Dynamic, js.Dynamic]
   type Dispatch = Action => Action
 
-  def createStore[State](reducer: (Option[State], Action) => State): Store =
+  def createStore[State](reducer: (Option[State], Action) => State): Store[State] =
     createStore(reducer, null)
 
   def createStore[State](
       reducer: (Option[State], Action) => State,
       enhancer: NativeEnhancer
-  ): Store = {
-    NativeRedux.createStore((state: js.Object, nativeAction: js.Dynamic) => {
+  ): Store[State] = {
+    val nativeStore = NativeRedux.createStore((state: js.Object, nativeAction: js.Dynamic) => {
       if (js.isUndefined(state) || state == null) {
         reducer(None, null).asInstanceOf[js.Object]
       } else {
@@ -49,11 +55,12 @@ object Redux {
         }
       }
     }, enhancer)
+    Store(nativeStore)
   }
 }
 
 @js.native
 @JSImport("redux", JSImport.Namespace)
 object NativeRedux extends js.Object {
-  def createStore(reducer: NativeReducer, enhancer: NativeEnhancer): Store = js.native
+  def createStore(reducer: NativeReducer, enhancer: NativeEnhancer): NativeStore = js.native
 }

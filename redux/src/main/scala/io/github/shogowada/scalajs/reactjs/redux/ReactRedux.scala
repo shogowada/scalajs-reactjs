@@ -23,7 +23,7 @@ object ReactRedux {
 
   object ReactReduxVirtualDOMAttributes {
     case class StoreAttributeSpec(name: String) extends AttributeSpec {
-      def :=(store: Store) = Attribute(name, store, AS_IS)
+      def :=[State](store: Store[State]) = Attribute(name, store.native, AS_IS)
     }
   }
 
