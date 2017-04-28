@@ -3,4 +3,4 @@ package io.github.shogowada.scalajs.reactjs.classes
 import scala.scalajs.js
 
 @js.native
-class ReactClass extends js.Object
+trait ReactClass extends js.Object

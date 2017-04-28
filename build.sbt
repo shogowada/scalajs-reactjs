@@ -29,7 +29,7 @@ val commonSettings = Seq(
   version := "0.12.0",
   licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT")),
   homepage := Some(url("https://github.com/shogowada/scalajs-reactjs")),
-  scalaVersion := "2.12.1",
+  scalaVersion := "2.12.2",
   ivyScala := ivyScala.value.map {
     _.copy(overrideScalaVersion = true)
   },
