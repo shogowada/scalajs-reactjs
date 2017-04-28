@@ -9,4 +9,5 @@ import scala.scalajs.js.annotation.JSImport
 @JSImport("redux-devtools-extension", JSImport.Namespace)
 object ReduxDevTools extends js.Object {
   def devToolsEnhancer(): NativeEnhancer = js.native
+  def composeWithDevTools(enhancers: NativeEnhancer*): NativeEnhancer = js.native
 }

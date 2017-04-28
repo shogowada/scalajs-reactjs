@@ -44,7 +44,7 @@ object ReactRedux {
       selectorFactory: Dispatch => (ReduxState, OwnProps) => WrappedProps
   ): js.Function1[NativeDispatch, js.Function2[ReduxState, js.Dynamic, js.Any]] =
     (nativeDispatch: NativeDispatch) => {
-      val dispatch: Dispatch = dispatchFromNative(nativeDispatch)
+      val dispatch: Dispatch = ReduxInternal.dispatchFromNative(nativeDispatch)
       val selector = selectorFactory(dispatch)
       selectorToNative(selector)
     }
@@ -66,15 +66,6 @@ object ReactRedux {
     keys.foreach(key => clonedPlainObject.updateDynamic(key)(plainObject.selectDynamic(key)))
     clonedPlainObject
   }
-
-  private def dispatchFromNative(nativeDispatch: NativeDispatch): Dispatch =
-    (action: Action) => {
-      val nativeAction = Action.actionToNative(action)
-      val newNativeAction = nativeDispatch(nativeAction)
-      Action.actionFromNative(newNativeAction).getOrElse({
-        throw new IllegalStateException(s"Expected native action $newNativeAction to be wrapped")
-      })
-    }
 }
 
 @js.native
