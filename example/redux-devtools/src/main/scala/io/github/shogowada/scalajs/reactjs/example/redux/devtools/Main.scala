@@ -35,7 +35,7 @@ case class State(text: String)
 case class SetText(text: String) extends Action
 
 object Reducer {
-  def apply(maybeState: Option[State], action: Action): State =
+  def apply(maybeState: Option[State], action: Any): State =
     action match {
       case action: SetText => State(text = action.text)
       case _ => State(text = "")

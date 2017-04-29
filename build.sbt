@@ -1,7 +1,9 @@
 val CreateReactClassVersion = "^15.5.1"
+val HistoryVersion = "^4.6.1"
 val ReactVersion = "^15.5.3"
 val ReactReduxVersion = "^5.0.3"
 val ReactRouterVersion = "^4.0.0"
+val ReactRouterReduxVersion = "next"
 val ReduxVersion = "^3.6.0"
 val ReduxDevToolsVersion = "^2.13.0"
 val WebpackVersion = "^2.3.2"
@@ -26,7 +28,7 @@ publishArtifact := false
 val commonSettings = Seq(
   organization := "io.github.shogowada",
   name := "scalajs-reactjs",
-  version := "0.12.0",
+  version := "0.13.0",
   licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT")),
   homepage := Some(url("https://github.com/shogowada/scalajs-reactjs")),
   scalaVersion := "2.12.2",
@@ -74,6 +76,19 @@ lazy val core = project.in(file("core"))
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
 
+lazy val history = project.in(file("history"))
+    .settings(commonSettings: _*)
+    .settings(
+      name := "scalajs-history",
+      npmDependencies in Compile ++= Seq(
+        "history" -> HistoryVersion
+      ),
+      (webpack in(Compile, fastOptJS)) := Seq(),
+      (webpack in(Compile, fullOptJS)) := Seq(),
+      publishArtifact := true
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+
 lazy val router = project.in(file("router"))
     .settings(commonSettings: _*)
     .settings(
@@ -86,7 +101,7 @@ lazy val router = project.in(file("router"))
       publishArtifact := true
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
-    .dependsOn(core)
+    .dependsOn(core, history)
 
 lazy val routerDom = project.in(file("router-dom"))
     .settings(commonSettings: _*)
@@ -130,6 +145,20 @@ lazy val reduxDevTools = project.in(file("redux-devtools"))
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core, redux)
+
+lazy val routerRedux = project.in(file("router-redux"))
+    .settings(commonSettings: _*)
+    .settings(
+      name += "-router-redux",
+      npmDependencies in Compile ++= Seq(
+        "react-router-redux" -> ReactRouterReduxVersion
+      ),
+      (webpack in(Compile, fastOptJS)) := Seq(),
+      (webpack in(Compile, fullOptJS)) := Seq(),
+      publishArtifact := true
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core, history, router, redux)
 
 val exampleCommonSettings = commonSettings ++ Seq(
   name += "-example",
@@ -192,13 +221,21 @@ lazy val exampleReduxMiddleware = project.in(file("example") / "redux-middleware
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core, redux, reduxDevTools)
 
-lazy val exampleRouting = project.in(file("example") / "routing")
+lazy val exampleRouter = project.in(file("example") / "router")
     .settings(exampleCommonSettings: _*)
     .settings(
-      name += "-routing"
+      name += "-router"
     )
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core, routerDom)
+
+lazy val exampleRouterRedux = project.in(file("example") / "router-redux")
+    .settings(exampleCommonSettings: _*)
+    .settings(
+      name += "-router-redux"
+    )
+    .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
+    .dependsOn(core, redux, routerDom, routerRedux, reduxDevTools)
 
 lazy val exampleStyle = project.in(file("example") / "style")
     .settings(exampleCommonSettings: _*)
@@ -244,7 +281,8 @@ lazy val exampleTest = project.in(file("example") / "test")
         s"-Dtarget.path.lifecycle=${(crossTarget in exampleLifecycle).value}",
         s"-Dtarget.path.redux-devtools=${(crossTarget in exampleReduxDevTools).value}",
         s"-Dtarget.path.redux-middleware=${(crossTarget in exampleReduxMiddleware).value}",
-        s"-Dtarget.path.routing=${(crossTarget in exampleRouting).value}",
+        s"-Dtarget.path.router=${(crossTarget in exampleRouter).value}",
+        s"-Dtarget.path.router-redux=${(crossTarget in exampleRouterRedux).value}",
         s"-Dtarget.path.style=${(crossTarget in exampleStyle).value}",
         s"-Dtarget.path.todo-app=${(crossTarget in exampleTodoApp).value}",
         s"-Dtarget.path.todo-app-redux=${(crossTarget in exampleTodoAppRedux).value}",
@@ -256,7 +294,8 @@ lazy val exampleTest = project.in(file("example") / "test")
           (webpack in fastOptJS in Compile in exampleLifecycle).value,
           (webpack in fastOptJS in Compile in exampleReduxDevTools).value,
           (webpack in fastOptJS in Compile in exampleReduxMiddleware).value,
-          (webpack in fastOptJS in Compile in exampleRouting).value,
+          (webpack in fastOptJS in Compile in exampleRouter).value,
+          (webpack in fastOptJS in Compile in exampleRouterRedux).value,
           (webpack in fastOptJS in Compile in exampleStyle).value,
           (webpack in fastOptJS in Compile in exampleTodoApp).value,
           (webpack in fastOptJS in Compile in exampleTodoAppRedux).value

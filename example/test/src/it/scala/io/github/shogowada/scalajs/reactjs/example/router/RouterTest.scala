@@ -1,13 +1,13 @@
-package io.github.shogowada.scalajs.reactjs.example.routing
+package io.github.shogowada.scalajs.reactjs.example.router
 
 import java.util.regex.{Matcher, Pattern}
 
 import io.github.shogowada.scalajs.reactjs.example.{BaseTest, TestTargetServers}
 import org.openqa.selenium.Alert
 
-class RoutingTest extends BaseTest {
+class RouterTest extends BaseTest {
 
-  val server = TestTargetServers.routing
+  val server = TestTargetServers.router
 
   "given I am at home page" - {
     go to server.host

@@ -1,5 +1,6 @@
 package io.github.shogowada.scalajs.reactjs.router
 
+import io.github.shogowada.scalajs.history.History
 import io.github.shogowada.scalajs.reactjs.React.Props
 
 trait RouterProps {
