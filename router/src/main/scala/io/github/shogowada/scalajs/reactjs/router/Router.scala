@@ -1,5 +1,6 @@
 package io.github.shogowada.scalajs.reactjs.router
 
+import io.github.shogowada.scalajs.history.History
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMAttributes.Type.AS_IS
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMAttributes.{ReactClassAttributeSpec, RenderAttributeSpec}
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements.ReactClassElementSpec

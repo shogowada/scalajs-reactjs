@@ -32,14 +32,14 @@ case class Snapshot(snapshot: Int) extends Action
 case class Error(throwable: Throwable) extends Action
 
 object Reducer {
-  def reduce(maybeState: Option[State], action: Action): State =
+  def reduce(maybeState: Option[State], action: Any): State =
     State(
       result = reduceResult(maybeState.map(_.result), action),
       snapshot = reduceSnapshot(maybeState.flatMap(_.snapshot), action),
       error = reduceError(maybeState.flatMap(_.error), action)
     )
 
-  def reduceResult(maybeResult: Option[Int], action: Action): Int = {
+  def reduceResult(maybeResult: Option[Int], action: Any): Int = {
     val result = maybeResult.getOrElse(0)
     action match {
       case action: Add => result + action.value
@@ -48,14 +48,14 @@ object Reducer {
     }
   }
 
-  def reduceSnapshot(maybeSnapshot: Option[Int], action: Action): Option[Int] = {
+  def reduceSnapshot(maybeSnapshot: Option[Int], action: Any): Option[Int] = {
     action match {
       case action: Snapshot => Option(action.snapshot)
       case _ => maybeSnapshot
     }
   }
 
-  def reduceError(maybeError: Option[Throwable], action: Action): Option[Throwable] = {
+  def reduceError(maybeError: Option[Throwable], action: Any): Option[Throwable] = {
     action match {
       case action: Error => Option(action.throwable)
       case _ => maybeError

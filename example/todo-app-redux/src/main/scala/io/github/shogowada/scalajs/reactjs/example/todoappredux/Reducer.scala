@@ -1,19 +1,17 @@
 package io.github.shogowada.scalajs.reactjs.example.todoappredux
 
-import io.github.shogowada.scalajs.reactjs.redux.Action
-
 /*
 * Reducer function has a signature of (Option[State], Action) => State.
 * If the state is absent, return an initial state.
 * */
 object Reducer {
-  def reduce(maybeState: Option[State], action: Action): State =
+  def reduce(maybeState: Option[State], action: Any): State =
     State(
       todos = reduceTodos(maybeState.map(_.todos), action),
       visibilityFilter = reduceVisibilityFilter(maybeState.map(_.visibilityFilter), action)
     )
 
-  private def reduceTodos(maybeTodos: Option[Seq[TodoItem]], action: Action): Seq[TodoItem] = {
+  private def reduceTodos(maybeTodos: Option[Seq[TodoItem]], action: Any): Seq[TodoItem] = {
     val todos = maybeTodos.getOrElse(Seq.empty)
     action match {
       case action: AddTodo => {
@@ -34,7 +32,7 @@ object Reducer {
     }
   }
 
-  private def reduceVisibilityFilter(maybeVisibilityFilter: Option[String], action: Action): String =
+  private def reduceVisibilityFilter(maybeVisibilityFilter: Option[String], action: Any): String =
     action match {
       case action: SetVisibilityFilter => action.filter
       case _ => maybeVisibilityFilter.getOrElse(VisibilityFilters.ShowAll)

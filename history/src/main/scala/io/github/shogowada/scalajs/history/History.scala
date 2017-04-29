@@ -1,4 +1,4 @@
-package io.github.shogowada.scalajs.reactjs.router
+package io.github.shogowada.scalajs.history
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
@@ -11,4 +11,12 @@ trait History extends js.Object {
   def go(delta: Int): Unit = js.native
   def goBack(): Unit = js.native
   def goForward(): Unit = js.native
+}
+
+@js.native
+@JSImport("history", JSImport.Namespace)
+object History extends js.Object {
+  def createBrowserHistory(): History = js.native
+  def createHashHistory(): History = js.native
+  def createMemoryHistory(): History = js.native
 }

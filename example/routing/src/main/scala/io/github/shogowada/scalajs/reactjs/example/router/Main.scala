@@ -1,4 +1,4 @@
-package io.github.shogowada.scalajs.reactjs.example.routing
+package io.github.shogowada.scalajs.reactjs.example.router
 
 import io.github.shogowada.scalajs.reactjs.React.{Props, Self}
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
