@@ -221,7 +221,7 @@ lazy val exampleReduxMiddleware = project.in(file("example") / "redux-middleware
     .enablePlugins(ScalaJSPlugin, ScalaJSBundlerPlugin)
     .dependsOn(core, redux, reduxDevTools)
 
-lazy val exampleRouter = project.in(file("example") / "routing")
+lazy val exampleRouter = project.in(file("example") / "router")
     .settings(exampleCommonSettings: _*)
     .settings(
       name += "-router"

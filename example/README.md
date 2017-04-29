@@ -148,7 +148,8 @@ def onChange(self: Self[Unit, State]) = // Use a higher-order function (a functi
 Sure, you can! All the projects in this folder are fully working examples, but here are some top picks:
 
 - [TODO App](/example/todo-app/src/main/scala/io/github/shogowada/scalajs/reactjs/example/todoapp/Main.scala)
-- [Routing](/example/routing/src/main/scala/io/github/shogowada/scalajs/reactjs/example/routing/Main.scala)
+- [Router](/example/routing/src/main/scala/io/github/shogowada/scalajs/reactjs/example/router/Main.scala)
 - [Redux](/example/todo-app-redux/src/main/scala/io/github/shogowada/scalajs/reactjs/example/todoappredux)
+- [Redux Middleware](/example/redux-middleware/src/main/scala/io/github/shogowada/scalajs/reactjs/example/redux/middleware/Main.scala)
+- [Router Redux](/example/router-redux/src/main/scala/io/github/shogowada/scalajs/reactjs/example/router/redux/Main.scala)
 - [Redux DevTools](/example/redux-devtools/src/main/scala/io/github/shogowada/scalajs/reactjs/example/redux/devtools/Main.scala)
-- [Redux Middleware](./example/redux-middleware/src/main/scala/io/github/shogowada/scalajs/reactjs/example/redux/middleware/Main.scala)
