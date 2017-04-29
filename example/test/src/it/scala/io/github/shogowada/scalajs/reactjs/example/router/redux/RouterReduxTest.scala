@@ -13,38 +13,57 @@ class RouterReduxTest extends BaseTest {
 
       thenIShouldBeOnRouteA()
 
-      "when I push route B" - {
-        pushRouteB()
+      "and I put text" - {
+        val textA = "text A"
+        textField(tagName("input")).value = textA
 
-        thenIShouldBeOnRouteB()
+        thenItShouldDisplay(textA)
 
-        "when I push route A again" - {
-          pushRouteA()
+        "when I push route B" - {
+          pushRouteB()
 
-          thenIShouldBeOnRouteA()
+          thenIShouldBeOnRouteB()
 
-          "when I push route B again" - {
-            pushRouteB()
+          thenItShouldDisplay("")
 
-            thenIShouldBeOnRouteB()
+          "and I put text" - {
+            val textB = "text B"
+            textField(tagName("input")).value = textB
 
-            "when I go -3" - {
-              clickOn(id("go-negative-3"))
+            thenItShouldDisplay(textB)
+
+            "when I push route A again" - {
+              pushRouteA()
 
               thenIShouldBeOnRouteA()
+              thenItShouldDisplay(textA)
+
+              "when I push route B again" - {
+                pushRouteB()
+
+                thenIShouldBeOnRouteB()
+                thenItShouldDisplay(textB)
+
+                "when I go -3" - {
+                  clickOn(id("go-negative-3"))
+
+                  thenIShouldBeOnRouteA()
+                  thenItShouldDisplay(textA)
+                }
+              }
             }
           }
-        }
 
-        "when I go back" - {
-          clickOn(id("go-back"))
+          "when I go back" - {
+            clickOn(id("go-back"))
 
-          thenIShouldBeOnRouteA()
+            thenIShouldBeOnRouteA()
 
-          "when I go forward" - {
-            clickOn(id("go-forward"))
+            "when I go forward" - {
+              clickOn(id("go-forward"))
 
-            thenIShouldBeOnRouteB()
+              thenIShouldBeOnRouteB()
+            }
           }
         }
       }
@@ -53,6 +72,14 @@ class RouterReduxTest extends BaseTest {
 
   def pushRouteA(): Unit = clickOn(id("push-route-a"))
   def pushRouteB(): Unit = clickOn(id("push-route-b"))
+
+  def thenItShouldDisplay(text: String): Unit = {
+    "then it should display" in {
+      eventually {
+        textField(tagName("input")).value should equal(text)
+      }
+    }
+  }
 
   def thenIShouldBeOnRouteA(): Unit = {
     "then I should be on route A" in {
