@@ -61,4 +61,4 @@ ReactDOM.render(<.div(^.id := "hello-world")("Hello, World!"), mountNode)
 
 ## Reusable Components
 
-- [ReactCrop](https://github.com/shogowada/scalajs-reactjs-image-crop)
+- [ReactCrop](https://github.com/shogowada/scalajs-reactjs-image-crop): Crop an image
