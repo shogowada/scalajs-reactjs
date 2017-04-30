@@ -2,7 +2,6 @@ package io.github.shogowada.scalajs.reactjs.router.redux
 
 import io.github.shogowada.scalajs.history.History
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements
-import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements.ReactClassElementSpec
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.redux.Redux.{Middleware, NativeMiddleware, Reducer}
 import io.github.shogowada.scalajs.reactjs.redux.{NativeAction, ReduxInternal}
@@ -27,7 +26,7 @@ object ReactRouterReduxAction extends js.Object {
 
 object ReactRouterRedux {
   implicit class RouterReduxVirtualDOMElements(elements: VirtualDOMElements) {
-    lazy val ConnectedRouter = ReactClassElementSpec(NativeReactRouterRedux.ConnectedRouter)
+    lazy val ConnectedRouter = elements(NativeReactRouterRedux.ConnectedRouter)
   }
 
   val routerReducer: Reducer[js.Object] =

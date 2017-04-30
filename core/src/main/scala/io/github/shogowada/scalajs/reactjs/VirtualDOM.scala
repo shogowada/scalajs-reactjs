@@ -16,8 +16,7 @@ import scala.scalajs.js.JSConverters._
 
 object VirtualDOM extends VirtualDOM
 
-trait EventVirtualDOMAttributes {
-
+object EventVirtualDOMAttributes {
   trait OnEventAttribute[Event <: SyntheticEvent] extends AttributeSpec {
     val name: String
 
@@ -30,58 +29,63 @@ trait EventVirtualDOMAttributes {
     }
   }
 
-  // Animation Events
   case class OnAnimationEventAttribute(name: String) extends OnEventAttribute[AnimationSyntheticEvent]
+  case class OnClipboardEventAttribute(name: String) extends OnEventAttribute[ClipboardSyntheticEvent]
+  case class OnCompositionEventAttribute(name: String) extends OnEventAttribute[CompositionSyntheticEvent]
+  case class OnFocusEventAttribute(name: String) extends OnEventAttribute[FocusSyntheticEvent]
+  case class OnFormEventAttribute[FormEvent <: FormSyntheticEvent[_]](name: String) extends OnEventAttribute[FormEvent]
+  case class OnImageEventAttribute(name: String) extends OnEventAttribute[ImageSyntheticEvent]
+  case class OnKeyboardEventAttribute(name: String) extends OnEventAttribute[KeyboardSyntheticEvent]
+  case class OnMediaEventAttribute(name: String) extends OnEventAttribute[MediaSyntheticEvent]
+  case class OnMouseEventAttribute(name: String) extends OnEventAttribute[MouseSyntheticEvent]
+  case class OnSelectionEventAttribute(name: String) extends OnEventAttribute[SelectionSyntheticEvent]
+  case class OnTouchEventAttribute(name: String) extends OnEventAttribute[TouchSyntheticEvent]
+  case class OnTransitionEventAttribute(name: String) extends OnEventAttribute[TransitionSyntheticEvent]
+  case class OnUIEventAttribute(name: String) extends OnEventAttribute[UISyntheticEvent]
+  case class OnWheelEventAttribute(name: String) extends OnEventAttribute[WheelSyntheticEvent]
+  case class OnErrorEventAttribute(name: String) extends OnEventAttribute[SyntheticEvent]
+}
 
+trait EventVirtualDOMAttributes {
+
+  import EventVirtualDOMAttributes._
+
+  // Animation Events
   lazy val onAnimationStart = OnAnimationEventAttribute("onAnimationStart")
   lazy val onAnimationEnd = OnAnimationEventAttribute("onAnimationEnd")
   lazy val onAnimationIteration = OnAnimationEventAttribute("onAnimationIteration")
 
   // Clipboard Events
-  case class OnClipboardEventAttribute(name: String) extends OnEventAttribute[ClipboardSyntheticEvent]
-
   lazy val onCopy = OnClipboardEventAttribute("onCopy")
   lazy val onCut = OnClipboardEventAttribute("onCut")
   lazy val onPaste = OnClipboardEventAttribute("onPaste")
 
   // Composition Events
-  case class OnCompositionEventAttribute(name: String) extends OnEventAttribute[CompositionSyntheticEvent]
-
   lazy val onCompositionEnd = OnCompositionEventAttribute("onCompositionEnd")
   lazy val onCompositionStart = OnCompositionEventAttribute("onCompositionStart")
   lazy val onCompositionUpdate = OnCompositionEventAttribute("onCompositionUpdate")
 
   // Focus Events
-  case class OnFocusEventAttribute(name: String) extends OnEventAttribute[FocusSyntheticEvent]
-
   lazy val onFocus = OnFocusEventAttribute("onFocus")
   lazy val onBlur = OnFocusEventAttribute("onBlur")
 
   // Form Events
-  case class OnFormEventAttribute[FormEvent <: FormSyntheticEvent[_]](name: String) extends OnEventAttribute[FormEvent]
-
   lazy val onChange = OnFormEventAttribute("onChange")
   lazy val onInput = OnFormEventAttribute("onInput")
   lazy val onSubmit = OnFormEventAttribute("onSubmit")
 
   // Image Events
-  case class OnImageEventAttribute(name: String) extends OnEventAttribute[ImageSyntheticEvent]
-
   lazy val onLoad = OnImageEventAttribute("onLoad")
 
   // onError conflicts with Media Events. Conflicts are treated specially at the bottom of this trait.
   // lazy val onError = OnImageEventAttribute("onError")
 
   // Keyboard Events
-  case class OnKeyboardEventAttribute(name: String) extends OnEventAttribute[KeyboardSyntheticEvent]
-
   lazy val onKeyDown = OnKeyboardEventAttribute("onKeyDown")
   lazy val onKeyPress = OnKeyboardEventAttribute("onKeyPress")
   lazy val onKeyUp = OnKeyboardEventAttribute("onKeyUp")
 
   // Media Events
-  case class OnMediaEventAttribute(name: String) extends OnEventAttribute[MediaSyntheticEvent]
-
   lazy val onAbort = OnMediaEventAttribute("onAbort")
   lazy val onCanPlay = OnMediaEventAttribute("onCanPlay")
   lazy val onCanPlayThrough = OnMediaEventAttribute("onCanPlayThrough")
@@ -108,8 +112,6 @@ trait EventVirtualDOMAttributes {
   lazy val onWaiting = OnMediaEventAttribute("onWaiting")
 
   // Mouse Events
-  case class OnMouseEventAttribute(name: String) extends OnEventAttribute[MouseSyntheticEvent]
-
   lazy val onClick = OnMouseEventAttribute("onClick")
   lazy val onContextMenu = OnMouseEventAttribute("onContextMenu")
   lazy val onDoubleClick = OnMouseEventAttribute("onDoubleClick")
@@ -130,44 +132,31 @@ trait EventVirtualDOMAttributes {
   lazy val onMouseUp = OnMouseEventAttribute("onMouseUp")
 
   // Selection Events
-  case class OnSelectionEventAttribute(name: String) extends OnEventAttribute[SelectionSyntheticEvent]
-
   lazy val onSelect = OnSelectionEventAttribute("onSelect")
 
   // Touch Events
-  case class OnTouchEventAttribute(name: String) extends OnEventAttribute[TouchSyntheticEvent]
-
   lazy val onTouchCancel = OnTouchEventAttribute("onTouchCancel")
   lazy val onTouchEnd = OnTouchEventAttribute("onTouchEnd")
   lazy val onTouchMove = OnTouchEventAttribute("onTouchMove")
   lazy val onTouchStart = OnTouchEventAttribute("onTouchStart")
 
   // Transition Events
-  case class OnTransitionEventAttribute(name: String) extends OnEventAttribute[TransitionSyntheticEvent]
-
   lazy val onTransitionEnd = OnTransitionEventAttribute("onTransitionEnd")
 
   // UI Events
-  case class OnUIEventAttribute(name: String) extends OnEventAttribute[UISyntheticEvent]
-
   lazy val onScroll = OnUIEventAttribute("onScroll")
 
   // Wheel Events
-  case class OnWheelEventAttribute(name: String) extends OnEventAttribute[WheelSyntheticEvent]
-
   lazy val onWheel = OnWheelEventAttribute("onWheel")
 
   // Events that conflicted with other events
-  case class OnErrorEventAttribute(name: String) extends OnEventAttribute[SyntheticEvent]
-
   lazy val onError = OnErrorEventAttribute("onError")
 }
 
 trait VirtualDOM extends StaticTags {
 
   class VirtualDOMElements extends Elements {
-    def apply(reactClass: ReactClass): ReactClassElementSpec =
-      ReactClassElementSpec(reactClass)
+    def apply(reactClass: ReactClass): ReactClassElementSpec = ReactClassElementSpec(reactClass)
   }
 
   object VirtualDOMElements {

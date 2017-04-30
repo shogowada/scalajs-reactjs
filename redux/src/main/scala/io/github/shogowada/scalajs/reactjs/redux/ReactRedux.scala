@@ -3,7 +3,6 @@ package io.github.shogowada.scalajs.reactjs.redux
 import io.github.shogowada.scalajs.reactjs.React
 import io.github.shogowada.scalajs.reactjs.React.Props
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMAttributes.Type.AS_IS
-import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements.ReactClassElementSpec
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.{VirtualDOMAttributes, VirtualDOMElements}
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.redux.ReactRedux.ReactReduxVirtualDOMAttributes.StoreAttributeSpec
@@ -18,7 +17,7 @@ object ReactRedux {
   import Redux.Dispatch
 
   implicit class ReactReduxVirtualDOMElements(elements: VirtualDOMElements) {
-    lazy val Provider = ReactClassElementSpec(NativeReactReduxProvider)
+    lazy val Provider = elements(NativeReactReduxProvider)
   }
 
   object ReactReduxVirtualDOMAttributes {

@@ -3,7 +3,6 @@ package io.github.shogowada.scalajs.reactjs.router
 import io.github.shogowada.scalajs.history.History
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMAttributes.Type.AS_IS
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMAttributes.{ReactClassAttributeSpec, RenderAttributeSpec}
-import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements.ReactClassElementSpec
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.{VirtualDOMAttributes, VirtualDOMElements}
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.statictags.{Attribute, AttributeSpec, BooleanAttributeSpec, StringAttributeSpec}
@@ -33,11 +32,11 @@ object NativeSwitch extends ReactClass
 
 trait Router {
   implicit class RouterVirtualDOMElements(elements: VirtualDOMElements) {
-    lazy val Prompt = ReactClassElementSpec(NativePrompt)
-    lazy val Redirect = ReactClassElementSpec(NativeRedirect)
-    lazy val Route = ReactClassElementSpec(NativeRoute)
-    lazy val Router = ReactClassElementSpec(NativeRouter)
-    lazy val Switch = ReactClassElementSpec(NativeSwitch)
+    lazy val Prompt = elements(NativePrompt)
+    lazy val Redirect = elements(NativeRedirect)
+    lazy val Route = elements(NativeRoute)
+    lazy val Router = elements(NativeRouter)
+    lazy val Switch = elements(NativeSwitch)
   }
 
   object RouterVirtualDOMAttributes {

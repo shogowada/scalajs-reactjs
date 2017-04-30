@@ -1,7 +1,6 @@
 package io.github.shogowada.scalajs.reactjs.router.dom
 
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMAttributes.Type.AS_IS
-import io.github.shogowada.scalajs.reactjs.VirtualDOM.VirtualDOMElements.ReactClassElementSpec
 import io.github.shogowada.scalajs.reactjs.VirtualDOM.{VirtualDOMAttributes, VirtualDOMElements}
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.router
@@ -29,10 +28,10 @@ object NativeNavLink extends ReactClass
 
 trait RouterDOM extends router.Router {
   implicit class RouterDOMVirtualDOMElements(elements: VirtualDOMElements) {
-    lazy val BrowserRouter = ReactClassElementSpec(NativeBrowserRouter)
-    lazy val HashRouter = ReactClassElementSpec(NativeHashRouter)
-    lazy val Link = ReactClassElementSpec(NativeLink)
-    lazy val NavLink = ReactClassElementSpec(NativeNavLink)
+    lazy val BrowserRouter = elements(NativeBrowserRouter)
+    lazy val HashRouter = elements(NativeHashRouter)
+    lazy val Link = elements(NativeLink)
+    lazy val NavLink = elements(NativeNavLink)
   }
 
   object RouterDOMVirtualDOMAttributes {
