@@ -58,3 +58,7 @@ ReactDOM.render(<.div(^.id := "hello-world")("Hello, World!"), mountNode)
 - [Router Redux](/example/router-redux/src/main/scala/io/github/shogowada/scalajs/reactjs/example/router/redux/Main.scala)
 - [Redux DevTools](/example/redux-devtools/src/main/scala/io/github/shogowada/scalajs/reactjs/example/redux/devtools/Main.scala)
 - [I don't like `<` and `^`. How can I change them?](/example/custom-virtual-dom)
+
+## Reusable Components
+
+- [ReactCrop](https://github.com/shogowada/scalajs-reactjs-image-crop)
