@@ -1,6 +1,7 @@
 package io.github.shogowada.scalajs.reactjs.example.router.redux
 
 import io.github.shogowada.scalajs.history.History
+import io.github.shogowada.scalajs.reactjs.React.Props
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.events.{FormSyntheticEvent, SyntheticEvent}
 import io.github.shogowada.scalajs.reactjs.redux.ReactRedux._
@@ -115,7 +116,7 @@ object RouteControllerComponent {
   lazy val reactClass = ReactRedux.connectAdvanced(
     (dispatch: Dispatch) => {
       val act = (action: NativeAction) => dispatch(action)
-      (state: State, ownProps: Unit) => {
+      (state: State, ownProps: Props[Unit]) => {
         RouteControllerPresentationalComponent.WrappedProps(act)
       }
     }
@@ -156,7 +157,7 @@ object ARouteComponent {
   lazy val reactClass = ReactRedux.connectAdvanced(
     (dispatch: Dispatch) => {
       val onTextChange = (text: String) => dispatch(ChangeTextA(text))
-      (state: State, ownProps: Unit) => {
+      (state: State, ownProps: Props[Unit]) => {
         RoutePresentationalComponent.WrappedProps(
           text = state.wrapped.textA,
           onTextChange = onTextChange
@@ -170,7 +171,7 @@ object BRouteComponent {
   lazy val reactClass = ReactRedux.connectAdvanced(
     (dispatch: Dispatch) => {
       val onTextChange = (text: String) => dispatch(ChangeTextB(text))
-      (state: State, ownProps: Unit) => {
+      (state: State, ownProps: Props[Unit]) => {
         RoutePresentationalComponent.WrappedProps(
           text = state.wrapped.textB,
           onTextChange = onTextChange

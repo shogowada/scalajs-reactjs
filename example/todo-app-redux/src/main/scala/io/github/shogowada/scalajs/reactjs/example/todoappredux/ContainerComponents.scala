@@ -1,5 +1,6 @@
 package io.github.shogowada.scalajs.reactjs.example.todoappredux
 
+import io.github.shogowada.scalajs.reactjs.React.Props
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.redux.ReactRedux
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
@@ -24,8 +25,8 @@ object ContainerComponents {
       var ownProps: LinkContainerComponentOwnProps = null
       val onClick: () => Unit = () => dispatch(SetVisibilityFilter(filter = ownProps.filter))
 
-      (state: State, nextOwnProps: LinkContainerComponentOwnProps) => {
-        ownProps = nextOwnProps
+      (state: State, nextOwnProps: Props[LinkContainerComponentOwnProps]) => {
+        ownProps = nextOwnProps.wrapped
         Link.WrappedProps(
           active = ownProps.filter == state.visibilityFilter,
           onClick = onClick
@@ -37,7 +38,7 @@ object ContainerComponents {
   def TodoListContainerComponent: ReactClass = ReactRedux.connectAdvanced(
     (dispatch: Dispatch) => {
       val onTodoClick: (Int) => Unit = (id: Int) => dispatch(ToggleTodo(id = id))
-      (state: State, ownProps: Unit) => {
+      (state: State, ownProps: Props[Unit]) => {
         TodoList.WrappedProps(
           todos = state.visibilityFilter match {
             case VisibilityFilters.ShowAll => state.todos
@@ -53,7 +54,7 @@ object ContainerComponents {
   def AddTodoContainerComponent: ReactClass = ReactRedux.connectAdvanced(
     (dispatch: Dispatch) => {
       val onAddTodo: (String) => Unit = (text: String) => dispatch(AddTodo(text = text))
-      (state: State, ownProps: Unit) =>
+      (state: State, ownProps: Props[Unit]) =>
         AddTodoComponent.WrappedProps(
           onAddTodo = onAddTodo
         )

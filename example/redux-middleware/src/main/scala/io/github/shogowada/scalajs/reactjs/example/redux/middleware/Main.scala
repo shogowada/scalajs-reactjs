@@ -1,5 +1,6 @@
 package io.github.shogowada.scalajs.reactjs.example.redux.middleware
 
+import io.github.shogowada.scalajs.reactjs.React.Props
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.events.FormSyntheticEvent
 import io.github.shogowada.scalajs.reactjs.redux.ReactRedux._
@@ -139,7 +140,7 @@ object Example {
       val onAddFuture = (value: Int) => dispatch(Future(Add(value)))
       val onAddFutureFailure = (value: Int) => dispatch(Future.failed(new Exception("This is a test. Do not panic.")))
       val onSubtract = (value: Int) => dispatch(Subtract(value))
-      (state: State, ownProps: Unit) => {
+      (state: State, ownProps: Props[Unit]) => {
         ExamplePresentational.WrappedProps(
           result = state.result,
           snapshot = state.snapshot,
