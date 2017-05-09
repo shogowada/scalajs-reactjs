@@ -1,8 +1,9 @@
 package io.github.shogowada.scalajs.reactjs.example.router.redux
 
 import io.github.shogowada.scalajs.history.History
+import io.github.shogowada.scalajs.reactjs.React.Props
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
-import io.github.shogowada.scalajs.reactjs.events.{FormSyntheticEvent, SyntheticEvent}
+import io.github.shogowada.scalajs.reactjs.events.FormSyntheticEvent
 import io.github.shogowada.scalajs.reactjs.redux.ReactRedux._
 import io.github.shogowada.scalajs.reactjs.redux.Redux.Dispatch
 import io.github.shogowada.scalajs.reactjs.redux.devtools.ReduxDevTools
@@ -111,32 +112,55 @@ object Main extends JSApp {
   }
 }
 
-object RouteControllerComponent {
+/*
+* Extend RouterProps to access router props (e.g. props.location, props.history, and props.match)
+* */
+object RouteControllerComponent extends RouterProps {
+
   lazy val reactClass = ReactRedux.connectAdvanced(
     (dispatch: Dispatch) => {
       val act = (action: NativeAction) => dispatch(action)
-      (state: State, ownProps: Unit) => {
-        RouteControllerPresentationalComponent.WrappedProps(act)
+      val pushRouteA = () => dispatch(Push("/a"))
+      val pushRouteB = () => dispatch(Push("/b"))
+      val goNegative3 = () => dispatch(Go(-1))
+      val goBack = () => dispatch(GoBack())
+      val goForward = () => dispatch(GoForward())
+      (state: State, ownProps: Props[Unit]) => {
+        RouteControllerPresentationalComponent.WrappedProps(
+          path = ownProps.location.pathname,
+          onPushRouteAClick = pushRouteA,
+          onPushRouteBClick = pushRouteB,
+          onGoNegative3Click = goNegative3,
+          onGoBackClick = goBack,
+          onGoForwardClick = goForward
+        )
       }
     }
   )(RouteControllerPresentationalComponent.reactClass)
 }
 
-object RouteControllerPresentationalComponent extends RouterProps {
-  case class WrappedProps(act: (NativeAction) => _)
+object RouteControllerPresentationalComponent {
+  case class WrappedProps(
+      path: String,
+      onPushRouteAClick: () => _,
+      onPushRouteBClick: () => _,
+      onGoNegative3Click: () => _,
+      onGoBackClick: () => _,
+      onGoForwardClick: () => _
+  )
 
   type Self = React.Self[WrappedProps, Unit]
 
   lazy val reactClass = React.createClass[WrappedProps, Unit](
     (self) =>
       <.div()(
-        <.h3()("Path: ", <.span(^.id := "path")(self.props.location.pathname)),
+        <.h3()("Path: ", <.span(^.id := "path")(self.props.wrapped.path)),
         <.div()(
-          <.button(^.id := "push-route-a", ^.onClick := act(self, Push("/a")))("Push route A"),
-          <.button(^.id := "push-route-b", ^.onClick := act(self, Push("/b")))("Push route B"),
-          <.button(^.id := "go-negative-3", ^.onClick := act(self, Go(-3)))("Go -3"),
-          <.button(^.id := "go-back", ^.onClick := act(self, GoBack()))("Go back"),
-          <.button(^.id := "go-forward", ^.onClick := act(self, GoForward()))("Go forward")
+          <.button(^.id := "push-route-a", ^.onClick := self.props.wrapped.onPushRouteAClick)("Push route A"),
+          <.button(^.id := "push-route-b", ^.onClick := self.props.wrapped.onPushRouteBClick)("Push route B"),
+          <.button(^.id := "go-negative-3", ^.onClick := self.props.wrapped.onGoNegative3Click)("Go -3"),
+          <.button(^.id := "go-back", ^.onClick := self.props.wrapped.onGoBackClick)("Go back"),
+          <.button(^.id := "go-forward", ^.onClick := self.props.wrapped.onGoForwardClick)("Go forward")
         ),
         <.Switch()(
           <.Route(^.path := "/a", ^.component := ARouteComponent.reactClass)(),
@@ -144,19 +168,13 @@ object RouteControllerPresentationalComponent extends RouterProps {
         )
       )
   )
-
-  private def act(self: Self, action: NativeAction) =
-    (event: SyntheticEvent) => {
-      event.preventDefault()
-      self.props.wrapped.act(action)
-    }
 }
 
 object ARouteComponent {
   lazy val reactClass = ReactRedux.connectAdvanced(
     (dispatch: Dispatch) => {
       val onTextChange = (text: String) => dispatch(ChangeTextA(text))
-      (state: State, ownProps: Unit) => {
+      (state: State, ownProps: Props[Unit]) => {
         RoutePresentationalComponent.WrappedProps(
           text = state.wrapped.textA,
           onTextChange = onTextChange
@@ -170,7 +188,7 @@ object BRouteComponent {
   lazy val reactClass = ReactRedux.connectAdvanced(
     (dispatch: Dispatch) => {
       val onTextChange = (text: String) => dispatch(ChangeTextB(text))
-      (state: State, ownProps: Unit) => {
+      (state: State, ownProps: Props[Unit]) => {
         RoutePresentationalComponent.WrappedProps(
           text = state.wrapped.textB,
           onTextChange = onTextChange

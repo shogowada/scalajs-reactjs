@@ -1,5 +1,6 @@
 package io.github.shogowada.scalajs.reactjs.example.redux.devtools
 
+import io.github.shogowada.scalajs.reactjs.React.Props
 import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.classes.ReactClass
 import io.github.shogowada.scalajs.reactjs.events.FormSyntheticEvent
@@ -49,7 +50,7 @@ object TextContainerComponent {
   def apply(): ReactClass = ReactRedux.connectAdvanced(
     (dispatch: Dispatch) => {
       val onTextChange = (text: String) => dispatch(SetText(text))
-      (state: State, ownProps: Unit) => {
+      (state: State, ownProps: Props[Unit]) => {
         WrappedProps(
           text = state.text,
           onTextChange = onTextChange

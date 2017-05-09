@@ -31,7 +31,7 @@ object ReactRedux {
   }
 
   def connectAdvanced[ReduxState, OwnProps, WrappedProps](
-      selectorFactory: Dispatch => (ReduxState, OwnProps) => WrappedProps
+      selectorFactory: Dispatch => (ReduxState, Props[OwnProps]) => WrappedProps
   ): ContainerComponentFactory[WrappedProps] = {
     val nativeSelectorFactory = selectorFactoryToNative(selectorFactory)
 
@@ -40,7 +40,7 @@ object ReactRedux {
   }
 
   private def selectorFactoryToNative[ReduxState, OwnProps, WrappedProps](
-      selectorFactory: Dispatch => (ReduxState, OwnProps) => WrappedProps
+      selectorFactory: Dispatch => (ReduxState, Props[OwnProps]) => WrappedProps
   ): js.Function1[NativeDispatch, js.Function2[ReduxState, js.Dynamic, js.Any]] =
     (nativeDispatch: NativeDispatch) => {
       val dispatch: Dispatch = ReduxInternal.dispatchFromNative(nativeDispatch)
@@ -49,10 +49,10 @@ object ReactRedux {
     }
 
   private def selectorToNative[ReduxState, OwnProps, WrappedProps](
-      selector: (ReduxState, OwnProps) => WrappedProps
+      selector: (ReduxState, Props[OwnProps]) => WrappedProps
   ): js.Function2[ReduxState, js.Dynamic, js.Any] =
     (state: ReduxState, nativeOwnProps: js.Dynamic) => {
-      val ownProps: OwnProps = Props(nativeOwnProps).wrapped
+      val ownProps: Props[OwnProps] = Props(nativeOwnProps)
       val wrappedProps: WrappedProps = selector(state, ownProps)
       val nativeProps = clone(nativeOwnProps)
       nativeProps.updateDynamic(React.WrappedProperty)(wrappedProps.asInstanceOf[js.Any])
