@@ -19,31 +19,35 @@ import org.scalajs.dom.raw.HTMLInputElement
 
 import scala.scalajs.js
 import scala.scalajs.js.JSApp
+import scala.scalajs.js.annotation.JSExport
 
 /*
 * If you are not yet familiar with react-router-redux,
 * see https://github.com/ReactTraining/react-router/tree/master/packages/react-router-redux for details.
 * */
 
-/*
-* Because we are sharing the Redux state with react-router-redux,
-* your state needs to be wrapped.
-* */
-@js.native
-trait State extends js.Object {
-  def wrapped: WrappedState = js.native
-}
-
-case class WrappedState(textA: String, textB: String)
+case class ReduxState(
+    textA: String,
+    textB: String,
+    /*
+    * For react-router-redux, your state needs a router field.
+    * Don't forget to @JSExport so that the field becomes visible to react-router-redux.
+    * */
+    @JSExport router: js.Object
+)
 
 case class ChangeTextA(text: String) extends Action
 case class ChangeTextB(text: String) extends Action
 
 object Reducer {
-  val reduce = (maybeState: Option[WrappedState], action: Any) =>
-    WrappedState(
+  val reduce = (maybeState: Option[ReduxState], action: Any) =>
+    ReduxState(
       textA = reduceTextA(maybeState.map(_.textA), action),
-      textB = reduceTextB(maybeState.map(_.textB), action)
+      textB = reduceTextB(maybeState.map(_.textB), action),
+      /*
+      * Reduce the router field state with ReactRouterRedux.routerReducer.
+      * */
+      router = ReactRouterRedux.routerReducer(maybeState.map(_.router), action)
     )
 
   def reduceTextA(maybeTextA: Option[String], action: Any): String =
@@ -73,14 +77,7 @@ object Main extends JSApp {
     val history = History.createHashHistory()
 
     val store = Redux.createStore(
-      /*
-      * Combine your reducer with RouterRedux.routerReducer.
-      * Note that state of the router needs to be named "router".
-      * */
-      Redux.combineReducers(Map(
-        "wrapped" -> Reducer.reduce,
-        "router" -> ReactRouterRedux.routerReducer
-      )),
+      Reducer.reduce,
       ReduxDevTools.composeWithDevTools( // DevTools is optional
         Redux.applyMiddleware(
           ReactRouterRedux.routerMiddleware(history)
@@ -125,7 +122,7 @@ object RouteControllerComponent extends RouterProps {
       val goNegative3 = () => dispatch(Go(-1))
       val goBack = () => dispatch(GoBack())
       val goForward = () => dispatch(GoForward())
-      (state: State, ownProps: Props[Unit]) => {
+      (state: ReduxState, ownProps: Props[Unit]) => {
         RouteControllerPresentationalComponent.WrappedProps(
           path = ownProps.location.pathname,
           onPushRouteAClick = pushRouteA,
@@ -174,9 +171,9 @@ object ARouteComponent {
   lazy val reactClass = ReactRedux.connectAdvanced(
     (dispatch: Dispatch) => {
       val onTextChange = (text: String) => dispatch(ChangeTextA(text))
-      (state: State, ownProps: Props[Unit]) => {
+      (state: ReduxState, ownProps: Props[Unit]) => {
         RoutePresentationalComponent.WrappedProps(
-          text = state.wrapped.textA,
+          text = state.textA,
           onTextChange = onTextChange
         )
       }
@@ -188,9 +185,9 @@ object BRouteComponent {
   lazy val reactClass = ReactRedux.connectAdvanced(
     (dispatch: Dispatch) => {
       val onTextChange = (text: String) => dispatch(ChangeTextB(text))
-      (state: State, ownProps: Props[Unit]) => {
+      (state: ReduxState, ownProps: Props[Unit]) => {
         RoutePresentationalComponent.WrappedProps(
-          text = state.wrapped.textB,
+          text = state.textB,
           onTextChange = onTextChange
         )
       }
