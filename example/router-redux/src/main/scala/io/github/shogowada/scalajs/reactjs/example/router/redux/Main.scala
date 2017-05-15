@@ -17,6 +17,7 @@ import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
 import org.scalajs.dom.raw.HTMLInputElement
 
+import scala.annotation.meta.field
 import scala.scalajs.js
 import scala.scalajs.js.JSApp
 import scala.scalajs.js.annotation.JSExport
@@ -33,7 +34,7 @@ case class ReduxState(
     * For react-router-redux, your state needs a router field.
     * Don't forget to @JSExport so that the field becomes visible to react-router-redux.
     * */
-    @JSExport router: js.Object
+    @(JSExport@field) router: js.Object
 )
 
 case class ChangeTextA(text: String) extends Action
