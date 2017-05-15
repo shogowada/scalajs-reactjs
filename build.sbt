@@ -285,21 +285,21 @@ lazy val exampleTest = project.in(file("example") / "test")
         s"-Dtarget.path.router-redux=${(crossTarget in exampleRouterRedux).value}",
         s"-Dtarget.path.style=${(crossTarget in exampleStyle).value}",
         s"-Dtarget.path.todo-app=${(crossTarget in exampleTodoApp).value}",
-        s"-Dtarget.path.todo-app-redux=${(crossTarget in exampleTodoAppRedux).value}",
-        Seq(
-          (webpack in fastOptJS in Compile in exampleCustomVirtualDOM).value,
-          (webpack in fastOptJS in Compile in exampleHelloWorld).value,
-          (webpack in fastOptJS in Compile in exampleHelloWorldFunction).value,
-          (webpack in fastOptJS in Compile in exampleInteractiveHelloWorld).value,
-          (webpack in fastOptJS in Compile in exampleLifecycle).value,
-          (webpack in fastOptJS in Compile in exampleReduxDevTools).value,
-          (webpack in fastOptJS in Compile in exampleReduxMiddleware).value,
-          (webpack in fastOptJS in Compile in exampleRouter).value,
-          (webpack in fastOptJS in Compile in exampleRouterRedux).value,
-          (webpack in fastOptJS in Compile in exampleStyle).value,
-          (webpack in fastOptJS in Compile in exampleTodoApp).value,
-          (webpack in fastOptJS in Compile in exampleTodoAppRedux).value
-        ).foldRight("-Dexamples.built=true")((_, option) => option)
+        s"-Dtarget.path.todo-app-redux=${(crossTarget in exampleTodoAppRedux).value}"
       ),
+      (test in IntegrationTest) := (test in IntegrationTest).dependsOn(
+        webpack in fastOptJS in Compile in exampleCustomVirtualDOM,
+        webpack in fastOptJS in Compile in exampleHelloWorld,
+        webpack in fastOptJS in Compile in exampleHelloWorldFunction,
+        webpack in fastOptJS in Compile in exampleInteractiveHelloWorld,
+        webpack in fastOptJS in Compile in exampleLifecycle,
+        webpack in fastOptJS in Compile in exampleReduxDevTools,
+        webpack in fastOptJS in Compile in exampleReduxMiddleware,
+        webpack in fastOptJS in Compile in exampleRouter,
+        webpack in fastOptJS in Compile in exampleRouterRedux,
+        webpack in fastOptJS in Compile in exampleStyle,
+        webpack in fastOptJS in Compile in exampleTodoApp,
+        webpack in fastOptJS in Compile in exampleTodoAppRedux
+      ).value,
       fork := true
     )
