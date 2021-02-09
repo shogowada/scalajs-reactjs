@@ -6,35 +6,22 @@ val ReactRouterVersion = "^4.0.0"
 val ReactRouterReduxVersion = "next"
 val ReduxVersion = "^3.6.0"
 val ReduxDevToolsVersion = "^2.13.0"
-val WebpackVersion = "^2.3.2"
 
-val StaticTagsVersion = "[2.4.0,3.0.0["
-
-val JettyVersion = "9.+"
-val SeleniumVersion = "[3.4.0,4.0.0["
-val ScalaTestVersion = "[3.1.0,4.0.0["
-
-crossScalaVersions := Seq("2.12.2")
-
-publishTo := {
-  val nexus = "https://oss.sonatype.org/"
-  isSnapshot.value match {
-    case true => Some("snapshots" at nexus + "content/repositories/snapshots")
-    case false => Some("releases" at nexus + "service/local/staging/deploy/maven2")
-  }
-}
-publishArtifact := false
+val StaticTagsVersion = "2.5.0" //TODO: 2.6.0
 
 val commonSettings = Seq(
   organization := "io.github.shogowada",
   name := "scalajs-reactjs",
-  version := "0.14.0",
+  version := "0.15.0-SNAPSHOT",
   licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT")),
   homepage := Some(url("https://github.com/shogowada/scalajs-reactjs")),
+
+  crossScalaVersions := Seq("2.12.2", "2.13.1"),
   scalaVersion := "2.12.2",
-  ivyScala := ivyScala.value.map {
-    _.copy(overrideScalaVersion = true)
-  },
+  scalacOptions ++= Seq(
+    "-deprecation", "-unchecked", "-feature", "-Xcheckinit", "-target:jvm-1.8", "-Xfatal-warnings"
+  ),
+
   publishMavenStyle := true,
   publishTo := {
     val nexus = "https://oss.sonatype.org/"
@@ -61,7 +48,7 @@ lazy val core = project.in(file("core"))
     .settings(commonSettings: _*)
     .settings(
       libraryDependencies ++= Seq(
-        "org.scala-js" %%% "scalajs-dom" % "0.9.+",
+        "org.scala-js" %%% "scalajs-dom" % "0.9.8",
         "io.github.shogowada" %%% "statictags" % StaticTagsVersion
       ),
       npmDependencies in Compile ++= Seq(
@@ -69,7 +56,6 @@ lazy val core = project.in(file("core"))
         "react" -> ReactVersion,
         "react-dom" -> ReactVersion
       ),
-      (version in webpack) := WebpackVersion,
       (webpack in(Compile, fastOptJS)) := Seq(),
       (webpack in(Compile, fullOptJS)) := Seq(),
       publishArtifact := true
@@ -162,6 +148,7 @@ lazy val routerRedux = project.in(file("router-redux"))
 
 val exampleCommonSettings = commonSettings ++ Seq(
   name += "-example",
+  scalaJSUseMainModuleInitializer := true,
   (unmanagedResourceDirectories in Compile) += baseDirectory.value / "src" / "main" / "webapp"
 )
 
@@ -268,11 +255,15 @@ lazy val exampleTest = project.in(file("example") / "test")
     .settings(
       name += "-example-test",
       libraryDependencies ++= Seq(
-        "org.eclipse.jetty" % "jetty-server" % JettyVersion,
-        "org.seleniumhq.selenium" % "selenium-java" % SeleniumVersion,
+        "org.eclipse.jetty" % "jetty-server" % "9.+",
 
-        "org.scalatest" %% "scalatest" % ScalaTestVersion
-      ),
+        "org.scalatestplus" %% "selenium-3-141" % "3.2.2.0",
+        "org.scalatest" %% "scalatest" % "3.2.2"
+      ).map(_ % "it,test"),
+
+      parallelExecution in Test := false,
+      parallelExecution in IntegrationTest := false,
+
       javaOptions ++= Seq(
         s"-Dtarget.path.custom-virtual-dom=${(crossTarget in exampleCustomVirtualDOM).value}",
         s"-Dtarget.path.helloworld=${(crossTarget in exampleHelloWorld).value}",

@@ -5,10 +5,12 @@ import io.github.shogowada.scalajs.reactjs.VirtualDOM._
 import io.github.shogowada.scalajs.reactjs.elements.ReactElement
 import org.scalajs.dom
 
-import scala.scalajs.js.JSApp
+import scala.scalajs.js.annotation.JSExport
 
-object Main extends JSApp {
-  override def main(): Unit = {
+object Main {
+
+  @JSExport
+  def main(args: Array[String]): Unit = {
     val mountNode = dom.document.createElement("div")
     dom.document.body.appendChild(mountNode)
     ReactDOM.render(Main(), mountNode)

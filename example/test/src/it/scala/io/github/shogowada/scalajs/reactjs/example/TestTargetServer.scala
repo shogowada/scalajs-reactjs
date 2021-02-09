@@ -9,8 +9,9 @@ class TestTargetServer(project: String) {
   private var server: Server = _
 
   def start(): Unit = {
-    val maybeTarget = sys.props.get(s"target.path.$project")
-    assert(maybeTarget.isDefined)
+    val projectPath = s"target.path.$project"
+    val maybeTarget = sys.props.get(projectPath)
+    assert(maybeTarget.isDefined, s"Env var: $projectPath is not set")
     val target = maybeTarget.get
     println(s"Target path for $project: $target")
 
@@ -47,44 +48,25 @@ class TestTargetServer(project: String) {
 }
 
 object TestTargetServers {
-  val customVirtualDOM = new TestTargetServer("custom-virtual-dom")
-  val helloWorld = new TestTargetServer("helloworld")
-  val helloWorldFunction = new TestTargetServer("helloworld-function")
-  val interactiveHelloWorld = new TestTargetServer("interactive-helloworld")
-  val lifecycle = new TestTargetServer("lifecycle")
-  val reduxDevTools = new TestTargetServer("redux-devtools")
-  val reduxMiddleware = new TestTargetServer("redux-middleware")
-  val router = new TestTargetServer("router")
-  val routerRedux = new TestTargetServer("router-redux")
-  val style = new TestTargetServer("style")
-  val todoApp = new TestTargetServer("todo-app")
-  val todoAppRedux = new TestTargetServer("todo-app-redux")
 
-  customVirtualDOM.start()
-  helloWorld.start()
-  helloWorldFunction.start()
-  interactiveHelloWorld.start()
-  lifecycle.start()
-  reduxDevTools.start()
-  reduxMiddleware.start()
-  routerRedux.start()
-  router.start()
-  style.start()
-  todoApp.start()
-  todoAppRedux.start()
+  lazy val customVirtualDOM = init(new TestTargetServer("custom-virtual-dom"))
+  lazy val helloWorld = init(new TestTargetServer("helloworld"))
+  lazy val helloWorldFunction = init(new TestTargetServer("helloworld-function"))
+  lazy val interactiveHelloWorld = init(new TestTargetServer("interactive-helloworld"))
+  lazy val lifecycle = init(new TestTargetServer("lifecycle"))
+  lazy val reduxDevTools = init(new TestTargetServer("redux-devtools"))
+  lazy val reduxMiddleware = init(new TestTargetServer("redux-middleware"))
+  lazy val router = init(new TestTargetServer("router"))
+  lazy val routerRedux = init(new TestTargetServer("router-redux"))
+  lazy val style = init(new TestTargetServer("style"))
+  lazy val todoApp = init(new TestTargetServer("todo-app"))
+  lazy val todoAppRedux = init(new TestTargetServer("todo-app-redux"))
 
-  sys.addShutdownHook(() => {
-    customVirtualDOM.stop()
-    helloWorld.stop()
-    helloWorldFunction.stop()
-    interactiveHelloWorld.stop()
-    lifecycle.stop()
-    reduxDevTools.stop()
-    reduxMiddleware.stop()
-    routerRedux.stop()
-    router.stop()
-    style.stop()
-    todoApp.stop()
-    todoAppRedux.stop()
-  })
+  def init(server: TestTargetServer): TestTargetServer = {
+    server.start()
+    sys.addShutdownHook { () =>
+      server.stop()
+    }
+    server
+  }
 }

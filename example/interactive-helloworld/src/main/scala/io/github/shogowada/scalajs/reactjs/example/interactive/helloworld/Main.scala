@@ -8,10 +8,12 @@ import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
 import org.scalajs.dom.raw.HTMLInputElement
 
-import scala.scalajs.js.JSApp
+import scala.scalajs.js.annotation.JSExport
 
-object Main extends JSApp {
-  def main(): Unit = {
+object Main {
+
+  @JSExport
+  def main(args: Array[String]): Unit = {
     val mountNode = dom.document.getElementById("mount-node")
     ReactDOM.render(<(InteractiveHelloWorld()).empty, mountNode)
   }

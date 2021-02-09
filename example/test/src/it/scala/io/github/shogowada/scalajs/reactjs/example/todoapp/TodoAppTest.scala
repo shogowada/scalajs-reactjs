@@ -27,9 +27,12 @@ class TodoAppTest extends BaseTest {
       }
     }
 
-    "when I add a TODO item" - {
+    "when I" - {
       val newTodoItem = "new TODO item"
-      addTodoItem(newTodoItem)
+
+      "add a TODO item" in {
+        addTodoItem(newTodoItem)
+      }
 
       "then it should add the item to the list" in {
         eventually {
@@ -49,9 +52,12 @@ class TodoAppTest extends BaseTest {
         }
       }
 
-      "when I add another TODO item" - {
+      "when I" - {
         val anotherTodoItem = "another TODO item"
-        addTodoItem(anotherTodoItem)
+
+        "add another TODO item" in {
+          addTodoItem(anotherTodoItem)
+        }
 
         "then it should add the item to the list" in {
           eventually {

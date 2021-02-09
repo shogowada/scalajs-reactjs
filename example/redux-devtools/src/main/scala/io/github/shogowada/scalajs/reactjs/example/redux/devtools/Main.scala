@@ -12,10 +12,12 @@ import io.github.shogowada.scalajs.reactjs.{React, ReactDOM}
 import org.scalajs.dom
 import org.scalajs.dom.raw.HTMLInputElement
 
-import scala.scalajs.js.JSApp
+import scala.scalajs.js.annotation.JSExport
 
-object Main extends JSApp {
-  override def main(): Unit = {
+object Main {
+
+  @JSExport
+  def main(args: Array[String]): Unit = {
     val store = Redux.createStore[State](
       Reducer(_, _),
       ReduxDevTools.devToolsEnhancer() // Just add the enhancer

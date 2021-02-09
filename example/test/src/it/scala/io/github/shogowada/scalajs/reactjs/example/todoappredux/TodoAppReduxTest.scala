@@ -4,28 +4,40 @@ import io.github.shogowada.scalajs.reactjs.example.{BaseTest, TestTargetServers}
 
 class TodoAppReduxTest extends BaseTest {
 
-  val server = TestTargetServers.todoAppRedux
+  private lazy val server = TestTargetServers.todoAppRedux
 
-  "when I am at the page" - {
-    go to server.host
+  "given" - {
 
-    "and I add a todo item" - {
+    "I am at home page" in {
+      go to server.host
+    }
+
+    "and" - {
       val firstTodoItem = "First thing to do"
-      addTodoItem(firstTodoItem)
 
-      "then it should add the item" in verifyTodoItems(Seq(firstTodoItem))
+      "I add a todo item" in {
+        addTodoItem(firstTodoItem)
+      }
 
-      "and I add another one" - {
+      "then it should add the item" in {
+        verifyTodoItems(Seq(firstTodoItem))
+      }
+
+      "and" - {
         val secondTodoItem = "Second thing to do"
-        addTodoItem(secondTodoItem)
 
-        "then it should add the item" in verifyTodoItems(Seq(
-          firstTodoItem,
-          secondTodoItem
-        ))
+        "I add another one" in {
+          addTodoItem(secondTodoItem)
+        }
 
-        "and I completed the second todo item" - {
-          completeTodoItem(secondTodoItem)
+        "then it should add the item" in {
+          verifyTodoItems(Seq(firstTodoItem, secondTodoItem))
+        }
+
+        "and" - {
+          "I completed the second todo item" in {
+            completeTodoItem(secondTodoItem)
+          }
 
           "then it should complete the second todo" in eventually {
             findTodoItemOrFail(secondTodoItem)
@@ -37,15 +49,18 @@ class TodoAppReduxTest extends BaseTest {
                 .underlying.getCssValue("text-decoration") should startWith("none")
           }
 
-
-          "when I display only active items" - {
-            clickOn(findAll(tagName("a")).find(_.text == "Active").get)
+          "when I" - {
+            "display only active items" in {
+              clickOn(findAll(tagName("a")).find(_.text == "Active").get)
+            }
 
             "then it should only display active todo" in verifyTodoItems(Seq(firstTodoItem))
           }
 
-          "when I display only completed items" - {
-            clickOn(findAll(tagName("a")).find(_.text == "Completed").get)
+          "when I" - {
+            "display only completed items" in {
+              clickOn(findAll(tagName("a")).find(_.text == "Completed").get)
+            }
 
             "then it should only display completed todo" in verifyTodoItems(Seq(secondTodoItem))
           }
@@ -68,7 +83,7 @@ class TodoAppReduxTest extends BaseTest {
 
   def findTodoItemOrFail(text: String): Element =
     findTodoItem(text).getOrElse {
-      throw new AssertionError(s"Expected todo item '${text}' to be present")
+      throw new AssertionError(s"Expected todo item '$text' to be present")
     }
 
   def verifyTodoItems(texts: Seq[String]): Unit = eventually {

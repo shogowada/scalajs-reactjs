@@ -19,7 +19,6 @@ import org.scalajs.dom.raw.HTMLInputElement
 
 import scala.annotation.meta.field
 import scala.scalajs.js
-import scala.scalajs.js.JSApp
 import scala.scalajs.js.annotation.JSExport
 
 /*
@@ -64,8 +63,10 @@ object Reducer {
     }
 }
 
-object Main extends JSApp {
-  override def main(): Unit = {
+object Main {
+
+  @JSExport
+  def main(args: Array[String]): Unit = {
     /*
     * You can use one of the following histories:
     *

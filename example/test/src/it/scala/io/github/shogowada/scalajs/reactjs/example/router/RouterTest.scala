@@ -7,10 +7,13 @@ import org.openqa.selenium.Alert
 
 class RouterTest extends BaseTest {
 
-  val server = TestTargetServers.router
+  private lazy val server = TestTargetServers.router
 
-  "given I am at home page" - {
-    go to server.host
+  "given" - {
+
+    "I am at home page" in {
+      go to server.host
+    }
 
     "then it should not display about" in {
       find("about") should equal(None)
@@ -20,28 +23,43 @@ class RouterTest extends BaseTest {
       find("repos") should equal(None)
     }
 
-    "when I click on about link" - {
-      clickOn(linkText("About"))
+    "when I" - {
+
+      "click on about link" in {
+        clickOn(linkText("About"))
+      }
 
       itShouldDisplayAbout()
 
-      "when I jump to repos via URL" - {
-        goToRepos()
+      "when I" - {
+
+        "jump to repos via URL" in {
+          goToRepos()
+        }
 
         itShouldDisplayRepos()
 
-        "when I push /about via history API" - {
-          clickOn(id("push-about"))
+        "when I" - {
+
+          "push /about via history API" in {
+            clickOn(id("push-about"))
+          }
 
           itShouldDisplayAbout()
 
-          "when I go back via history API" - {
-            clickOn(id("go-back"))
+          "when I" - {
+
+            "go back via history API" in {
+              clickOn(id("go-back"))
+            }
 
             itShouldDisplayRepos()
 
-            "when I go forward via history API" - {
-              clickOn(id("go-forward"))
+            "when I" - {
+
+              "go forward via history API" in {
+                clickOn(id("go-forward"))
+              }
 
               itShouldDisplayAbout()
             }
@@ -50,65 +68,118 @@ class RouterTest extends BaseTest {
       }
     }
 
-    "when I click on repos link" - {
-      clickOn(linkText("Repos"))
+    "when I" - {
+
+      "click on repos link" in {
+        clickOn(linkText("Repos"))
+      }
 
       itShouldDisplayRepos()
 
-      "when I jump to specific repo" - {
+      "when I" - {
         val repoId = 123
-        goToRepo(repoId)
+
+        "jump to specific repo" in {
+          goToRepo(repoId)
+        }
 
         "then it should display the repo" in {
           find(s"repo-$repoId").isDefined should equal(true)
         }
       }
 
-      "when I jump to about via URL" - {
-        goToAbout()
+      "when I" - {
+
+        "jump to about via URL" in {
+          goToAbout()
+        }
 
         itShouldDisplayAbout()
       }
     }
 
-    "when I go to form route" - {
-      goToForm()
+    "when I" - {
+
+      "go to form route" in {
+        goToForm()
+      }
 
       itShouldDisplayForm()
 
-      "and it is to confirm before leave" - {
-        confirmBeforeLeave()
+      "it is to confirm before leave" - {
 
-        "when I try to go to about page" - {
-          goToAbout()
+        "when I" - {
+
+          "try to go to about page" in {
+            confirmBeforeLeave()
+            goToAbout()
+          }
 
           "then it should show confirmation box" in {
             eventually {
               val alert: Alert = webDriver.switchTo().alert()
               alert.getText should equal("Are you sure you want to leave the page?")
-              alert.dismiss()
             }
           }
 
-          "when I accept the confirmation" - {
-            webDriver.switchTo().alert().accept()
+          "when I" - {
+
+            "accept the confirmation" in {
+              webDriver.switchTo().alert().accept()
+            }
 
             itShouldDisplayAbout()
           }
+        }
+      }
+    }
 
-          "when I dismiss the confirmation" - {
-            webDriver.switchTo().alert().dismiss()
+    "and when I" - {
+
+      "go to form route again" in {
+        goToForm()
+      }
+
+      itShouldDisplayForm()
+
+      "and it is to confirm before leave" - {
+
+        "and when I" - {
+
+          "try to go to about page" in {
+            confirmBeforeLeave()
+            goToAbout()
+          }
+
+          "then it should show confirmation box again" in {
+            eventually {
+              val alert: Alert = webDriver.switchTo().alert()
+              alert.getText should equal("Are you sure you want to leave the page?")
+            }
+          }
+
+          "and when I" - {
+
+            "dismiss the confirmation" in {
+              webDriver.switchTo().alert().dismiss()
+            }
 
             itShouldDisplayForm()
           }
         }
       }
 
-      "and it is not to confirm before leave" - {
-        doNotConfirmBeforeLeave()
+      "and" - {
 
-        "when I try to go to about page" - {
-          goToAbout()
+        "it is not to confirm before leave" in {
+          doNotConfirmBeforeLeave()
+        }
+
+        "then when I" - {
+
+          "try to go to about page" in {
+            goToAbout()
+          }
 
           itShouldDisplayAbout()
         }

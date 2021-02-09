@@ -3,69 +3,100 @@ package io.github.shogowada.scalajs.reactjs.example.router.redux
 import io.github.shogowada.scalajs.reactjs.example.{BaseTest, TestTargetServers}
 
 class RouterReduxTest extends BaseTest {
-  val server = TestTargetServers.routerRedux
 
-  "given I am on the page" - {
-    go to server.host
+  private lazy val server = TestTargetServers.routerRedux
 
-    "when I push route A" - {
-      pushRouteA()
+  private val textA = "text A"
+  private val textB = "text B"
+
+  "given" - {
+
+    "I am on the page" in {
+      go to server.host
+    }
+
+    "when I" - {
+
+      "push route A" in {
+        pushRouteA()
+      }
 
       thenIShouldBeOnRouteA()
 
-      "and I put text" - {
-        val textA = "text A"
-        textField(tagName("input")).value = textA
+      "and when I" - {
+
+        s"put text $textA" in {
+          textField(tagName("input")).value = textA
+        }
 
         thenItShouldDisplay(textA)
+      }
+    }
 
-        "when I push route B" - {
-          pushRouteB()
+    "then when I" - {
 
-          thenIShouldBeOnRouteB()
+      "push route B" in {
+        pushRouteB()
+      }
 
-          thenItShouldDisplay("")
+      thenIShouldBeOnRouteB()
+      thenItShouldDisplay("")
 
-          "and I put text" - {
-            val textB = "text B"
-            textField(tagName("input")).value = textB
+      "and when I" - {
 
-            thenItShouldDisplay(textB)
-
-            "when I push route A again" - {
-              pushRouteA()
-
-              thenIShouldBeOnRouteA()
-              thenItShouldDisplay(textA)
-
-              "when I push route B again" - {
-                pushRouteB()
-
-                thenIShouldBeOnRouteB()
-                thenItShouldDisplay(textB)
-
-                "when I go -3" - {
-                  clickOn(id("go-negative-3"))
-
-                  thenIShouldBeOnRouteA()
-                  thenItShouldDisplay(textA)
-                }
-              }
-            }
-          }
-
-          "when I go back" - {
-            clickOn(id("go-back"))
-
-            thenIShouldBeOnRouteA()
-
-            "when I go forward" - {
-              clickOn(id("go-forward"))
-
-              thenIShouldBeOnRouteB()
-            }
-          }
+        s"put text $textB" in {
+          textField(tagName("input")).value = textB
         }
+
+        thenItShouldDisplay(textB)
+      }
+    }
+
+    "then when I again" - {
+
+      "push route A" in {
+        pushRouteA()
+      }
+
+      thenIShouldBeOnRouteA()
+      thenItShouldDisplay(textA)
+
+      "and" - {
+
+        "push route B" in {
+          pushRouteB()
+        }
+
+        thenIShouldBeOnRouteB()
+        thenItShouldDisplay(textB)
+      }
+    }
+
+    "then when I" - {
+
+      "go -3" in {
+        clickOn(id("go-negative-3"))
+      }
+
+      thenIShouldBeOnRouteA()
+      thenItShouldDisplay(textA)
+
+      "and when I" - {
+
+        "go back" in {
+          clickOn(id("go-back"))
+        }
+
+        thenIShouldBeOnRouteB()
+      }
+
+      "then when I" - {
+
+        "go forward" in {
+          clickOn(id("go-forward"))
+        }
+
+        thenIShouldBeOnRouteA()
       }
     }
   }
@@ -74,7 +105,7 @@ class RouterReduxTest extends BaseTest {
   def pushRouteB(): Unit = clickOn(id("push-route-b"))
 
   def thenItShouldDisplay(text: String): Unit = {
-    "then it should display" in {
+    s"then it should display $text" in {
       eventually {
         textField(tagName("input")).value should equal(text)
       }

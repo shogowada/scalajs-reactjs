@@ -1,25 +1,35 @@
 package io.github.shogowada.scalajs.reactjs.example
 
-import org.openqa.selenium.UnexpectedAlertBehaviour
-import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.chrome.{ChromeDriver, ChromeOptions}
 import org.openqa.selenium.remote.{CapabilityType, DesiredCapabilities}
+import org.openqa.selenium.{UnexpectedAlertBehaviour, WebDriver}
 import org.scalatest.concurrent.Eventually
-import org.scalatest.selenium.{Driver, WebBrowser}
-import org.scalatest.{Matchers, path}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.should
+import org.scalatest.time.{Millis, Seconds, Span}
+import org.scalatestplus.selenium._
 
 object BaseTest {
-  val webDriver = {
+
+  private lazy val webDriver: WebDriver = {
     val capabilities = new DesiredCapabilities()
     capabilities.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, UnexpectedAlertBehaviour.IGNORE)
-    new ChromeDriver(capabilities)
+    new ChromeDriver(new ChromeOptions().merge(capabilities))
   }
 
   Runtime.getRuntime.addShutdownHook(new Thread(() => webDriver.quit()))
 }
 
-trait BaseTest extends path.FreeSpec
-    with WebBrowser with Driver
-    with Matchers
+trait BaseTest extends AnyFreeSpec
+    with WebBrowser
+    with Driver
+    with should.Matchers
     with Eventually {
-  override implicit val webDriver = BaseTest.webDriver
+
+  override implicit val patienceConfig: PatienceConfig = PatienceConfig(
+    timeout = scaled(Span(1, Seconds)),
+    interval = scaled(Span(50, Millis))
+  )
+
+  implicit val webDriver: WebDriver = BaseTest.webDriver
 }

@@ -4,12 +4,16 @@ import io.github.shogowada.scalajs.reactjs.example.{BaseTest, TestTargetServers}
 
 class InteractiveHelloWorldTest extends BaseTest {
 
-  val server = TestTargetServers.interactiveHelloWorld
+  private lazy val server = TestTargetServers.interactiveHelloWorld
 
   val defaultName = "whoever you are"
+  val newName = "React JS"
 
-  "given I am in the homepage" - {
-    go to server.host
+  "given" - {
+
+    "I am in the homepage" in {
+      go to server.host
+    }
 
     "then it should display the default name in input" in {
       eventually {
@@ -23,34 +27,43 @@ class InteractiveHelloWorldTest extends BaseTest {
       }
     }
 
-    "when I changed the name" - {
-      val newName = "React JS"
+    "when I" - {
 
-      textField("name").value = newName
+      "changed the name" in {
+        textField("name").value = newName
+      }
 
       "then it should greet the new name" in {
         eventually {
           find("greet").get.text should be(s"Hello, $newName!")
         }
       }
+    }
 
-      "when I checked the lower case radio box" - {
+    "when I" - {
+
+      "checked the lower case radio box" in {
         radioButtonGroup("letter-case").value = "Lower Case"
 
-        "then it should display the name in lower case" in {
-          eventually {
-            find("greet").get.text should be(s"Hello, ${newName.toLowerCase}!")
-          }
-        }
       }
 
-      "when I checked the upper case radio box" - {
+      "then it should display the name in lower case" in {
+        eventually {
+          find("greet").get.text should be(s"Hello, ${newName.toLowerCase}!")
+        }
+      }
+    }
+
+    "when I" - {
+
+      "checked the upper case radio box" in {
         radioButtonGroup("letter-case").value = "Upper Case"
 
-        "then it should display the name in upper case" in {
-          eventually {
-            find("greet").get.text should be(s"Hello, ${newName.toUpperCase}!")
-          }
+      }
+
+      "then it should display the name in upper case" in {
+        eventually {
+          find("greet").get.text should be(s"Hello, ${newName.toUpperCase}!")
         }
       }
     }

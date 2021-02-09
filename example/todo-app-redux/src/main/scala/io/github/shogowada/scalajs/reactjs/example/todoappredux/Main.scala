@@ -6,7 +6,7 @@ import io.github.shogowada.scalajs.reactjs.redux.ReactRedux._
 import io.github.shogowada.scalajs.reactjs.redux.Redux
 import org.scalajs.dom
 
-import scala.scalajs.js.JSApp
+import scala.scalajs.js.annotation.JSExport
 
 /*
  * If you are not familiar with react-redux yet, please check it out first:
@@ -14,8 +14,10 @@ import scala.scalajs.js.JSApp
  * - http://redux.js.org/docs/basics/UsageWithReact.html
  * */
 
-object Main extends JSApp {
-  override def main(): Unit = {
+object Main {
+
+  @JSExport
+  def main(args: Array[String]): Unit = {
     val mountNode = dom.document.getElementById("mount-node")
 
     val store = Redux.createStore(Reducer.reduce)
