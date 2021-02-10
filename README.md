@@ -1,7 +1,10 @@
 # scalajs-reactjs
 
-**⚠️ This project is not maintained anymore, and I'm looking for a kind person who can take it over from me.**  
+**⚠️ This project is not maintained anymore, and I'm looking for a kind person who can take it over from me.**
 **If you can inherit this project, please send a pull request to this README.md linking to your project so that we can direct people to the new home.**
+
+Further maintenance of the repo can be found here:
+* [scommons/scalajs-reactjs](https://github.com/scommons/scalajs-reactjs)
 
 [![Build Status](https://travis-ci.org/shogowada/scalajs-reactjs.svg?branch=master)](https://travis-ci.org/shogowada/scalajs-reactjs)
 
