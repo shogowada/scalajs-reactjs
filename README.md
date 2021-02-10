@@ -1,5 +1,8 @@
 # scalajs-reactjs
 
+**This project is not maintained anymore, and I'm looking for a kind person who can take it over from me.**  
+**If you can inherit this project, please send a pull request to this README.md linking to your project so that we can direct people to the new home.**
+
 [![Build Status](https://travis-ci.org/shogowada/scalajs-reactjs.svg?branch=master)](https://travis-ci.org/shogowada/scalajs-reactjs)
 
 Develop React applications with Scala. It is compatible with Scala 2.12 and Scala.js 0.6.14.
